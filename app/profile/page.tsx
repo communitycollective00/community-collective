@@ -12,8 +12,11 @@ export default function ProfilePage() {
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
   const [stateRegion, setStateRegion] = useState("");
-  const [skills, setSkills] = useState("");
-  const [socials, setSocials] = useState("");
+  const [industry, setIndustry] = useState("");
+  const [website, setWebsite] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -29,7 +32,7 @@ export default function ProfilePage() {
       setEmail(user.email ?? "");
 
       const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,skills,socials")
+        .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -39,13 +42,30 @@ export default function ProfilePage() {
         setBio(profile.bio ?? "");
         setCity(profile.city ?? "");
         setStateRegion(profile.state ?? "");
-        setSkills(profile.skills ?? "");
-        setSocials(profile.socials ?? "");
+        setIndustry(profile.industry ?? "");
+        setWebsite(profile.website ?? "");
+        setInstagram(profile.instagram ?? "");
+        setLinkedin(profile.linkedin ?? "");
+        setAvatarUrl(profile.avatar_url ?? "");
       }
     };
 
     load();
   }, []);
+
+  const uploadAvatar = async (file: File) => {
+    if (!userId) return;
+    setStatus("Uploading avatar...");
+    const path = `${userId}/${Date.now()}-${file.name}`;
+    const { error } = await getSupabaseClient().storage.from("avatars").upload(path, file, { upsert: true });
+    if (error) {
+      setStatus(error.message);
+      return;
+    }
+    const { data } = getSupabaseClient().storage.from("avatars").getPublicUrl(path);
+    setAvatarUrl(data.publicUrl);
+    setStatus("Avatar uploaded.");
+  };
 
   const save = async (e: FormEvent) => {
     e.preventDefault();
@@ -60,8 +80,12 @@ export default function ProfilePage() {
         bio,
         city,
         state: stateRegion,
-        skills,
-        socials,
+        industry,
+        website,
+        instagram,
+        linkedin,
+        avatar_url: avatarUrl,
+        role: "community",
         updated_at: new Date().toISOString(),
       },
       { onConflict: "id" }
@@ -78,12 +102,16 @@ export default function ProfilePage() {
         <form onSubmit={save} className="premium-form">
           <input disabled value={email} />
           <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
-          <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
+          <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
           <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Short bio" rows={4} />
           <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
           <input value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} placeholder="State" />
-          <input value={skills} onChange={(e) => setSkills(e.target.value)} placeholder="Skills (comma separated)" />
-          <textarea value={socials} onChange={(e) => setSocials(e.target.value)} placeholder="Social links (comma separated)" rows={3} />
+          <input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="Industry" />
+          <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
+          <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
+          <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
+          <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
+          {avatarUrl ? <img src={avatarUrl} alt="Avatar preview" className="profile-avatar" /> : null}
           <button className="gold-btn" type="submit">Save</button>
         </form>
         {status && <p className="muted">{status}</p>}
