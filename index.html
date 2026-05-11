@@ -13,36 +13,29 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-
 a{text-decoration:none;color:inherit}
 button,input,select,textarea{font-family:inherit}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
-
-/* PAGE BACKGROUNDS */
-.pg{display:none;position:relative}
-.pg.on{display:block}
-.pg-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 0.5s;pointer-events:none}
+.pg{display:none}.pg.on{display:block}
+.pg-bg{position:fixed;inset:0;z-index:-1;background-size:cover;background-position:center;opacity:0;transition:opacity 0.5s;pointer-events:none}
 .pg-bg.active{opacity:1}
-.pg-bg-overlay{position:fixed;inset:0;z-index:-1;background:rgba(0,0,0,0.55);opacity:0;transition:opacity 0.5s;pointer-events:none}
+.pg-bg-overlay{position:fixed;inset:0;z-index:-1;background:rgba(0,0,0,0.72);opacity:0;transition:opacity 0.5s;pointer-events:none}
 .pg-bg-overlay.active{opacity:1}
-
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:300;height:64px;display:flex;align-items:center;transition:all 0.3s;border-bottom:1px solid transparent}
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:66px;display:flex;align-items:center;transition:all 0.3s;border-bottom:1px solid transparent}
 nav.stuck{background:rgba(8,8,8,0.97);border-color:var(--border)}
 .nav-w{width:100%;max-width:1440px;margin:0 auto;padding:0 48px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .logo{display:flex;align-items:center;gap:12px;cursor:pointer;flex-shrink:0}
-.logo-mark{width:38px;height:38px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:0.04em}
+.logo-mark{width:40px;height:40px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:0.04em}
 .logo-top{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--text);letter-spacing:0.1em}
 .logo-bot{font-size:9px;color:var(--gold);font-weight:700;letter-spacing:0.2em;text-transform:uppercase}
 .nav-links{display:flex;align-items:center;gap:2px}
-.nl{background:none;border:none;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:8px 14px;cursor:pointer;transition:color 0.15s}
+.nl{background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;padding:8px 13px;cursor:pointer;transition:color 0.15s}
 .nl:hover,.nl.on{color:var(--gold)}
-.nav-cta{background:var(--gold);color:#080808;border:none;border-radius:3px;padding:10px 22px;font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;margin-left:12px}
+.nav-cta{background:var(--gold);color:#080808;border:none;border-radius:3px;padding:10px 22px;font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;margin-left:12px;transition:background 0.15s}
 .nav-cta:hover{background:var(--gold2)}
-
-/* LAYOUT */
 .w{max-width:1440px;margin:0 auto;padding:0 48px}
-section{padding:80px 0}
-.kicker{font-size:10px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
-.h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,110px);line-height:0.95;letter-spacing:0.02em}
-.h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,64px);line-height:0.95;letter-spacing:0.04em}
-.sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:560px}
+section{padding:88px 0}
+.kicker{font-size:10px;font-weight:800;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,110px);line-height:0.93;letter-spacing:0.02em}
+.h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,64px);line-height:0.93;letter-spacing:0.04em}
+.sub{font-size:15px;color:var(--muted);line-height:1.8;max-width:560px}
 .tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:2px}
 .tag-gold{background:var(--gdim);color:var(--gold);border:1px solid rgba(201,168,76,0.2)}
 .tag-dim{background:rgba(255,255,255,0.04);color:var(--dim);border:1px solid var(--border)}
@@ -53,6 +46,7 @@ section{padding:80px 0}
 .btn-red{background:var(--red);color:#fff;border:none}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:28px;transition:border-color 0.2s}
 .back{background:none;border:none;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px;padding:0;margin-bottom:36px}
 .back:hover{color:var(--text)}
@@ -63,74 +57,82 @@ section{padding:80px 0}
 .frow{display:flex;gap:8px;flex-wrap:wrap}
 .fb{background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:2px;padding:8px 18px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
 .fb.on,.fb:hover{background:var(--gold);color:#080808;border-color:var(--gold)}
-.sec-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:44px;flex-wrap:wrap;gap:16px}
+.sec-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;flex-wrap:wrap;gap:16px}
 .member-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:2px;padding:4px 10px;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)}
-
-/* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 80px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0a0a0a 0%,#0d0b07 50%,#080808 100%)}
-.hero-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:80px 80px}
-.hero-glow{position:absolute;top:0;right:0;width:60%;height:100%;background:radial-gradient(ellipse at 80% 30%,rgba(201,168,76,0.06) 0%,transparent 60%);pointer-events:none}
+.selected-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(61,190,138,0.08);border:1px solid rgba(61,190,138,0.25);border-radius:2px;padding:4px 10px;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--green)}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 88px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#080808 0%,#0c0a06 55%,#080808 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.025) 1px,transparent 1px);background-size:72px 72px}
+.hero-glow{position:absolute;top:0;right:0;width:65%;height:100%;background:radial-gradient(ellipse at 75% 25%,rgba(201,168,76,0.07) 0%,transparent 55%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:0;left:0;width:40%;height:60%;background:radial-gradient(ellipse at 20% 80%,rgba(74,159,212,0.04) 0%,transparent 50%);pointer-events:none}
 .pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
-.hero-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,140px);line-height:0.9;letter-spacing:0.01em;margin-bottom:28px}
-.hero-hl span{color:var(--gold)}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.hero-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(54px,9.5vw,130px);line-height:0.88;letter-spacing:0.01em;margin-bottom:32px}
+.hero-hl .g{color:var(--gold)}
+.hero-hl .gr{color:var(--green)}
 .hs{border-left:2px solid var(--gold);padding-left:16px}
-.hs-n{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--gold);line-height:1}
-.hs-l{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
-
-/* TICKER */
-.ticker-wrap{background:var(--gold);overflow:hidden;height:36px;display:flex;align-items:center}
-.ticker-track{display:flex;white-space:nowrap;animation:tick 30s linear infinite}
+.hs-n{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gold);line-height:1}
+.hs-l{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-top:4px}
+.ticker-wrap{background:var(--gold);overflow:hidden;height:38px;display:flex;align-items:center}
+.ticker-track{display:flex;white-space:nowrap;animation:tick 40s linear infinite}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 .ticker-item{font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:#080808;padding:0 28px}
-.tdot{color:rgba(0,0,0,0.3);margin:0 4px}
-
-/* SPOTLIGHT */
-.spot-card{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:all 0.2s}
-.spot-card:hover{border-color:var(--gold);transform:translateY(-2px)}
-.spot-top{height:4px;background:var(--gold)}
+.tdot{color:rgba(0,0,0,0.25);margin:0 6px}
+.stat-strip{background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:44px 0}
+.stat-item{text-align:center;padding:0 40px;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--gold);line-height:1}
+.stat-label{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-top:6px}
+.voice-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:28px;transition:all 0.25s;position:relative;overflow:hidden}
+.voice-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.voice-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.voice-avatar{width:60px;height:60px;border-radius:50%;background:var(--gdim);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:18px}
+.spot-card{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:all 0.25s}
+.spot-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.spot-top{height:4px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
 .spot-body{padding:28px}
-
-/* DIR */
+.opp-card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:4px;padding:26px;transition:all 0.2s}
+.opp-card:hover{background:#1a1a1a;border-color:var(--gold)}
+.opp-card.blue{border-left-color:var(--blue)}
+.opp-card.green{border-left-color:var(--green)}
+.opp-card.red{border-left-color:var(--red)}
+.game-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:26px;transition:all 0.2s;position:relative}
+.game-card:hover{border-color:var(--borderhi)}
+.game-card::after{content:'"';position:absolute;top:12px;right:20px;font-size:80px;color:rgba(201,168,76,0.06);font-family:Georgia,serif;line-height:1}
+.access-card{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;transition:all 0.25s;cursor:pointer}
+.access-card:hover{border-color:var(--gold);transform:translateY(-3px)}
+.access-thumb{height:170px;background:linear-gradient(135deg,var(--s1),#111);display:flex;align-items:center;justify-content:center;font-size:52px;position:relative}
+.access-play{position:absolute;width:48px;height:48px;border-radius:50%;background:rgba(201,168,76,0.92);display:flex;align-items:center;justify-content:center;font-size:18px;transition:transform 0.2s}
+.access-card:hover .access-play{transform:scale(1.1)}
+.access-body{padding:22px}
 .dir-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:24px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:12px}
 .dir-card:hover{border-color:var(--borderhi);transform:translateY(-2px)}
-
-/* HAPPENINGS */
-.hap-item{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px 24px;display:flex;align-items:center;gap:20px;cursor:pointer;transition:all 0.2s;margin-bottom:12px}
+.hap-item{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px 26px;display:flex;align-items:center;gap:22px;cursor:pointer;transition:all 0.2s;margin-bottom:12px}
 .hap-item:hover{border-color:var(--borderhi)}
 .hi-date{text-align:center;flex-shrink:0;width:52px}
 .hi-month{font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)}
-.hi-day{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:var(--text)}
-.hi-bar{width:1px;height:40px;background:var(--border);flex-shrink:0}
-
-/* CONTACT DETAIL */
+.hi-day{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;color:var(--text)}
+.hi-bar{width:1px;height:44px;background:var(--border);flex-shrink:0}
 .cr{display:flex;align-items:center;gap:14px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:3px;margin-bottom:10px}
-.cr-ic{width:38px;height:38px;border-radius:3px;background:var(--s1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.cr-ic{width:38px;height:38px;border-radius:3px;background:var(--s1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
 .svc-row{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--border)}
 .svc-row:last-child{border-bottom:none;padding-bottom:0}
-
-/* ABOUT */
-.val-row{display:flex;gap:20px;padding:24px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.val-row{display:flex;gap:20px;padding:26px 0;border-bottom:1px solid var(--border);align-items:flex-start}
 .val-row:last-child{border-bottom:none;padding-bottom:0}
-.v-num{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--gold);opacity:0.3;width:60px;flex-shrink:0;line-height:1}
-
-/* SUBMIT SUCCESS */
+.v-num{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--gold);opacity:0.25;width:64px;flex-shrink:0;line-height:1}
 .s-circle{width:72px;height:72px;border-radius:50%;background:rgba(61,190,138,0.1);border:1px solid rgba(61,190,138,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
-
-/* ===== ADMIN PANEL ===== */
 #admin-login{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9000;display:none;align-items:center;justify-content:center}
 #admin-login.show{display:flex}
-.al-box{background:#0f0f0f;border:1px solid var(--gold);border-radius:6px;padding:48px;width:100%;max-width:400px;text-align:center}
+.al-box{background:#0f0f0f;border:1px solid var(--gold);border-radius:6px;padding:52px;width:100%;max-width:420px;text-align:center}
 #admin-panel{position:fixed;inset:0;background:var(--bg);z-index:8000;display:none;overflow-y:auto}
 #admin-panel.show{display:block}
 .admin-nav{background:#0a0a0a;border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
 .admin-tabs{display:flex;gap:4px;overflow-x:auto}
-.at{background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;cursor:pointer;border-radius:3px;white-space:nowrap}
+.at{background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 14px;cursor:pointer;border-radius:3px;white-space:nowrap}
 .at.on{background:var(--gdim);color:var(--gold)}
 .admin-body{padding:32px}
 .admin-section{display:none}.admin-section.on{display:block}
-.a-card{background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.a-card{background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
 .a-card-info h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
 .a-card-info p{font-size:12px;color:var(--muted)}
 .a-card-actions{display:flex;gap:8px;flex-shrink:0}
@@ -151,54 +153,34 @@ section{padding:80px 0}
 .slider::before{content:'';position:absolute;width:18px;height:18px;left:4px;top:4px;background:#555;border-radius:50%;transition:0.3s}
 .toggle input:checked+.slider{background:var(--gold)}
 .toggle input:checked+.slider::before{transform:translateX(22px);background:#080808}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9500;display:none;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.show{display:flex}
-.modal{background:#0f0f0f;border:1px solid var(--border);border-radius:6px;padding:32px;width:100%;max-width:640px;max-height:90vh;overflow-y:auto}
-.modal h3{font-size:18px;font-weight:800;color:var(--text);margin-bottom:24px}
-
-/* BG ADMIN */
 .bg-page-card{background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:12px}
 .bg-page-card h4{font-size:13px;font-weight:800;color:var(--text);margin-bottom:4px;letter-spacing:0.05em;text-transform:uppercase}
 .bg-page-card p{font-size:12px;color:var(--muted);margin-bottom:14px}
-.bg-preview{width:100%;height:80px;border-radius:3px;border:1px solid var(--border);background-size:cover;background-position:center;margin-bottom:10px;position:relative;overflow:hidden}
-.bg-preview-none{display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:var(--s1)}
-
+.bg-preview{width:100%;height:80px;border-radius:3px;border:1px solid var(--border);background-size:cover;background-position:center;margin-bottom:10px;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background-color:var(--s1)}
 @media(max-width:900px){
 .nav-links{display:none}
 .w{padding:0 20px}
-section{padding:60px 0}
-.grid2,.grid3,.a-grid{grid-template-columns:1fr}
-.hero-hl{font-size:clamp(48px,12vw,80px)}
-.admin-body{padding:20px}
+section{padding:64px 0}
+.grid2,.grid3,.grid4,.a-grid{grid-template-columns:1fr}
+.hero-hl{font-size:clamp(44px,13vw,72px)}
+.admin-body{padding:16px}
+.stat-item{border-right:none;border-bottom:1px solid var(--border);padding:20px 0}
+.stat-item:last-child{border-bottom:none}
 }
 </style>
 </head>
 <body>
-
-<!-- PAGE BACKGROUND LAYER -->
 <div class="pg-bg" id="global-bg"></div>
 <div class="pg-bg-overlay" id="global-bg-overlay"></div>
 
-<!-- ADMIN LOGIN OVERLAY -->
+<!-- ADMIN LOGIN -->
 <div id="admin-login">
   <div class="al-box">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);letter-spacing:0.1em;margin-bottom:8px">ADMIN ACCESS</div>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:28px">The Community Collective</p>
-    <div class="a-field"><input class="fi" type="password" id="admin-pw" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkPw()"></div>
-    <button class="btn btn-gold" style="width:100%;margin-bottom:12px" onclick="checkPw()">Enter Admin Panel</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);letter-spacing:0.1em;margin-bottom:8px">ADMIN ACCESS</div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:32px">The Community Collective</p>
+    <div class="a-field"><input class="fi" type="password" id="admin-pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPw()"></div>
+    <button class="btn btn-gold" style="width:100%;margin-bottom:12px;padding:14px" onclick="checkPw()">Enter</button>
     <button class="btn btn-ghost btn-sm" style="width:100%" onclick="document.getElementById('admin-login').classList.remove('show')">Cancel</button>
-  </div>
-</div>
-
-<!-- EDIT MODAL -->
-<div class="modal-overlay" id="edit-modal">
-  <div class="modal">
-    <h3 id="modal-title">Edit</h3>
-    <div id="modal-body"></div>
-    <div style="display:flex;gap:12px;margin-top:24px">
-      <button class="btn btn-gold" style="flex:1" onclick="saveModal()">Save Changes</button>
-      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
-    </div>
   </div>
 </div>
 
@@ -208,9 +190,13 @@ section{padding:60px 0}
     <div style="display:flex;align-items:center;gap:16px">
       <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);letter-spacing:0.1em">TCC Admin</div>
       <div class="admin-tabs">
-        <button class="at on" onclick="aTab('directory',this)">Directory</button>
+        <button class="at on" onclick="aTab('voices',this)">Voices</button>
+        <button class="at" onclick="aTab('realgame',this)">Real Game</button>
+        <button class="at" onclick="aTab('opportunities',this)">Opportunities</button>
+        <button class="at" onclick="aTab('access',this)">Inside Access</button>
+        <button class="at" onclick="aTab('directory',this)">Directory</button>
         <button class="at" onclick="aTab('spotlights',this)">Spotlights</button>
-        <button class="at" onclick="aTab('happenings',this)">What's Happening</button>
+        <button class="at" onclick="aTab('happenings',this)">Happenings</button>
         <button class="at" onclick="aTab('pathways',this)">Pathways</button>
         <button class="at" onclick="aTab('sections',this)">Sections</button>
         <button class="at" onclick="aTab('backgrounds',this)">Backgrounds</button>
@@ -219,174 +205,202 @@ section{padding:60px 0}
     </div>
     <button class="btn btn-ghost btn-sm" onclick="closeAdmin()">← Back to Site</button>
   </div>
-
   <div class="admin-body">
 
-    <!-- DIRECTORY TAB -->
-    <div class="admin-section on" id="atab-directory">
+    <div class="admin-section on" id="atab-voices">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Featured Voices</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-voice-form')">+ Add Voice</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:24px">Selected and verified professionals who share real knowledge with the community.</p>
+      <div class="a-form" id="add-voice-form" style="display:none">
+        <h3>Add Featured Voice</h3>
+        <div class="a-grid">
+          <div class="a-field"><label class="fl">Name / Organization</label><input class="fi" id="nv-name" placeholder="Dr. Jane Smith"></div>
+          <div class="a-field"><label class="fl">Profession / Title</label><input class="fi" id="nv-prof" placeholder="Criminal Defense Attorney"></div>
+        </div>
+        <div class="a-field"><label class="fl">Emoji Avatar</label><input class="fi" id="nv-emoji" placeholder="⚖️" style="max-width:80px;font-size:20px"></div>
+        <div class="a-field"><label class="fl">What they do for the community</label><textarea class="fi" id="nv-desc" rows="3" style="resize:none"></textarea></div>
+        <div class="a-field"><label class="fl">Daily Knowledge / Quote</label><textarea class="fi" id="nv-quote" rows="2" style="resize:none" placeholder="Real game they share with the community..."></textarea></div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addVoice()">Add Voice</button><button class="btn btn-ghost" onclick="toggleForm('add-voice-form')">Cancel</button></div>
+      </div>
+      <div id="voices-admin-list"></div>
+    </div>
+
+    <div class="admin-section" id="atab-realgame">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Real Game Posts</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-game-form')">+ Add Post</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:24px">Daily knowledge drops — real advice from real people. Updated regularly.</p>
+      <div class="a-form" id="add-game-form" style="display:none">
+        <h3>Add Real Game Post</h3>
+        <div class="a-grid">
+          <div class="a-field"><label class="fl">Author</label><input class="fi" id="ng-author" placeholder="Name or title"></div>
+          <div class="a-field"><label class="fl">Industry / Field</label><input class="fi" id="ng-industry" placeholder="Legal, Finance, Trades..."></div>
+        </div>
+        <div class="a-field"><label class="fl">The Knowledge Drop</label><textarea class="fi" id="ng-quote" rows="5" style="resize:none" placeholder="Real game people need to know..."></textarea></div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addGame()">Post It</button><button class="btn btn-ghost" onclick="toggleForm('add-game-form')">Cancel</button></div>
+      </div>
+      <div id="game-admin-list"></div>
+    </div>
+
+    <div class="admin-section" id="atab-opportunities">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Opportunities</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-opp-form')">+ Add</button>
+      </div>
+      <div class="a-form" id="add-opp-form" style="display:none">
+        <h3>Add Opportunity</h3>
+        <div class="a-grid">
+          <div class="a-field"><label class="fl">Title</label><input class="fi" id="no-title"></div>
+          <div class="a-field"><label class="fl">Type</label><select class="fi" id="no-type"><option>Casting Call</option><option>Audition</option><option>Modeling Call</option><option>Internship</option><option>Job</option><option>Collaboration</option><option>Grant</option><option>Music Submission</option><option>Apprenticeship</option><option>Volunteer</option><option>Brand Partnership</option><option>Event Staff</option><option>Business Opportunity</option></select></div>
+        </div>
+        <div class="a-grid">
+          <div class="a-field"><label class="fl">Posted By</label><input class="fi" id="no-by"></div>
+          <div class="a-field"><label class="fl">Deadline</label><input class="fi" id="no-deadline" placeholder="Jun 30 or Rolling"></div>
+        </div>
+        <div class="a-field"><label class="fl">Description</label><textarea class="fi" id="no-desc" rows="3" style="resize:none"></textarea></div>
+        <div class="a-field"><label class="fl">Accent Color</label><select class="fi" id="no-color"><option value="gold">Gold</option><option value="blue">Blue</option><option value="green">Green</option><option value="red">Red</option></select></div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addOpp()">Post It</button><button class="btn btn-ghost" onclick="toggleForm('add-opp-form')">Cancel</button></div>
+      </div>
+      <div id="opps-admin-list"></div>
+    </div>
+
+    <div class="admin-section" id="atab-access">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Inside Access</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-access-form')">+ Add Content</button>
+      </div>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:24px">Backstage, interviews, real conversations — exclusive content the community doesn't usually see.</p>
+      <div class="a-form" id="add-access-form" style="display:none">
+        <h3>Add Inside Access Content</h3>
+        <div class="a-grid">
+          <div class="a-field"><label class="fl">Title</label><input class="fi" id="na-title"></div>
+          <div class="a-field"><label class="fl">Type</label><select class="fi" id="na-type"><option>Backstage</option><option>Interview</option><option>Real Conversation</option><option>Behind the Scenes</option><option>Exclusive Event</option><option>Community Moment</option><option>Documentation</option></select></div>
+        </div>
+        <div class="a-field"><label class="fl">Emoji</label><input class="fi" id="na-emoji" placeholder="🎬" style="max-width:80px;font-size:20px"></div>
+        <div class="a-field"><label class="fl">Description</label><textarea class="fi" id="na-desc" rows="2" style="resize:none"></textarea></div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addAccess()">Add</button><button class="btn btn-ghost" onclick="toggleForm('add-access-form')">Cancel</button></div>
+      </div>
+      <div id="access-admin-list"></div>
+    </div>
+
+    <div class="admin-section" id="atab-directory">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
         <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Directory Members</h2>
-        <button class="btn btn-gold btn-sm" onclick="openAddMember()">+ Add Member</button>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-member-form')">+ Add Member</button>
       </div>
       <div class="a-form" id="add-member-form" style="display:none">
         <h3>Add New Member</h3>
         <div class="a-grid">
-          <div class="a-field"><label class="fl">Business Name</label><input class="fi" id="nm-name" placeholder="Business name"></div>
-          <div class="a-field"><label class="fl">Contact Person</label><input class="fi" id="nm-person" placeholder="Owner or contact name"></div>
+          <div class="a-field"><label class="fl">Business Name</label><input class="fi" id="nm-name"></div>
+          <div class="a-field"><label class="fl">Contact Person</label><input class="fi" id="nm-person"></div>
         </div>
         <div class="a-grid">
-          <div class="a-field"><label class="fl">Industry / Type</label>
-            <select class="fi" id="nm-type">
-              <option>Legal</option><option>Film & Media</option><option>Food & Catering</option>
-              <option>Finance</option><option>Retail</option><option>Health & Wellness</option>
-              <option>Tech</option><option>Corporate</option><option>Music & Entertainment</option>
-            </select>
-          </div>
-          <div class="a-field"><label class="fl">City</label><input class="fi" id="nm-city" placeholder="City"></div>
+          <div class="a-field"><label class="fl">Industry</label><select class="fi" id="nm-type"><option>Legal</option><option>Film & Media</option><option>Food & Catering</option><option>Finance</option><option>Retail</option><option>Health & Wellness</option><option>Tech</option><option>Corporate</option><option>Music & Entertainment</option><option>Trades</option><option>Education</option></select></div>
+          <div class="a-field"><label class="fl">City</label><input class="fi" id="nm-city"></div>
         </div>
-        <div class="a-field"><label class="fl">Tagline / Short Description</label><input class="fi" id="nm-tagline" placeholder="One-line description"></div>
-        <div class="a-field"><label class="fl">Services (one per line)</label><textarea class="fi" id="nm-services" rows="4" placeholder="Service 1&#10;Service 2&#10;Service 3" style="resize:none"></textarea></div>
+        <div class="a-field"><label class="fl">Tagline</label><input class="fi" id="nm-tagline"></div>
+        <div class="a-field"><label class="fl">Services (one per line)</label><textarea class="fi" id="nm-services" rows="4" style="resize:none"></textarea></div>
         <div class="a-grid">
-          <div class="a-field"><label class="fl">Phone</label><input class="fi" id="nm-phone" placeholder="(000) 000-0000"></div>
-          <div class="a-field"><label class="fl">Email</label><input class="fi" id="nm-email" placeholder="email@business.com"></div>
+          <div class="a-field"><label class="fl">Phone</label><input class="fi" id="nm-phone"></div>
+          <div class="a-field"><label class="fl">Email</label><input class="fi" id="nm-email"></div>
         </div>
-        <div class="a-field"><label class="fl">Free Consultation / Offer</label><input class="fi" id="nm-consult" placeholder="e.g. Free 30-min consultation"></div>
-        <div class="a-field"><label class="fl">Tags (comma separated)</label><input class="fi" id="nm-tags" placeholder="Tag1, Tag2, Tag3"></div>
-        <div class="a-field"><label class="fl">Emoji Icon</label><input class="fi" id="nm-emoji" placeholder="🏢" style="font-size:20px;max-width:80px"></div>
-        <div style="display:flex;gap:12px;margin-top:8px">
-          <button class="btn btn-gold" onclick="addMember()">Add to Directory</button>
-          <button class="btn btn-ghost" onclick="document.getElementById('add-member-form').style.display='none'">Cancel</button>
-        </div>
+        <div class="a-field"><label class="fl">Free Offer / Consult</label><input class="fi" id="nm-consult"></div>
+        <div class="a-field"><label class="fl">Tags (comma separated)</label><input class="fi" id="nm-tags"></div>
+        <div class="a-field"><label class="fl">Emoji</label><input class="fi" id="nm-emoji" placeholder="🏢" style="max-width:80px;font-size:20px"></div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addMember()">Add Member</button><button class="btn btn-ghost" onclick="toggleForm('add-member-form')">Cancel</button></div>
       </div>
       <div id="member-list"></div>
     </div>
 
-    <!-- SPOTLIGHTS TAB -->
     <div class="admin-section" id="atab-spotlights">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Business Spotlights</h2>
-        <button class="btn btn-gold btn-sm" onclick="openAddSpotlight()">+ Add Spotlight</button>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Spotlights</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-spotlight-form')">+ Add</button>
       </div>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:24px">Spotlights appear on the homepage. Feature up to 3 at a time for maximum impact.</p>
       <div class="a-form" id="add-spotlight-form" style="display:none">
         <h3>Add Spotlight</h3>
-        <div class="a-grid">
-          <div class="a-field"><label class="fl">Business Name</label><input class="fi" id="ns-name" placeholder="Business name"></div>
-          <div class="a-field"><label class="fl">Owner / Person</label><input class="fi" id="ns-person" placeholder="Name · City"></div>
-        </div>
-        <div class="a-field"><label class="fl">Category</label><input class="fi" id="ns-cat" placeholder="e.g. Legal, Food & Catering, Tech"></div>
-        <div class="a-field"><label class="fl">Spotlight Description (2-3 sentences)</label><textarea class="fi" id="ns-desc" rows="4" style="resize:none" placeholder="Tell their story..."></textarea></div>
-        <div style="display:flex;gap:12px;margin-top:8px">
-          <button class="btn btn-gold" onclick="addSpotlight()">Add Spotlight</button>
-          <button class="btn btn-ghost" onclick="document.getElementById('add-spotlight-form').style.display='none'">Cancel</button>
-        </div>
+        <div class="a-grid"><div class="a-field"><label class="fl">Name</label><input class="fi" id="ns-name"></div><div class="a-field"><label class="fl">Person · City</label><input class="fi" id="ns-person"></div></div>
+        <div class="a-field"><label class="fl">Category</label><input class="fi" id="ns-cat"></div>
+        <div class="a-field"><label class="fl">Description</label><textarea class="fi" id="ns-desc" rows="3" style="resize:none"></textarea></div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addSpotlight()">Add</button><button class="btn btn-ghost" onclick="toggleForm('add-spotlight-form')">Cancel</button></div>
       </div>
       <div id="spotlight-admin-list"></div>
     </div>
 
-    <!-- HAPPENINGS TAB -->
     <div class="admin-section" id="atab-happenings">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
         <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">What's Happening</h2>
-        <button class="btn btn-gold btn-sm" onclick="openAddEvent()">+ Add Event / Post</button>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-event-form')">+ Add Event</button>
       </div>
       <div class="a-form" id="add-event-form" style="display:none">
-        <h3>Add Event or Announcement</h3>
+        <h3>Add Event</h3>
+        <div class="a-grid"><div class="a-field"><label class="fl">Month</label><input class="fi" id="ne-month" placeholder="Jun"></div><div class="a-field"><label class="fl">Day</label><input class="fi" id="ne-day" placeholder="15"></div></div>
         <div class="a-grid">
-          <div class="a-field"><label class="fl">Month</label><input class="fi" id="ne-month" placeholder="e.g. Jun"></div>
-          <div class="a-field"><label class="fl">Day</label><input class="fi" id="ne-day" placeholder="e.g. 15"></div>
+          <div class="a-field"><label class="fl">Type</label><select class="fi" id="ne-type"><option>Event</option><option>Workshop</option><option>Launch</option><option>Networking</option><option>Announcement</option><option>Screening</option><option>Concert</option><option>Festival</option><option>Opening</option></select></div>
+          <div class="a-field"><label class="fl">Badge</label><select class="fi" id="ne-badge"><option>Free</option><option>Members</option><option>Ticketed</option><option>Online</option></select></div>
         </div>
-        <div class="a-grid">
-          <div class="a-field"><label class="fl">Type</label>
-            <select class="fi" id="ne-type">
-              <option>Event</option><option>Workshop</option><option>Launch</option>
-              <option>Networking</option><option>Announcement</option><option>Screening</option><option>Opening</option>
-            </select>
-          </div>
-          <div class="a-field"><label class="fl">Badge</label>
-            <select class="fi" id="ne-badge"><option>Free</option><option>Members</option><option>Ticketed</option><option>Online</option></select>
-          </div>
-        </div>
-        <div class="a-field"><label class="fl">Title</label><input class="fi" id="ne-title" placeholder="Event or announcement title"></div>
-        <div class="a-field"><label class="fl">Details (time, location, etc.)</label><input class="fi" id="ne-meta" placeholder="e.g. 6:00 PM · South Shore Cultural Center"></div>
-        <div style="display:flex;gap:12px;margin-top:8px">
-          <button class="btn btn-gold" onclick="addEvent()">Post It</button>
-          <button class="btn btn-ghost" onclick="document.getElementById('add-event-form').style.display='none'">Cancel</button>
-        </div>
+        <div class="a-field"><label class="fl">Title</label><input class="fi" id="ne-title"></div>
+        <div class="a-field"><label class="fl">Details (time · location)</label><input class="fi" id="ne-meta"></div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addEvent()">Post It</button><button class="btn btn-ghost" onclick="toggleForm('add-event-form')">Cancel</button></div>
       </div>
       <div id="events-admin-list"></div>
     </div>
 
-    <!-- PATHWAYS TAB -->
     <div class="admin-section" id="atab-pathways">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
         <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Pathways & Resources</h2>
-        <button class="btn btn-gold btn-sm" onclick="openAddPath()">+ Add Resource</button>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-path-form')">+ Add Resource</button>
       </div>
       <div class="a-form" id="add-path-form" style="display:none">
-        <h3>Add Resource or Pathway</h3>
-        <div class="a-grid">
-          <div class="a-field"><label class="fl">Title</label><input class="fi" id="np-title" placeholder="Program or resource name"></div>
-          <div class="a-field"><label class="fl">Type</label>
-            <select class="fi" id="np-type"><option>Legal</option><option>Funding</option><option>Housing</option><option>Business</option><option>Music</option><option>Education</option><option>Health</option></select>
-          </div>
-        </div>
-        <div class="a-grid">
-          <div class="a-field"><label class="fl">City / Scope</label><input class="fi" id="np-city" placeholder="e.g. National, Chicago"></div>
-          <div class="a-field"><label class="fl">Status</label>
-            <select class="fi" id="np-status"><option>Open</option><option>Active</option><option>Seasonal</option><option>Closed</option></select>
-          </div>
-        </div>
-        <div class="a-field"><label class="fl">Description</label><textarea class="fi" id="np-desc" rows="3" style="resize:none" placeholder="Brief description..."></textarea></div>
+        <h3>Add Resource</h3>
+        <div class="a-grid"><div class="a-field"><label class="fl">Title</label><input class="fi" id="np-title"></div><div class="a-field"><label class="fl">Type</label><select class="fi" id="np-type"><option>Legal</option><option>Funding</option><option>Housing</option><option>Business</option><option>Music</option><option>Education</option><option>Health</option><option>Trades</option></select></div></div>
+        <div class="a-grid"><div class="a-field"><label class="fl">Scope</label><input class="fi" id="np-city" placeholder="National, Chicago..."></div><div class="a-field"><label class="fl">Status</label><select class="fi" id="np-status"><option>Open</option><option>Active</option><option>Seasonal</option><option>Closed</option></select></div></div>
+        <div class="a-field"><label class="fl">Description</label><textarea class="fi" id="np-desc" rows="3" style="resize:none"></textarea></div>
         <div class="a-field"><label class="fl">Emoji</label><input class="fi" id="np-emoji" placeholder="💰" style="max-width:80px;font-size:20px"></div>
-        <div style="display:flex;gap:12px;margin-top:8px">
-          <button class="btn btn-gold" onclick="addPath()">Add Resource</button>
-          <button class="btn btn-ghost" onclick="document.getElementById('add-path-form').style.display='none'">Cancel</button>
-        </div>
+        <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addPath()">Add</button><button class="btn btn-ghost" onclick="toggleForm('add-path-form')">Cancel</button></div>
       </div>
       <div id="paths-admin-list"></div>
     </div>
 
-    <!-- SECTIONS TAB -->
     <div class="admin-section" id="atab-sections">
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em;margin-bottom:8px">Manage Sections</h2>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:28px">Toggle sections on or off. Changes show immediately on the site.</p>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:28px">Toggle any homepage section on or off instantly.</p>
       <div id="sections-list"></div>
     </div>
 
-    <!-- BACKGROUNDS TAB -->
     <div class="admin-section" id="atab-backgrounds">
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em;margin-bottom:8px">Page Backgrounds</h2>
-      <p style="color:var(--muted);font-size:13px;margin-bottom:8px">Paste an image URL for each page. Use Unsplash, your own hosted images, or any direct image link (.jpg, .png, .webp).</p>
-      <p style="color:var(--dim);font-size:11px;margin-bottom:28px">Tip: On Vercel, upload images to a <code style="color:var(--gold)">/public</code> folder and reference them as <code style="color:var(--gold)">/your-image.jpg</code></p>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:6px">Paste any image URL per page. Works with Unsplash links or /filename.jpg from your Vercel public folder.</p>
+      <p style="color:var(--dim);font-size:11px;margin-bottom:28px">Tip: unsplash.com → find photo → right click → Copy Image Address</p>
       <div id="bg-page-list"></div>
       <button class="btn btn-gold btn-sm" onclick="saveBGs()" style="margin-top:8px">Save All Backgrounds</button>
       <p id="bg-msg" style="font-size:12px;margin-top:10px;color:var(--green)"></p>
     </div>
 
-    <!-- SETTINGS TAB -->
     <div class="admin-section" id="atab-settings">
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em;margin-bottom:24px">Settings</h2>
       <div class="card" style="max-width:500px;margin-bottom:20px">
         <h3 style="font-size:15px;font-weight:800;margin-bottom:16px">Change Admin Password</h3>
-        <div class="a-field"><label class="fl">Current Password</label><input class="fi" type="password" id="pw-current" placeholder="Current password"></div>
-        <div class="a-field"><label class="fl">New Password</label><input class="fi" type="password" id="pw-new" placeholder="New password"></div>
-        <div class="a-field"><label class="fl">Confirm New Password</label><input class="fi" type="password" id="pw-confirm" placeholder="Confirm new password"></div>
+        <div class="a-field"><label class="fl">Current Password</label><input class="fi" type="password" id="pw-current"></div>
+        <div class="a-field"><label class="fl">New Password</label><input class="fi" type="password" id="pw-new"></div>
+        <div class="a-field"><label class="fl">Confirm New Password</label><input class="fi" type="password" id="pw-confirm"></div>
         <button class="btn btn-gold btn-sm" onclick="changePw()">Update Password</button>
         <p id="pw-msg" style="font-size:12px;margin-top:10px;color:var(--green)"></p>
       </div>
       <div class="card" style="max-width:500px;margin-bottom:20px">
-        <h3 style="font-size:15px;font-weight:800;margin-bottom:8px">Site Contact Info</h3>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Update contact details shown across the site.</p>
-        <div class="a-field"><label class="fl">Email</label><input class="fi" id="cfg-email" placeholder="hello@yoursite.com"></div>
-        <div class="a-field"><label class="fl">Instagram Handle</label><input class="fi" id="cfg-ig" placeholder="@handle"></div>
-        <div class="a-field"><label class="fl">Twitter / X Handle</label><input class="fi" id="cfg-tw" placeholder="@handle"></div>
-        <button class="btn btn-gold btn-sm" onclick="saveConfig()">Save Contact Info</button>
+        <h3 style="font-size:15px;font-weight:800;margin-bottom:16px">Site Contact Info</h3>
+        <div class="a-field"><label class="fl">Email</label><input class="fi" id="cfg-email"></div>
+        <div class="a-field"><label class="fl">Instagram</label><input class="fi" id="cfg-ig"></div>
+        <div class="a-field"><label class="fl">Twitter / X</label><input class="fi" id="cfg-tw"></div>
+        <button class="btn btn-gold btn-sm" onclick="saveConfig()">Save</button>
         <p id="cfg-msg" style="font-size:12px;margin-top:10px;color:var(--green)"></p>
       </div>
       <div class="card" style="max-width:500px">
         <h3 style="font-size:15px;font-weight:800;margin-bottom:8px;color:var(--red)">Reset All Data</h3>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Resets all members, events, and spotlights to defaults. Cannot be undone.</p>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Resets everything to sample defaults. Cannot be undone.</p>
         <button class="btn btn-red btn-sm" onclick="if(confirm('Reset everything to defaults?'))resetAll()">Reset to Defaults</button>
       </div>
     </div>
@@ -394,148 +408,330 @@ section{padding:60px 0}
   </div>
 </div>
 
-<!-- MAIN SITE NAV -->
+<!-- MAIN NAV -->
 <nav id="sitenav">
   <div class="nav-w">
     <div class="logo" onclick="go('home')">
       <div class="logo-mark">TC</div>
-      <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Directory · Network · Knowledge</div></div>
+      <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Real People · Real Game · Real Access</div></div>
     </div>
     <div class="nav-links">
       <button class="nl on" id="nl-home" onclick="go('home')">Home</button>
+      <button class="nl" id="nl-voices" onclick="go('voices')">Voices</button>
+      <button class="nl" id="nl-opportunities" onclick="go('opportunities')">Opportunities</button>
       <button class="nl" id="nl-directory" onclick="go('directory')">Directory</button>
-      <button class="nl" id="nl-happenings" onclick="go('happenings')">What's Happening</button>
       <button class="nl" id="nl-pathways" onclick="go('pathways')">Pathways</button>
-      <button class="nl" id="nl-about" onclick="go('about')">About</button>
-      <button class="nav-cta" onclick="go('submit')">Join / Submit</button>
+      <button class="nav-cta" onclick="go('submit')">Get Access</button>
     </div>
   </div>
 </nav>
 
-<!-- ===== HOME ===== -->
+<!-- HOME PAGE -->
 <div id="pg-home" class="pg on">
   <div class="hero">
-    <div class="hero-bg"></div><div class="hero-lines"></div><div class="hero-glow"></div>
+    <div class="hero-bg"></div><div class="hero-grid"></div><div class="hero-glow"></div><div class="hero-glow2"></div>
     <div class="w" style="position:relative;z-index:2">
-      <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,0.25);padding:6px 14px;margin-bottom:24px;border-radius:2px">
+      <div style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(201,168,76,0.3);padding:7px 16px;margin-bottom:28px;border-radius:2px">
         <div class="pulse"></div>
-        <span style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold)">Now Accepting Founding Members</span>
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold)">Now Accepting Founding Members — National</span>
       </div>
-      <h1 class="hero-hl">THE<br><span>COMMUNITY</span><br>COLLECTIVE</h1>
-      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
+      <h1 class="hero-hl">REAL <span class="g">PEOPLE.</span><br>REAL <span class="gr">GAME.</span><br>REAL <span class="g">ACCESS.</span></h1>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:48px;flex-wrap:wrap">
         <div>
-          <p class="sub" style="margin-bottom:28px">The directory, network, and knowledge hub for Black, Brown, and middle-class communities. From home-based businesses to Fortune 500 — find it, connect with it, build with it.</p>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <button class="btn btn-gold" onclick="go('directory')">Browse the Directory</button>
-            <button class="btn btn-ghost" onclick="go('submit')">List Your Business</button>
+          <p class="sub" style="margin-bottom:32px;font-size:16px">A trusted ecosystem where top lawyers post free legal game, professionals from every walk of life share real knowledge, and communities finally get access to the rooms, people, and opportunities that were always there — just never for them.</p>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <button class="btn btn-gold" style="padding:14px 32px;font-size:12px" onclick="go('voices')">Meet the Voices</button>
+            <button class="btn btn-ghost" style="padding:14px 32px;font-size:12px" onclick="go('submit')">Get Access</button>
           </div>
         </div>
-        <div style="display:flex;gap:40px;flex-wrap:wrap">
-          <div class="hs"><div class="hs-n" id="stat-members">75+</div><div class="hs-l">Members</div></div>
-          <div class="hs"><div class="hs-n">8</div><div class="hs-l">Industries</div></div>
-          <div class="hs"><div class="hs-n">6</div><div class="hs-l">Cities</div></div>
+        <div style="display:flex;gap:44px;flex-wrap:wrap;flex-shrink:0">
+          <div class="hs"><div class="hs-n">300+</div><div class="hs-l">Records Cleared</div></div>
+          <div class="hs"><div class="hs-n">40+</div><div class="hs-l">Brands Served</div></div>
+          <div class="hs"><div class="hs-n">Free</div><div class="hs-l">To Join</div></div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- TICKER -->
   <div class="ticker-wrap">
     <div class="ticker-track">
-      <span class="ticker-item">Law Firms</span><span class="tdot">◆</span><span class="ticker-item">Film & Production</span><span class="tdot">◆</span><span class="ticker-item">Home-Based Businesses</span><span class="tdot">◆</span><span class="ticker-item">Financial Services</span><span class="tdot">◆</span><span class="ticker-item">Food & Catering</span><span class="tdot">◆</span><span class="ticker-item">Retail & Fashion</span><span class="tdot">◆</span><span class="ticker-item">Health & Wellness</span><span class="tdot">◆</span><span class="ticker-item">Tech & Media</span><span class="tdot">◆</span><span class="ticker-item">Corporate Partners</span><span class="tdot">◆</span><span class="ticker-item">Law Firms</span><span class="tdot">◆</span><span class="ticker-item">Film & Production</span><span class="tdot">◆</span><span class="ticker-item">Home-Based Businesses</span><span class="tdot">◆</span><span class="ticker-item">Financial Services</span><span class="tdot">◆</span><span class="ticker-item">Food & Catering</span><span class="tdot">◆</span><span class="ticker-item">Retail & Fashion</span><span class="tdot">◆</span><span class="ticker-item">Health & Wellness</span><span class="tdot">◆</span><span class="ticker-item">Tech & Media</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real People</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real Game</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real Access</span><span class="tdot">◆</span>
+      <span class="ticker-item">Know Your Rights</span><span class="tdot">◆</span>
+      <span class="ticker-item">Free Legal Game Daily</span><span class="tdot">◆</span>
+      <span class="ticker-item">HUD Programs</span><span class="tdot">◆</span>
+      <span class="ticker-item">Casting Calls</span><span class="tdot">◆</span>
+      <span class="ticker-item">Verified Professionals</span><span class="tdot">◆</span>
+      <span class="ticker-item">Inside Access</span><span class="tdot">◆</span>
+      <span class="ticker-item">Community First</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real People</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real Game</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real Access</span><span class="tdot">◆</span>
+      <span class="ticker-item">Know Your Rights</span><span class="tdot">◆</span>
+      <span class="ticker-item">Free Legal Game Daily</span><span class="tdot">◆</span>
+      <span class="ticker-item">HUD Programs</span><span class="tdot">◆</span>
+      <span class="ticker-item">Casting Calls</span><span class="tdot">◆</span>
+      <span class="ticker-item">Verified Professionals</span><span class="tdot">◆</span>
+      <span class="ticker-item">Inside Access</span><span class="tdot">◆</span>
+      <span class="ticker-item">Community First</span><span class="tdot">◆</span>
     </div>
   </div>
 
-  <section id="sec-spotlights" style="background:var(--s1);border-bottom:1px solid var(--border)">
+  <!-- STAT STRIP -->
+  <div class="stat-strip" id="sec-stats">
+    <div class="w"><div class="grid4">
+      <div class="stat-item"><div class="stat-num">300+</div><div class="stat-label">Records Cleared</div></div>
+      <div class="stat-item"><div class="stat-num">40+</div><div class="stat-label">Community Brands</div></div>
+      <div class="stat-item"><div class="stat-num">National</div><div class="stat-label">Reach From Day One</div></div>
+      <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Knowledge. Always.</div></div>
+    </div></div>
+  </div>
+
+  <!-- NOT JUST A PLATFORM -->
+  <section id="sec-vision" style="background:var(--s1);border-bottom:1px solid var(--border)">
     <div class="w">
-      <div class="sec-hd"><div><div class="kicker">Member Spotlights</div><h2 class="h2">Featured This Week</h2></div><button class="btn btn-ghost btn-sm" onclick="go('directory')">View Full Directory</button></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center">
+        <div>
+          <div class="kicker">What This Is</div>
+          <h2 class="h2" style="margin-bottom:24px">Not just a platform.<br>An ecosystem.</h2>
+          <p style="color:var(--muted);font-size:15px;line-height:1.85;margin-bottom:32px">This is a trust-based access network powered by real people and real media. Not content-first. Not social-first. <strong style="color:var(--text)">Access-first.</strong> Everything else — media, opportunities, profiles — is evidence of that access.</p>
+          <div style="display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;gap:16px;align-items:flex-start">
+              <span style="color:var(--gold);font-size:20px;flex-shrink:0;margin-top:2px">◆</span>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px">Professionals Teach</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Selected, verified professionals post real knowledge daily. Legal rights, financial game, health, trades — the stuff people need before it's too late.</p></div>
+            </div>
+            <div style="display:flex;gap:16px;align-items:flex-start">
+              <span style="color:var(--gold);font-size:20px;flex-shrink:0;margin-top:2px">◆</span>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px">Culture Gets Documented</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Backstage moments, raw conversations, overlooked voices — documented with intention. A long-term media archive with real cultural value.</p></div>
+            </div>
+            <div style="display:flex;gap:16px;align-items:flex-start">
+              <span style="color:var(--gold);font-size:20px;flex-shrink:0;margin-top:2px">◆</span>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:4px">Communities Get Access</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Real resources. Real opportunities. Real connections. The rooms they were never invited into — now open.</p></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px;display:flex;gap:16px;align-items:flex-start">
+            <span style="font-size:32px;flex-shrink:0">⚖️</span>
+            <div><p style="font-weight:800;font-size:14px;color:var(--text);margin-bottom:4px">Legal</p><p style="color:var(--muted);font-size:13px">Criminal defense, expungement, civil rights, business law</p></div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px;display:flex;gap:16px;align-items:flex-start">
+            <span style="font-size:32px;flex-shrink:0">🎬</span>
+            <div><p style="font-weight:800;font-size:14px;color:var(--text);margin-bottom:4px">Media & Film</p><p style="color:var(--muted);font-size:13px">Production, content creation, storytelling, documentation</p></div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px;display:flex;gap:16px;align-items:flex-start">
+            <span style="font-size:32px;flex-shrink:0">💰</span>
+            <div><p style="font-weight:800;font-size:14px;color:var(--text);margin-bottom:4px">Finance & Business</p><p style="color:var(--muted);font-size:13px">Credit, wealth building, business formation, investment</p></div>
+          </div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px;display:flex;gap:16px;align-items:flex-start">
+            <span style="font-size:32px;flex-shrink:0">🔧</span>
+            <div><p style="font-weight:800;font-size:14px;color:var(--text);margin-bottom:4px">Trades & Skills</p><p style="color:var(--muted);font-size:13px">Welders, electricians, truckers, barbers — real game from real work</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED VOICES -->
+  <section id="sec-voices">
+    <div class="w">
+      <div class="sec-hd">
+        <div>
+          <div class="kicker">Featured Voices</div>
+          <h2 class="h2">Selected.<br>Verified. For Real.</h2>
+        </div>
+        <div style="max-width:380px">
+          <p style="color:var(--muted);font-size:14px;line-height:1.8">Not influencers. Not fake gurus. Real lawyers, real doctors, real tradespeople — selected because they actually give back. Free knowledge. No gatekeeping.</p>
+          <button class="btn btn-ghost btn-sm" style="margin-top:16px" onclick="go('voices')">See All Voices →</button>
+        </div>
+      </div>
+      <div class="grid3" id="home-voices"></div>
+    </div>
+  </section>
+
+  <!-- REAL GAME -->
+  <section id="sec-realgame" style="background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="w">
+      <div class="sec-hd">
+        <div>
+          <div class="kicker">Real Game</div>
+          <h2 class="h2">What They Never<br>Taught You.</h2>
+        </div>
+        <div style="max-width:400px">
+          <p style="color:var(--muted);font-size:14px;line-height:1.8">From lawyers to CEOs, barbers to directors, welders to venue managers — real people sharing real knowledge. The stuff you don't learn until it's too late. Updated daily.</p>
+        </div>
+      </div>
+      <div class="grid3" id="home-realgame"></div>
+    </div>
+  </section>
+
+  <!-- OPPORTUNITIES -->
+  <section id="sec-opportunities">
+    <div class="w">
+      <div class="sec-hd">
+        <div>
+          <div class="kicker">Opportunities</div>
+          <h2 class="h2">Your Next Move<br>Is Right Here.</h2>
+        </div>
+        <div style="max-width:380px">
+          <p style="color:var(--muted);font-size:14px;line-height:1.8">Casting calls, auditions, internships, grants, apprenticeships, brand partnerships — real opportunities posted by real organizations.</p>
+          <button class="btn btn-ghost btn-sm" style="margin-top:16px" onclick="go('opportunities')">See All Opportunities →</button>
+        </div>
+      </div>
+      <div class="grid3" id="home-opportunities"></div>
+    </div>
+  </section>
+
+  <!-- INSIDE ACCESS -->
+  <section id="sec-access" style="background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="w">
+      <div class="sec-hd">
+        <div>
+          <div class="kicker">Inside Access</div>
+          <h2 class="h2">The Rooms You<br>Don't Usually See.</h2>
+        </div>
+        <div style="max-width:400px">
+          <p style="color:var(--muted);font-size:14px;line-height:1.8">Backstage moments, real conversations, unexpected interviews — documented with intention. You had to be there. Now you can be.</p>
+        </div>
+      </div>
+      <div class="grid3" id="home-access"></div>
+    </div>
+  </section>
+
+  <!-- SPOTLIGHTS -->
+  <section id="sec-spotlights">
+    <div class="w">
+      <div class="sec-hd">
+        <div><div class="kicker">Member Spotlights</div><h2 class="h2">Featured This Week</h2></div>
+        <button class="btn btn-ghost btn-sm" onclick="go('directory')">Full Directory →</button>
+      </div>
       <div class="grid3" id="home-spotlights"></div>
     </div>
   </section>
 
-  <section id="sec-whoweare">
-    <div class="w">
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center">
-        <div>
-          <div class="kicker">Who We Serve</div>
-          <h2 class="h2" style="margin-bottom:20px">From the block<br>to the boardroom.</h2>
-          <p class="sub" style="margin-bottom:32px">The Community Collective is a verified directory connecting Black, Brown, and middle-class communities with businesses, professionals, and resources — across every industry, every city.</p>
-          <div style="display:flex;flex-direction:column;gap:14px">
-            <div style="display:flex;gap:14px;align-items:flex-start"><span style="color:var(--gold);font-size:18px;flex-shrink:0">◆</span><div><p style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px">Home-Based to Fortune 500</p><p style="color:var(--muted);font-size:13px">A mom selling plates from her kitchen gets the same platform as a regional law firm.</p></div></div>
-            <div style="display:flex;gap:14px;align-items:flex-start"><span style="color:var(--gold);font-size:18px;flex-shrink:0">◆</span><div><p style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px">Direct Contact Always</p><p style="color:var(--muted);font-size:13px">Phone, email, booking — everything to actually connect. No middleman.</p></div></div>
-            <div style="display:flex;gap:14px;align-items:flex-start"><span style="color:var(--gold);font-size:18px;flex-shrink:0">◆</span><div><p style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px">Verified & Trusted</p><p style="color:var(--muted);font-size:13px">Every member reviewed before listing. Quality over quantity.</p></div></div>
-          </div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <div class="card" style="border-top:3px solid var(--gold)"><div style="font-size:28px;margin-bottom:12px">⚖️</div><p style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;margin-bottom:6px">Legal</p><p style="color:var(--muted);font-size:12px">Defense, business law, civil rights</p></div>
-          <div class="card" style="border-top:3px solid var(--blue)"><div style="font-size:28px;margin-bottom:12px">🎬</div><p style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;margin-bottom:6px">Film & Media</p><p style="color:var(--muted);font-size:12px">Production, directing, content</p></div>
-          <div class="card" style="border-top:3px solid var(--green)"><div style="font-size:28px;margin-bottom:12px">🍽️</div><p style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;margin-bottom:6px">Food & Catering</p><p style="color:var(--muted);font-size:12px">Home kitchens to full catering</p></div>
-          <div class="card" style="border-top:3px solid var(--red)"><div style="font-size:28px;margin-bottom:12px">💼</div><p style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;margin-bottom:6px">Finance</p><p style="color:var(--muted);font-size:12px">Credit, investment, planning</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
+  <!-- HAPPENINGS -->
   <section id="sec-happenings-preview" style="background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
     <div class="w">
-      <div class="sec-hd"><div><div class="kicker">What's Happening</div><h2 class="h2">In the Collective</h2></div><button class="btn btn-ghost btn-sm" onclick="go('happenings')">See All</button></div>
+      <div class="sec-hd">
+        <div><div class="kicker">What's Happening</div><h2 class="h2">In the Collective</h2></div>
+        <button class="btn btn-ghost btn-sm" onclick="go('happenings')">See All →</button>
+      </div>
       <div id="home-happenings"></div>
     </div>
   </section>
 
+  <!-- JOIN CTA -->
   <section id="sec-join-cta">
     <div class="w">
-      <div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:60px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;position:relative;overflow:hidden">
-        <div style="position:absolute;right:-20px;bottom:-30px;font-family:'Bebas Neue',sans-serif;font-size:160px;color:rgba(201,168,76,0.04);pointer-events:none">JOIN</div>
-        <div style="position:relative"><div class="kicker">Your Spot Is Waiting</div><h2 class="h2" style="margin-bottom:16px">List your business.<br>Share your story.</h2><p class="sub">Lawyers, directors, home cooks, Fortune 500 consultants — The Community Collective is your platform. Free to join. Serious about community.</p></div>
-        <div style="display:flex;flex-direction:column;gap:12px;flex-shrink:0"><button class="btn btn-gold" onclick="go('submit')">Apply for Membership</button><button class="btn btn-ghost" onclick="go('submit')">Submit a Story</button></div>
+      <div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:72px 60px;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;position:relative;overflow:hidden">
+        <div style="position:absolute;right:-10px;bottom:-40px;font-family:'Bebas Neue',sans-serif;font-size:180px;color:rgba(201,168,76,0.04);pointer-events:none;line-height:1">ACCESS</div>
+        <div style="position:relative">
+          <div class="kicker">You Belong Here</div>
+          <h2 class="h2" style="margin-bottom:18px">Real people.<br>Real game.<br>Real access.</h2>
+          <p class="sub">Whether you're a professional with game to share, a business that deserves visibility, a creative looking for opportunities, or a community member who just needs real resources — The Collective is built for you. All of you.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px;flex-shrink:0">
+          <button class="btn btn-gold" style="padding:15px 36px;font-size:12px" onclick="go('submit')">Get Access Now</button>
+          <button class="btn btn-ghost" style="padding:15px 36px;font-size:12px" onclick="go('voices')">Meet the Voices</button>
+        </div>
       </div>
     </div>
   </section>
 </div>
 
-<!-- ===== DIRECTORY ===== -->
-<div id="pg-directory" class="pg" style="padding:100px 0 80px">
+<!-- VOICES PAGE -->
+<div id="pg-voices" class="pg" style="padding:100px 0 88px">
+  <div class="w">
+    <div style="margin-bottom:52px">
+      <div class="kicker">Featured Voices</div>
+      <h1 class="h2" style="margin-bottom:16px">Selected. Verified.<br>For The People.</h1>
+      <p class="sub">Not influencers. Not fake gurus. Real professionals from every field — selected because they actually share real knowledge with the community. Free. Always.</p>
+    </div>
+    <div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:28px;margin-bottom:44px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
+      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">Selected & Verified</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Every voice is reviewed and selected based on credibility, community impact, and commitment to sharing real knowledge.</p></div>
+      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--green);margin-bottom:8px">Free Knowledge Always</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Voices post free game — legal advice, financial tips, trade knowledge — no paywalls, no subscriptions, no gatekeeping.</p></div>
+      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);margin-bottom:8px">All Industries Welcome</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Lawyers to welders, barbers to CEOs, directors to electricians — if you have real game and want to share it, this is your platform.</p></div>
+    </div>
+    <div class="grid3" id="voices-full"></div>
+    <div style="margin-top:52px;background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:44px;text-align:center">
+      <div class="kicker" style="margin-bottom:12px">Want to Be a Voice?</div>
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.04em;margin-bottom:16px">Apply to Share Your Knowledge</h2>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;max-width:520px;margin:0 auto 28px">If you're a professional, tradesperson, or expert who wants to give real game to the community — apply to become a Featured Voice.</p>
+      <button class="btn btn-gold" onclick="go('submit')">Apply to Be a Voice →</button>
+    </div>
+  </div>
+</div>
+
+<!-- OPPORTUNITIES PAGE -->
+<div id="pg-opportunities" class="pg" style="padding:100px 0 88px">
+  <div class="w">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:flex-start;margin-bottom:52px">
+      <div>
+        <div class="kicker">Opportunities</div>
+        <h1 class="h2" style="margin-bottom:16px">Your Next Move<br>Is Right Here.</h1>
+        <p class="sub">Casting calls, auditions, internships, grants, apprenticeships, collaborations, brand partnerships, job openings — real opportunities from real organizations. Updated regularly.</p>
+      </div>
+      <div class="card">
+        <div class="kicker" style="margin-bottom:14px">Post an Opportunity</div>
+        <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:20px">Organizations and members can post casting calls, jobs, gigs, grants, auditions, apprenticeships, and more. Reviewed before going live.</p>
+        <button class="btn btn-gold btn-sm" onclick="go('submit')">Submit an Opportunity →</button>
+      </div>
+    </div>
+    <div class="frow" style="margin-bottom:36px" id="opp-filters">
+      <button class="fb on" onclick="setOF('All',this)">All</button>
+      <button class="fb" onclick="setOF('Casting Call',this)">Casting</button>
+      <button class="fb" onclick="setOF('Internship',this)">Internships</button>
+      <button class="fb" onclick="setOF('Job',this)">Jobs</button>
+      <button class="fb" onclick="setOF('Grant',this)">Grants</button>
+      <button class="fb" onclick="setOF('Collaboration',this)">Collabs</button>
+      <button class="fb" onclick="setOF('Business Opportunity',this)">Business</button>
+    </div>
+    <div class="grid3" id="opps-full"></div>
+  </div>
+</div>
+
+<!-- DIRECTORY PAGE -->
+<div id="pg-directory" class="pg" style="padding:100px 0 88px">
   <div id="dir-list">
     <div class="w">
-      <div style="margin-bottom:40px"><div class="kicker">The Directory</div><h1 class="h2" style="margin-bottom:12px">Find Who You Need.</h1><p class="sub">Lawyers. Directors. Food businesses. Financial advisors. All verified. All community.</p></div>
-      <div style="position:relative;margin-bottom:28px"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--dim)">🔍</span><input class="fi" id="dir-search" placeholder="Search by name, service, or city..." style="padding-left:40px;height:48px" oninput="renderDir()"></div>
-      <div class="frow" style="margin-bottom:32px" id="dir-filters">
+      <div style="margin-bottom:44px">
+        <div class="kicker">The Directory</div>
+        <h1 class="h2" style="margin-bottom:14px">Find Who You Need.</h1>
+        <p class="sub">Lawyers, directors, food businesses, financial advisors, health professionals — all verified, all community, all direct contact.</p>
+      </div>
+      <div style="position:relative;margin-bottom:28px">
+        <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--dim)">🔍</span>
+        <input class="fi" id="dir-search" placeholder="Search by name, service, or city..." style="padding-left:42px;height:50px;font-size:15px" oninput="renderDir()">
+      </div>
+      <div class="frow" style="margin-bottom:36px" id="dir-filters">
         <button class="fb on" onclick="setDF('All',this)">All</button>
         <button class="fb" onclick="setDF('Legal',this)">Legal</button>
         <button class="fb" onclick="setDF('Film & Media',this)">Film & Media</button>
         <button class="fb" onclick="setDF('Food & Catering',this)">Food & Catering</button>
         <button class="fb" onclick="setDF('Finance',this)">Finance</button>
-        <button class="fb" onclick="setDF('Retail',this)">Retail</button>
-        <button class="fb" onclick="setDF('Health & Wellness',this)">Health & Wellness</button>
+        <button class="fb" onclick="setDF('Health & Wellness',this)">Health</button>
         <button class="fb" onclick="setDF('Tech',this)">Tech</button>
+        <button class="fb" onclick="setDF('Trades',this)">Trades</button>
+        <button class="fb" onclick="setDF('Music & Entertainment',this)">Music</button>
       </div>
       <div class="grid3" id="dir-grid"></div>
-      <p style="color:var(--dim);font-size:12px;margin-top:28px;text-align:center">Don't see your business? <button onclick="go('submit')" style="background:none;border:none;color:var(--gold);font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline">Apply for a listing →</button></p>
+      <p style="color:var(--dim);font-size:12px;margin-top:32px;text-align:center">Don't see your business? <button onclick="go('submit')" style="background:none;border:none;color:var(--gold);font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline">Apply for a listing →</button></p>
     </div>
   </div>
   <div id="dir-detail" style="display:none"><div class="w" style="max-width:1100px"></div></div>
 </div>
 
-<!-- ===== HAPPENINGS ===== -->
-<div id="pg-happenings" class="pg" style="padding:100px 0 80px">
+<!-- PATHWAYS PAGE -->
+<div id="pg-pathways" class="pg" style="padding:100px 0 88px">
   <div class="w">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:flex-start;margin-bottom:52px">
-      <div><div class="kicker">What's Happening</div><h1 class="h2" style="margin-bottom:14px">Events. News.<br>Announcements.</h1><p class="sub" style="margin-bottom:24px">Member events, community news, and announcements from across The Collective.</p><button class="btn btn-gold" onclick="go('submit')">Submit Your Announcement</button></div>
-      <div class="card">
-        <div class="kicker" style="margin-bottom:14px">Post Something</div>
-        <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:18px">Members can submit events, grand openings, service launches, business milestones, job postings, and more.</p>
-        <button class="btn btn-ghost btn-sm" onclick="go('submit')">Submit a Post →</button>
-      </div>
+    <div style="margin-bottom:52px">
+      <div class="kicker">Resources & Pathways</div>
+      <h1 class="h2" style="margin-bottom:14px">Pathways Forward.</h1>
+      <p class="sub">HUD programs, grants, legal resources, scholarships, SBA loans — organized, real, and actually usable. No runaround. No dead links. Just resources that work.</p>
     </div>
-    <div id="hap-full"></div>
-  </div>
-</div>
-
-<!-- ===== PATHWAYS ===== -->
-<div id="pg-pathways" class="pg" style="padding:100px 0 80px">
-  <div class="w">
-    <div style="margin-bottom:44px"><div class="kicker">Resources & Opportunities</div><h1 class="h2" style="margin-bottom:12px">Pathways Forward.</h1><p class="sub">Grants, programs, legal resources, funding, and real opportunities — organized and ready to use.</p></div>
-    <div class="frow" style="margin-bottom:32px" id="path-filters">
+    <div class="frow" style="margin-bottom:36px" id="path-filters">
       <button class="fb on" onclick="setPF('All',this)">All</button>
       <button class="fb" onclick="setPF('Legal',this)">Legal</button>
       <button class="fb" onclick="setPF('Funding',this)">Funding</button>
@@ -543,72 +739,87 @@ section{padding:60px 0}
       <button class="fb" onclick="setPF('Business',this)">Business</button>
       <button class="fb" onclick="setPF('Music',this)">Music</button>
       <button class="fb" onclick="setPF('Education',this)">Education</button>
+      <button class="fb" onclick="setPF('Health',this)">Health</button>
     </div>
     <div class="grid3" id="path-grid"></div>
   </div>
 </div>
 
-<!-- ===== ABOUT ===== -->
-<div id="pg-about" class="pg">
-  <div style="background:var(--s1);border-bottom:1px solid var(--border);padding:120px 0 80px;position:relative;overflow:hidden">
-    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.04),transparent 60%);pointer-events:none"></div>
-    <div style="position:absolute;right:-20px;bottom:-40px;font-family:'Bebas Neue',sans-serif;font-size:220px;color:rgba(201,168,76,0.04);pointer-events:none">TCC</div>
-    <div class="w" style="position:relative;z-index:2">
-      <div class="kicker">Our Mission</div>
-      <h1 class="h1" style="margin-bottom:24px;max-width:900px">BUILT FOR<br><span style="color:var(--gold)">THE PEOPLE</span><br>BY THE PEOPLE</h1>
-      <p style="font-size:18px;color:var(--muted);line-height:1.75;max-width:680px">The Community Collective exists to make the resources, businesses, and professionals of Black, Brown, and middle-class communities visible, accessible, and connected — in one trusted platform.</p>
-    </div>
-  </div>
-  <section style="background:var(--s1)">
-    <div class="w">
-      <div class="grid2">
-        <div><div class="kicker" style="margin-bottom:14px">The Problem We Solve</div><p style="color:var(--text);font-size:15px;line-height:1.75">Black and Brown communities have always had brilliant lawyers, talented directors, and hardworking entrepreneurs. What they haven't had is a centralized, trusted platform to find each other and do business together.</p></div>
-        <div><div class="kicker" style="color:var(--green);margin-bottom:14px">What We Built</div><p style="color:var(--text);font-size:15px;line-height:1.75">A verified directory. A hub for community news. A pathways board connecting people to real resources. A submission system so members can share what they're doing. Serving everyone from a home cook to a major corporation.</p></div>
-      </div>
-    </div>
-  </section>
-  <section>
-    <div class="w">
-      <div class="kicker" style="margin-bottom:32px">What We Stand For</div>
+<!-- HAPPENINGS PAGE -->
+<div id="pg-happenings" class="pg" style="padding:100px 0 88px">
+  <div class="w">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:flex-start;margin-bottom:52px">
       <div>
-        <div class="val-row"><div class="v-num">01</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">No community too small, no business too large</p><p style="color:var(--muted);font-size:14px;line-height:1.7">A grandmother's home catering business deserves the same platform as a law firm.</p></div></div>
-        <div class="val-row"><div class="v-num">02</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">Verification over volume</p><p style="color:var(--muted);font-size:14px;line-height:1.7">Every member is reviewed. Quality and trust matter more than having the most listings.</p></div></div>
-        <div class="val-row"><div class="v-num">03</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">Information is power</p><p style="color:var(--muted);font-size:14px;line-height:1.7">Pathways, resources, and knowledge belong to the community.</p></div></div>
-        <div class="val-row" style="border-bottom:none"><div class="v-num">04</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">Direct connection, always</p><p style="color:var(--muted);font-size:14px;line-height:1.7">Phone numbers, emails, booking links — direct access, always.</p></div></div>
+        <div class="kicker">What's Happening</div>
+        <h1 class="h2" style="margin-bottom:16px">Events. News.<br>Announcements.</h1>
+        <p class="sub" style="margin-bottom:28px">Community events, concerts, workshops, grand openings, screenings — all in one place. If it's happening in the Collective, it's here.</p>
+        <button class="btn btn-gold" onclick="go('submit')">Submit Your Event</button>
+      </div>
+      <div class="card">
+        <div class="kicker" style="margin-bottom:14px">Post Something</div>
+        <p style="color:var(--muted);font-size:13px;line-height:1.75;margin-bottom:20px">Members can submit events, grand openings, service launches, milestones, job postings, concerts, festivals, and more. Reviewed before going live.</p>
+        <button class="btn btn-ghost btn-sm" onclick="go('submit')">Submit a Post →</button>
       </div>
     </div>
-  </section>
+    <div id="hap-full"></div>
+  </div>
 </div>
 
-<!-- ===== SUBMIT ===== -->
-<div id="pg-submit" class="pg" style="padding:100px 0 80px">
+<!-- SUBMIT PAGE -->
+<div id="pg-submit" class="pg" style="padding:100px 0 88px">
   <div class="w">
-    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:flex-start">
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:64px;align-items:flex-start">
       <div>
-        <div class="kicker">Join the Collective</div>
-        <h1 class="h2" style="margin-bottom:20px">Your Platform.<br>Your Community.</h1>
-        <p class="sub" style="margin-bottom:32px">Whether you're listing a business, submitting a story, or posting an announcement — this is where you do it. All submissions reviewed before going live.</p>
-        <div>
-          <div class="a-card" style="margin-bottom:10px;cursor:pointer;border-color:var(--gold);background:var(--gdim)" id="so-1" onclick="selType(1)"><div style="display:flex;gap:14px;align-items:center"><div id="sc-1" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);display:flex;align-items:center;justify-content:center;color:#080808;font-size:12px;font-weight:800;flex-shrink:0">✓</div><div><p style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px">List My Business</p><p style="color:var(--muted);font-size:13px">Get your business in the directory</p></div></div></div>
-          <div class="a-card" style="margin-bottom:10px;cursor:pointer" id="so-2" onclick="selType(2)"><div style="display:flex;gap:14px;align-items:center"><div id="sc-2" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div><div><p style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px">Submit a Story or Post</p><p style="color:var(--muted);font-size:13px">Share what you're doing for the community to see</p></div></div></div>
-          <div class="a-card" style="margin-bottom:10px;cursor:pointer" id="so-3" onclick="selType(3)"><div style="display:flex;gap:14px;align-items:center"><div id="sc-3" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div><div><p style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px">Post an Announcement</p><p style="color:var(--muted);font-size:13px">Events, news, grand openings, opportunities</p></div></div></div>
-          <div class="a-card" style="cursor:pointer" id="so-4" onclick="selType(4)"><div style="display:flex;gap:14px;align-items:center"><div id="sc-4" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div><div><p style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:2px">Partnership / Press</p><p style="color:var(--muted);font-size:13px">Corporate partners, media, collaboration</p></div></div></div>
+        <div class="kicker">Get Access</div>
+        <h1 class="h2" style="margin-bottom:20px">Get in the room.<br>Share your story.<br>Build with us.</h1>
+        <p class="sub" style="margin-bottom:36px">Whether you're a professional with game to share, a business that deserves real visibility, a creative looking for a platform, or someone who just needs real resources — this is where it starts.</p>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="a-card" style="cursor:pointer;border-color:var(--gold);background:var(--gdim)" id="so-1" onclick="selType(1)">
+            <div style="display:flex;gap:14px;align-items:center">
+              <div id="sc-1" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--gold);background:var(--gold);display:flex;align-items:center;justify-content:center;color:#080808;font-size:12px;font-weight:800;flex-shrink:0">✓</div>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:3px">List My Business</p><p style="color:var(--muted);font-size:13px">Get your business in the directory</p></div>
+            </div>
+          </div>
+          <div class="a-card" style="cursor:pointer" id="so-2" onclick="selType(2)">
+            <div style="display:flex;gap:14px;align-items:center">
+              <div id="sc-2" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:3px">Apply to Be a Voice</p><p style="color:var(--muted);font-size:13px">Share your knowledge with the community</p></div>
+            </div>
+          </div>
+          <div class="a-card" style="cursor:pointer" id="so-3" onclick="selType(3)">
+            <div style="display:flex;gap:14px;align-items:center">
+              <div id="sc-3" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:3px">Post an Event or Announcement</p><p style="color:var(--muted);font-size:13px">Grand openings, concerts, workshops, news</p></div>
+            </div>
+          </div>
+          <div class="a-card" style="cursor:pointer" id="so-4" onclick="selType(4)">
+            <div style="display:flex;gap:14px;align-items:center">
+              <div id="sc-4" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:3px">Post an Opportunity</p><p style="color:var(--muted);font-size:13px">Casting calls, jobs, grants, collabs</p></div>
+            </div>
+          </div>
+          <div class="a-card" style="cursor:pointer" id="so-5" onclick="selType(5)">
+            <div style="display:flex;gap:14px;align-items:center">
+              <div id="sc-5" style="width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>
+              <div><p style="font-weight:800;font-size:15px;color:var(--text);margin-bottom:3px">Partnership / Press / Media</p><p style="color:var(--muted);font-size:13px">Corporate partners, press, collaboration</p></div>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="card" style="padding:40px" id="submit-form">
-        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em;margin-bottom:28px">Send Your Information</h3>
-        <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card" style="padding:44px" id="submit-form">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:0.04em;margin-bottom:32px">Send Your Information</h3>
+        <div style="display:flex;flex-direction:column;gap:18px">
           <div><label class="fl">Full Name</label><input class="fi" id="sf-name" placeholder="Your full name"></div>
           <div class="grid2" style="gap:14px">
             <div><label class="fl">Email</label><input class="fi" id="sf-email" type="email" placeholder="your@email.com"></div>
             <div><label class="fl">Phone</label><input class="fi" id="sf-phone" type="tel" placeholder="(000) 000-0000"></div>
           </div>
           <div><label class="fl">Business / Organization</label><input class="fi" id="sf-biz" placeholder="Business name (if applicable)"></div>
-          <div><label class="fl">Industry</label><select class="fi" id="sf-cat"><option>Legal</option><option>Film & Media</option><option>Food & Catering</option><option>Finance</option><option>Retail</option><option>Health & Wellness</option><option>Tech</option><option>Corporate</option><option>Other</option></select></div>
-          <div><label class="fl">City</label><input class="fi" id="sf-city" placeholder="Your city"></div>
-          <div><label class="fl">Tell us about yourself or your business</label><textarea class="fi" id="sf-msg" rows="5" style="resize:none" placeholder="Services, story, announcement, or what you'd like to post..."></textarea></div>
-          <button class="btn btn-gold" style="width:100%;padding:15px;font-size:12px" onclick="submitForm()">Submit for Review →</button>
-          <p style="color:var(--dim);font-size:11px;text-align:center">Reviewed within 48 hours. Free to list.</p>
+          <div><label class="fl">Industry / Field</label><select class="fi" id="sf-cat"><option>Legal</option><option>Film & Media</option><option>Food & Catering</option><option>Finance</option><option>Retail</option><option>Health & Wellness</option><option>Tech</option><option>Corporate</option><option>Music & Entertainment</option><option>Trades</option><option>Education</option><option>Other</option></select></div>
+          <div><label class="fl">City / State</label><input class="fi" id="sf-city" placeholder="Your city"></div>
+          <div><label class="fl">Tell us about yourself, your business, or what you want to post</label><textarea class="fi" id="sf-msg" rows="6" style="resize:none" placeholder="Services, story, opportunity details, what you want to share, or how you want to be involved..."></textarea></div>
+          <button class="btn btn-gold" style="width:100%;padding:16px;font-size:12px" onclick="submitForm()">Submit for Review →</button>
+          <p style="color:var(--dim);font-size:11px;text-align:center;line-height:1.6">Reviewed within 48 hours. Free to join. Selected submissions go live on the platform.</p>
         </div>
       </div>
     </div>
@@ -616,65 +827,119 @@ section{padding:60px 0}
 </div>
 
 <!-- FOOTER -->
-<footer style="background:var(--s1);border-top:1px solid var(--border);padding:52px 0 28px">
+<footer style="background:var(--s1);border-top:1px solid var(--border);padding:56px 0 28px">
   <div class="w">
-    <div style="display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px">
-      <div><div class="logo" style="margin-bottom:14px;cursor:default"><div class="logo-mark">TC</div><div><div class="logo-top">The Community Collective</div><div class="logo-bot">Directory · Network · Knowledge</div></div></div><p style="color:var(--muted);font-size:13px;line-height:1.7;max-width:280px">The verified directory and knowledge hub for Black, Brown, and middle-class communities — from the block to the boardroom.</p></div>
-      <div><p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">Platform</p><button onclick="go('directory')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 0;font-family:inherit;text-align:left">Directory</button><button onclick="go('happenings')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 0;font-family:inherit;text-align:left">What's Happening</button><button onclick="go('pathways')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 0;font-family:inherit;text-align:left">Pathways</button></div>
-      <div><p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">Company</p><button onclick="go('about')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 0;font-family:inherit;text-align:left">About</button><button onclick="go('submit')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:4px 0;font-family:inherit;text-align:left">Join / Submit</button></div>
-      <div id="footer-contact"><p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:14px">Connect</p><p style="color:var(--muted);font-size:13px;padding:4px 0" id="f-email">hello@thecommunitycollective.com</p><p style="color:var(--muted);font-size:13px;padding:4px 0" id="f-ig">Instagram</p><p style="color:var(--muted);font-size:13px;padding:4px 0" id="f-tw">Twitter / X</p></div>
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
+      <div>
+        <div class="logo" style="margin-bottom:16px;cursor:default">
+          <div class="logo-mark">TC</div>
+          <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Real People · Real Game · Real Access</div></div>
+        </div>
+        <p style="color:var(--muted);font-size:13px;line-height:1.8;max-width:300px">A trust-based access network where top professionals share real knowledge, culture gets documented, and communities finally get access to the rooms, people, and opportunities they deserve.</p>
+        <p style="color:var(--dim);font-size:11px;margin-top:16px;font-style:italic">"Building a platform that transcends generations."</p>
+      </div>
+      <div>
+        <p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px">Platform</p>
+        <button onclick="go('voices')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left;transition:color 0.15s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">Voices</button>
+        <button onclick="go('opportunities')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left;transition:color 0.15s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">Opportunities</button>
+        <button onclick="go('directory')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left;transition:color 0.15s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">Directory</button>
+        <button onclick="go('pathways')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left;transition:color 0.15s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">Pathways</button>
+        <button onclick="go('happenings')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left;transition:color 0.15s" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">What's Happening</button>
+      </div>
+      <div>
+        <p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px">Access</p>
+        <button onclick="go('submit')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left">Get Access</button>
+        <button onclick="go('submit')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left">List Your Business</button>
+        <button onclick="go('submit')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left">Apply to Be a Voice</button>
+        <button onclick="go('submit')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;padding:5px 0;font-family:inherit;text-align:left">Post an Opportunity</button>
+      </div>
+      <div>
+        <p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:16px">Connect</p>
+        <p style="color:var(--muted);font-size:13px;padding:5px 0" id="f-email">hello@thecommunitycollective.com</p>
+        <p style="color:var(--muted);font-size:13px;padding:5px 0" id="f-ig">Instagram</p>
+        <p style="color:var(--muted);font-size:13px;padding:5px 0" id="f-tw">Twitter / X</p>
+      </div>
     </div>
-    <div style="border-top:1px solid var(--border);padding-top:22px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
-      <p style="color:var(--dim);font-size:11px;letter-spacing:0.06em">© 2026 The Community Collective · Qalyx Technologies</p>
-      <button onclick="openAdmin()" style="background:none;border:none;color:var(--dim);font-size:10px;cursor:pointer;letter-spacing:0.06em;font-family:inherit">Admin ◆</button>
+    <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <p style="color:var(--dim);font-size:11px;letter-spacing:0.06em">© 2026 The Community Collective · Qalyx Technologies · Built to Transcend Generations</p>
+      <span style="color:var(--bg);font-size:10px;cursor:pointer;user-select:none;transition:color 0.3s" onmouseover="this.style.color='var(--dim)'" onmouseout="this.style.color='var(--bg)'" onclick="openAdmin()">◆</span>
     </div>
   </div>
 </footer>
-
 <script>
-// =========== DEFAULT DATA ===========
 const DEFAULT_MEMBERS=[
   {id:0,type:"Legal",name:"Odom Law Group",person:"Keisha Odom, Esq.",city:"Chicago",emoji:"⚖️",tagline:"Criminal defense, expungement & civil rights. Community rates available.",services:["Expungement & Record Clearing","Criminal Defense","Police Misconduct","Tenant Rights"],contact:{phone:"(312) 555-0190",email:"keisha@odomlaw.com",consult:"Free 20-min consultation"},tags:["Criminal","Expungement","Civil Rights"]},
   {id:1,type:"Legal",name:"Bellamy Business Law",person:"Marcus Bellamy, Esq.",city:"Atlanta",emoji:"📋",tagline:"Business formation, contracts & IP protection for entrepreneurs.",services:["LLC & Corp Formation","Contract Drafting","Trademark & Copyright","Music Industry Contracts"],contact:{phone:"(404) 555-0244",email:"marcus@bellamylaw.com",consult:"Free 30-min strategy call"},tags:["Business","Contracts","IP"]},
   {id:2,type:"Film & Media",name:"Clarity Media Studio",person:"Jordan L.",city:"Chicago",emoji:"🎬",tagline:"Video production, podcast editing & content strategy for storytellers.",services:["Short-Form Video Production","Podcast Recording & Editing","Brand Content Strategy","Documentary Filming"],contact:{phone:"(312) 555-0422",email:"work@claritymedia.co",consult:"Free project consult"},tags:["Media","Video","Podcast"]},
-  {id:3,type:"Food & Catering",name:"Grounded Roots Kitchen",person:"Tanya M.",city:"Chicago",emoji:"🌿",tagline:"Home-cooked soul food, catering & herbal wellness products rooted in tradition.",services:["Full-service catering","Meal prep packages","Herbal tea & wellness products","Event food services"],contact:{phone:"(312) 555-0505",email:"tanya@groundedroots.co",consult:"Free catering consult"},tags:["Food","Catering","Wellness"]},
+  {id:3,type:"Food & Catering",name:"Grounded Roots Kitchen",person:"Tanya M.",city:"Chicago",emoji:"🌿",tagline:"Home-cooked soul food, catering & herbal wellness products.",services:["Full-service catering","Meal prep packages","Herbal tea & wellness products","Event food services"],contact:{phone:"(312) 555-0505",email:"tanya@groundedroots.co",consult:"Free catering consult"},tags:["Food","Catering","Wellness"]},
   {id:4,type:"Finance",name:"NovaMind Financial",person:"Priya S.",city:"Houston",emoji:"💼",tagline:"Credit repair, wealth-building & homebuyer coaching for working families.",services:["Credit Analysis & Repair","Debt Management","First-Time Homebuyer Prep","Business Credit Building"],contact:{phone:"(713) 555-0317",email:"hello@novamind.co",consult:"Free discovery session"},tags:["Finance","Credit","Planning"]},
-  {id:5,type:"Health & Wellness",name:"Elevate Therapy Group",person:"Dr. Aisha P.",city:"Detroit",emoji:"🧠",tagline:"Mental health therapy and life coaching for Black and Brown communities.",services:["Individual therapy","Group coaching","Corporate wellness programs","Youth counseling"],contact:{phone:"(313) 555-0612",email:"care@elevatetherapy.co",consult:"Free 15-min intake call"},tags:["Mental Health","Therapy","Wellness"]},
+  {id:5,type:"Health & Wellness",name:"Elevate Therapy Group",person:"Dr. Aisha P.",city:"Detroit",emoji:"🧠",tagline:"Mental health therapy and life coaching for Black and Brown communities.",services:["Individual therapy","Group coaching","Corporate wellness","Youth counseling"],contact:{phone:"(313) 555-0612",email:"care@elevatetherapy.co",consult:"Free 15-min intake call"},tags:["Mental Health","Therapy","Wellness"]},
 ];
 const DEFAULT_SPOTLIGHTS=[
-  {id:0,name:"Odom Law Group",person:"Keisha Odom, Esq. · Chicago",cat:"Legal",desc:"Keisha Odom has cleared over 300 records across Illinois, giving clients access to jobs, housing, and licenses they were locked out of. A founding member of the Collective."},
-  {id:1,name:"Clarity Media Studio",person:"Jordan L. · Chicago",cat:"Film & Media",desc:"Clarity Media has produced content for over 40 community brands and nonprofits. They specialize in authentic storytelling for Black and Brown entrepreneurs."},
+  {id:0,name:"Odom Law Group",person:"Keisha Odom, Esq. · Chicago",cat:"Legal",desc:"Keisha has cleared over 300 records across Illinois, giving clients access to jobs, housing, and licenses they were locked out of. A founding member of the Collective."},
+  {id:1,name:"Clarity Media Studio",person:"Jordan L. · Chicago",cat:"Film & Media",desc:"Clarity Media has produced content for over 40 community brands and nonprofits. Authentic storytelling for Black and Brown entrepreneurs."},
   {id:2,name:"Grounded Roots Kitchen",person:"Tanya M. · Chicago",cat:"Food & Catering",desc:"Started from her home kitchen in 2021, Tanya now caters events across Chicago. Her herbal wellness line has over 500 monthly customers."},
+];
+const DEFAULT_VOICES=[
+  {id:0,name:"Keisha Odom, Esq.",prof:"Criminal Defense & Expungement Attorney",emoji:"⚖️",desc:"Offers free 20-min consultations every Friday. Posts weekly on what you need to know about your rights — before you're in a situation where you need to know them.",quote:"If you don't know your rights, you don't have them. Learn them before you need them — not after."},
+  {id:1,name:"Dr. Aisha Patterson",prof:"Licensed Therapist & Life Coach",emoji:"🧠",desc:"Specializes in trauma, generational cycles, and community mental health. Posts daily mental health tips that meet people where they are — no clinical jargon.",quote:"Your healing is not a luxury. It is the foundation everything else gets built on. You cannot pour from an empty cup."},
+  {id:2,name:"Marcus Bellamy, Esq.",prof:"Business & Entertainment Attorney",emoji:"📋",desc:"Helps entrepreneurs protect their ideas and build real businesses. Posts weekly on contracts, LLCs, intellectual property, and protecting your creative work.",quote:"Sign nothing without reading it. Own everything you create. Get every agreement in writing. These three rules will save your career."},
+  {id:3,name:"Raymond 'Ray' Torres",prof:"Master Electrician & Trades Educator",emoji:"🔧",desc:"25 years in the trades. Posts real game on licensing, starting your own business, and why skilled trades are one of the most overlooked wealth-building paths available.",quote:"You don't need a degree to make six figures. You need a skill, a license, and the courage to bet on yourself."},
+  {id:4,name:"Sandra Washington, CPA",prof:"Certified Public Accountant",emoji:"💰",desc:"Specializes in small business taxes, credit building, and generational wealth strategy. Posts weekly financial tips that actually apply to regular people.",quote:"The tax code was written by wealthy people, for wealthy people. Learn how to use it before you pay more than you have to."},
+];
+const DEFAULT_OPPS=[
+  {id:0,title:"Casting Call — Independent Short Film",type:"Casting Call",by:"Clarity Media Studio",deadline:"Jun 30",desc:"Looking for authentic, untrained talent for a community-focused short film. No experience required. Open to all ages. Chicago area preferred.",color:"gold"},
+  {id:1,title:"Legal Internship — Community Law Clinic",type:"Internship",by:"Odom Law Group",deadline:"Rolling",desc:"Work alongside real attorneys on expungement and civil rights cases. Law students, pre-law, and community members with passion for justice welcome.",color:"blue"},
+  {id:2,title:"Music Submission — TCC Emerging Artist Feature",type:"Music Submission",by:"The Community Collective",deadline:"Open",desc:"Unsigned and independent artists — submit your music for a feature on the platform. All genres welcome. Community votes on who gets spotlighted.",color:"green"},
+  {id:3,title:"Brand Partnership — Featured Business Placement",type:"Brand Partnership",by:"The Community Collective",deadline:"Open",desc:"Get your business featured on the TCC homepage, gain direct access to our growing national member network, and be part of something real.",color:"gold"},
+  {id:4,title:"Apprenticeship — Master Trades Program",type:"Apprenticeship",by:"Torres Electrical",deadline:"Jul 15",desc:"Paid apprenticeship under a master electrician. Learn while you earn. No degree required — just commitment and a willingness to do real work.",color:"red"},
+];
+const DEFAULT_GAME=[
+  {id:0,author:"Keisha Odom, Esq.",industry:"Legal",quote:"You have the right to remain silent — and you should use it. Never explain yourself to police without an attorney present. Anything you say WILL be used against you. This is not television. This is real life and real consequences."},
+  {id:1,author:"Sandra Washington, CPA",industry:"Finance",quote:"Your credit score is not your worth. But it IS the key to housing, business loans, and opportunity. One secured card, paid on time every month for 6 months, will change your number more than you think. Start today."},
+  {id:2,author:"Dr. Aisha Patterson",industry:"Health",quote:"Burnout is not a badge of honor. Rest is not laziness. Your nervous system needs recovery the same way your body needs sleep. Protecting your peace is not selfish — it is survival."},
+  {id:3,author:"Raymond Torres",industry:"Trades",quote:"A licensed electrician in this country makes $35-85 an hour. A master electrician with their own business makes whatever they want. The skills to get there take 4 years, not 40 years of debt. Do the math."},
+  {id:4,author:"Marcus Bellamy, Esq.",industry:"Legal / Business",quote:"If you create something — music, art, a logo, a brand, a business idea — and you don't have it in writing who owns it, you don't own it. Document everything. Contracts protect creators."},
+];
+const DEFAULT_ACCESS=[
+  {id:0,title:"Backstage at the Community Summit",type:"Backstage",emoji:"🎤",desc:"Behind the scenes at TCC's inaugural community event. The moments you didn't see on camera — real people, real conversations, real energy."},
+  {id:1,title:"Real Talk: Know Your Rights",type:"Real Conversation",emoji:"⚖️",desc:"Attorney Keisha Odom breaks down exactly what happens during a police stop — unfiltered, no legal jargon, just what you need to know."},
+  {id:2,title:"From the Block to the Boardroom",type:"Interview",emoji:"🎬",desc:"Three entrepreneurs share how they built real businesses from nothing. No overnight success stories. Just real work, real setbacks, and real wins."},
 ];
 const DEFAULT_EVENTS=[
   {id:0,month:"May",day:"15",type:"Event",title:"Youth Forward End-of-Year Showcase",meta:"6:00 PM · South Shore Cultural Center, Chicago",badge:"Free"},
   {id:1,month:"May",day:"21",type:"Workshop",title:"Know Your Rights: Tenant Edition",meta:"5:30 PM · Woodlawn Branch Library",badge:"Free"},
-  {id:2,month:"Jun",day:"01",type:"Launch",title:"Grounded Roots Kitchen — Summer Catering Packages Now Open",meta:"Online & Chicago area",badge:"Members"},
+  {id:2,month:"Jun",day:"01",type:"Launch",title:"Grounded Roots Kitchen — Summer Catering Packages",meta:"Online & Chicago area",badge:"Members"},
   {id:3,month:"Jun",day:"07",type:"Networking",title:"The Collective Business Mixer — All Members Welcome",meta:"7:00 PM · TCC Hub, Bronzeville",badge:"Members"},
   {id:4,month:"Jun",day:"14",type:"Event",title:"Community Resource Fair — 40+ Vendors",meta:"12:00 PM · Garfield Park, Chicago",badge:"Free"},
 ];
 const DEFAULT_PATHS=[
-  {id:0,type:"Legal",title:"USPTO Pro Bono Patent Program",city:"National",status:"Open",emoji:"⚖️",desc:"Free patent legal help for qualifying inventors."},
-  {id:1,type:"Funding",title:"SBA Microloan Program",city:"National",status:"Open",emoji:"💰",desc:"Loans up to $50K for small businesses and nonprofits."},
-  {id:2,type:"Business",title:"SCORE Free Business Mentorship",city:"National",status:"Open",emoji:"🤝",desc:"Free mentoring from experienced entrepreneurs."},
-  {id:3,type:"Housing",title:"HUD Voucher Portability Program",city:"National",status:"Active",emoji:"🏠",desc:"Move your Section 8 voucher to any participating area."},
-  {id:4,type:"Legal",title:"Clean Slate Initiative",city:"National",status:"Active",emoji:"📋",desc:"Automatic record clearing for eligible offenses."},
-  {id:5,type:"Funding",title:"USDA Socially Disadvantaged Farmer Grant",city:"National",status:"Open",emoji:"🌱",desc:"Federal grants for Black and minority farmers."},
-  {id:6,type:"Education",title:"HBCU Connect Scholarship Database",city:"National",status:"Active",emoji:"🎓",desc:"Thousands of scholarships specifically for HBCU students."},
-  {id:7,type:"Business",title:"Goldman Sachs 10,000 Small Businesses",city:"National",status:"Open",emoji:"📈",desc:"Free business education & capital access for small business owners."},
+  {id:0,type:"Legal",title:"USPTO Pro Bono Patent Program",city:"National",status:"Open",emoji:"⚖️",desc:"Free patent legal help for qualifying inventors. Apply directly through USPTO."},
+  {id:1,type:"Funding",title:"SBA Microloan Program",city:"National",status:"Open",emoji:"💰",desc:"Loans up to $50K for small businesses and nonprofits through SBA-approved lenders."},
+  {id:2,type:"Business",title:"SCORE Free Business Mentorship",city:"National",status:"Open",emoji:"🤝",desc:"Free one-on-one mentoring from experienced business professionals and entrepreneurs."},
+  {id:3,type:"Housing",title:"HUD Voucher Portability Program",city:"National",status:"Active",emoji:"🏠",desc:"Move your Section 8 housing voucher to any participating area in the country."},
+  {id:4,type:"Legal",title:"Clean Slate Initiative",city:"National",status:"Active",emoji:"📋",desc:"Automatic record clearing for eligible offenses in participating states."},
+  {id:5,type:"Funding",title:"USDA Socially Disadvantaged Farmer Grant",city:"National",status:"Open",emoji:"🌱",desc:"Federal grants specifically for Black and minority farmers. Covers equipment, land, and operations."},
+  {id:6,type:"Education",title:"HBCU Connect Scholarship Database",city:"National",status:"Active",emoji:"🎓",desc:"Thousands of scholarships specifically for HBCU students across all majors and states."},
+  {id:7,type:"Business",title:"Goldman Sachs 10,000 Small Businesses",city:"National",status:"Open",emoji:"📈",desc:"Free business education and capital access program for small business owners nationwide."},
+  {id:8,type:"Health",title:"SAMHSA Mental Health Referral Line",city:"National",status:"Active",emoji:"🧠",desc:"Free referrals to local mental health services. Available 24/7 nationwide."},
+  {id:9,type:"Trades",title:"DOL Registered Apprenticeship Program",city:"National",status:"Open",emoji:"🔧",desc:"Federally registered apprenticeships in trades, tech, and healthcare. Earn while you learn."},
 ];
-const DEFAULT_SECTIONS={spotlights:true,whoweare:true,happeningspreview:true,joincta:true};
+const DEFAULT_SECTIONS={stats:true,vision:true,voices:true,realgame:true,opportunities:true,access:true,spotlights:true,happeningspreview:true,joincta:true};
 const DEFAULT_CONFIG={email:"hello@thecommunitycollective.com",ig:"@communitycollective",tw:"@thecollective"};
 const DEFAULT_PW="tcc2026";
-const DEFAULT_BGS={home:"",directory:"",happenings:"",pathways:"",about:"",submit:""};
-const PAGE_LABELS={home:"Home (Hero)",directory:"Directory",happenings:"What's Happening",pathways:"Pathways",about:"About",submit:"Join / Submit"};
+const DEFAULT_BGS={home:"",voices:"",opportunities:"",directory:"",pathways:"",happenings:"",submit:""};
+const PAGE_LABELS={home:"Home",voices:"Voices",opportunities:"Opportunities",directory:"Directory",pathways:"Pathways",happenings:"What's Happening",submit:"Get Access"};
 
-// =========== STATE ===========
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch{return def}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 
 let MEMBERS=load('tcc_members',DEFAULT_MEMBERS);
 let SPOTLIGHTS=load('tcc_spots',DEFAULT_SPOTLIGHTS);
+let VOICES=load('tcc_voices',DEFAULT_VOICES);
+let OPPS=load('tcc_opps',DEFAULT_OPPS);
+let GAME=load('tcc_game',DEFAULT_GAME);
+let ACCESS=load('tcc_access',DEFAULT_ACCESS);
 let EVENTS=load('tcc_events',DEFAULT_EVENTS);
 let PATHS=load('tcc_paths',DEFAULT_PATHS);
 let SECTIONS=load('tcc_sections',DEFAULT_SECTIONS);
@@ -682,98 +947,91 @@ let CFG=load('tcc_cfg',DEFAULT_CONFIG);
 let PW=load('tcc_pw',DEFAULT_PW);
 let BGS=load('tcc_bgs',DEFAULT_BGS);
 
-const TCOLOR={Legal:"var(--gold)","Film & Media":"var(--blue)","Food & Catering":"var(--green)",Finance:"var(--blue)",Retail:"var(--text)","Health & Wellness":"var(--green)",Tech:"var(--blue)",Corporate:"var(--gold)","Music & Entertainment":"var(--gold)"};
+const TCOLOR={Legal:"var(--gold)","Film & Media":"var(--blue)","Food & Catering":"var(--green)",Finance:"var(--blue)",Retail:"var(--text)","Health & Wellness":"var(--green)",Tech:"var(--blue)",Corporate:"var(--gold)","Music & Entertainment":"var(--gold)",Trades:"var(--red)",Education:"var(--green)"};
 
-// =========== BACKGROUND SYSTEM ===========
 function applyBG(page){
-  const gbg=document.getElementById('global-bg');
-  const gov=document.getElementById('global-bg-overlay');
-  const url=BGS[page]||'';
-  if(url){
-    gbg.style.backgroundImage=`url('${url}')`;
-    gbg.classList.add('active');
-    gov.classList.add('active');
-  } else {
-    gbg.classList.remove('active');
-    gov.classList.remove('active');
-    gbg.style.backgroundImage='';
-  }
+  const gbg=document.getElementById('global-bg'),gov=document.getElementById('global-bg-overlay'),url=BGS[page]||'';
+  if(url){gbg.style.backgroundImage="url('"+url+"')";gbg.classList.add('active');gov.classList.add('active');}
+  else{gbg.classList.remove('active');gov.classList.remove('active');gbg.style.backgroundImage='';}
 }
 
-// =========== NAV ===========
 window.addEventListener('scroll',()=>document.getElementById('sitenav').classList.toggle('stuck',window.scrollY>10));
-let dirFilter='All',pathFilter='All';
+let dirFilter='All',pathFilter='All',oppFilter='All';
 
 function go(id){
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nl').forEach(b=>b.classList.remove('on'));
-  document.getElementById('pg-'+id).classList.add('on');
+  const pg=document.getElementById('pg-'+id);
+  if(pg)pg.classList.add('on');
   const nb=document.getElementById('nl-'+id);if(nb)nb.classList.add('on');
   const dl=document.getElementById('dir-list'),dd=document.getElementById('dir-detail');
   if(dl&&dd){dl.style.display='block';dd.style.display='none';}
   window.scrollTo(0,0);
   applySection();
   applyBG(id);
+  if(id==='voices')renderVoicesFull();
+  if(id==='opportunities')renderOppsFull();
+  if(id==='directory')renderDir();
+  if(id==='pathways')renderPaths();
+  if(id==='happenings')renderHapFull();
 }
 
 function applySection(){
-  const map={spotlights:'sec-spotlights',whoweare:'sec-whoweare',happeningspreview:'sec-happenings-preview',joincta:'sec-join-cta'};
+  const map={stats:'sec-stats',vision:'sec-vision',voices:'sec-voices',realgame:'sec-realgame',opportunities:'sec-opportunities',access:'sec-access',spotlights:'sec-spotlights',happeningspreview:'sec-happenings-preview',joincta:'sec-join-cta'};
   Object.keys(map).forEach(k=>{const el=document.getElementById(map[k]);if(el)el.style.display=SECTIONS[k]?'':'none';});
 }
 
-// =========== HOME ===========
-function renderHomeSpots(){
-  const el=document.getElementById('home-spotlights');if(!el)return;
-  el.innerHTML=SPOTLIGHTS.slice(0,3).map(s=>`
-    <div class="spot-card"><div class="spot-top"></div><div class="spot-body">
-      <div style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">${s.cat}</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em;color:var(--text);line-height:1;margin-bottom:4px">${s.name}</div>
-      <div style="font-size:12px;color:var(--muted);margin-bottom:14px">${s.person}</div>
-      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:18px">${s.desc}</div>
-      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border)">
-        <div class="member-badge">Verified Member</div>
-        <span style="color:var(--gold);font-size:12px;font-weight:700">View Profile →</span>
-      </div>
-    </div></div>
-  `).join('');
+function voiceCard(v,full){
+  return '<div class="voice-card"><div class="voice-avatar">'+(v.emoji||'👤')+'</div><div style="display:flex;gap:8px;margin-bottom:10px"><div class="selected-badge">Selected Voice</div></div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:'+(full?'26px':'22px')+';letter-spacing:0.04em;color:var(--text);line-height:1;margin-bottom:4px">'+v.name+'</div><div style="font-size:11px;color:var(--muted);margin-bottom:14px;font-weight:600">'+v.prof+'</div><p style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:16px">'+v.desc+'</p><div style="background:rgba(201,168,76,0.05);border:1px solid rgba(201,168,76,0.12);border-radius:3px;padding:16px;border-left:3px solid var(--gold)"><p style="font-size:13px;color:var(--text);line-height:1.7;font-style:italic">"'+v.quote+'"</p></div></div>';
 }
 
-function renderHomeEvents(){
-  const el=document.getElementById('home-happenings');if(!el)return;
-  el.innerHTML=EVENTS.slice(0,4).map(h=>hapCard(h)).join('');
+function renderHomeVoices(){const el=document.getElementById('home-voices');if(!el)return;el.innerHTML=VOICES.slice(0,3).map(v=>voiceCard(v,false)).join('');}
+function renderVoicesFull(){const el=document.getElementById('voices-full');if(!el)return;el.innerHTML=VOICES.map(v=>voiceCard(v,true)).join('');}
+
+function renderHomeGame(){
+  const el=document.getElementById('home-realgame');if(!el)return;
+  el.innerHTML=GAME.slice(0,3).map(g=>'<div class="game-card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px"><span style="font-size:9px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold)">'+g.industry+'</span><span style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim)">Daily Drop</span></div><div style="font-size:14px;color:var(--text);line-height:1.75;font-style:italic;margin-bottom:18px;border-left:3px solid var(--gold);padding-left:16px">"'+g.quote+'"</div><div style="font-size:12px;font-weight:700;color:var(--muted)">— '+g.author+'</div></div>').join('');
+}
+
+function renderHomeSpots(){
+  const el=document.getElementById('home-spotlights');if(!el)return;
+  el.innerHTML=SPOTLIGHTS.slice(0,3).map(s=>'<div class="spot-card"><div class="spot-top"></div><div class="spot-body"><div style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">'+s.cat+'</div><div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;letter-spacing:0.04em;color:var(--text);line-height:1;margin-bottom:4px">'+s.name+'</div><div style="font-size:12px;color:var(--muted);margin-bottom:16px">'+s.person+'</div><p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:18px">'+s.desc+'</p><div style="display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:1px solid var(--border)"><div class="member-badge">Verified Member</div><span style="color:var(--gold);font-size:12px;font-weight:700">View Profile →</span></div></div></div>').join('');
+}
+
+function oppCard(o){
+  const cl=o.color||'gold';
+  return '<div class="opp-card '+cl+'"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px"><span style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)">'+o.type+'</span><span style="font-size:10px;color:var(--dim);font-weight:600">Deadline: '+o.deadline+'</span></div><div style="font-size:16px;font-weight:800;color:var(--text);margin-bottom:10px;line-height:1.3">'+o.title+'</div><p style="font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:14px">'+o.desc+'</p><div style="font-size:11px;color:var(--dim);font-weight:600">Posted by: '+o.by+'</div></div>';
+}
+
+function renderHomeOpps(){const el=document.getElementById('home-opportunities');if(!el)return;el.innerHTML=OPPS.slice(0,3).map(o=>oppCard(o)).join('');}
+function renderOppsFull(){
+  const list=oppFilter==='All'?OPPS:OPPS.filter(o=>o.type===oppFilter);
+  const el=document.getElementById('opps-full');if(!el)return;
+  el.innerHTML=list.length?list.map(o=>oppCard(o)).join(''):'<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)"><p>No opportunities in this category yet.</p></div>';
+}
+function setOF(f,btn){oppFilter=f;document.querySelectorAll('#opp-filters .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderOppsFull();}
+
+function renderHomeAccess(){
+  const el=document.getElementById('home-access');if(!el)return;
+  el.innerHTML=ACCESS.slice(0,3).map(a=>'<div class="access-card"><div class="access-thumb"><span style="font-size:52px">'+(a.emoji||'🎬')+'</span><div class="access-play">▶</div></div><div class="access-body"><div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">'+a.type+'</div><div style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.3">'+a.title+'</div><p style="font-size:13px;color:var(--muted);line-height:1.6">'+a.desc+'</p></div></div>').join('');
 }
 
 function hapCard(h){
   const bc=h.badge==="Free"?"var(--green)":"var(--gold)";
-  return `<div class="hap-item">
-    <div class="hi-date"><div class="hi-month">${h.month}</div><div class="hi-day">${h.day}</div></div>
-    <div class="hi-bar"></div>
-    <div style="flex:1"><div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:3px">${h.type}</div><div style="font-size:15px;font-weight:700;color:var(--text)">${h.title}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${h.meta}</div></div>
-    <span style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:${bc};background:${bc}15;border:1px solid ${bc}25;padding:5px 12px;border-radius:2px;flex-shrink:0">${h.badge}</span>
-  </div>`;
+  return '<div class="hap-item"><div class="hi-date"><div class="hi-month">'+h.month+'</div><div class="hi-day">'+h.day+'</div></div><div class="hi-bar"></div><div style="flex:1"><div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px">'+h.type+'</div><div style="font-size:15px;font-weight:700;color:var(--text)">'+h.title+'</div><div style="font-size:12px;color:var(--muted);margin-top:3px">'+h.meta+'</div></div><span style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:'+bc+';background:'+bc+'15;border:1px solid '+bc+'25;padding:6px 14px;border-radius:2px;flex-shrink:0">'+h.badge+'</span></div>';
 }
+function renderHomeEvents(){const el=document.getElementById('home-happenings');if(!el)return;el.innerHTML=EVENTS.slice(0,4).map(h=>hapCard(h)).join('');}
+function renderHapFull(){const el=document.getElementById('hap-full');if(!el)return;el.innerHTML=EVENTS.map(h=>hapCard(h)).join('');}
 
-// =========== DIRECTORY ===========
 function renderDir(){
-  const q=(document.getElementById('dir-search')||{}).value||'';
-  const search=q.toLowerCase();
+  const q=(document.getElementById('dir-search')||{}).value||'',search=q.toLowerCase();
   let list=MEMBERS;
   if(dirFilter!=='All')list=list.filter(m=>m.type===dirFilter);
   if(search)list=list.filter(m=>(m.name+m.person+m.tagline+(m.tags||[]).join(' ')).toLowerCase().includes(search));
   const col=m=>TCOLOR[m.type]||'var(--muted)';
-  document.getElementById('dir-grid').innerHTML=list.length?list.map(m=>`
-    <div class="dir-card" onclick="showMember(${m.id})">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start">
-        <div style="width:50px;height:50px;border-radius:3px;background:${col(m)}12;border:1px solid ${col(m)}20;display:flex;align-items:center;justify-content:center;font-size:24px">${m.emoji||'🏢'}</div>
-        <span style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:${col(m)}">${m.type}</span>
-      </div>
-      <div><div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:2px">${m.name}</div><div style="font-size:12px;color:var(--muted)">${m.person} · ${m.city}</div></div>
-      <p style="color:var(--muted);font-size:13px;line-height:1.55">${m.tagline}</p>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">${(m.tags||[]).map(t=>`<span class="tag tag-dim">${t}</span>`).join('')}</div>
-    </div>
-  `).join(''):`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)"><p>No results found.</p></div>`;
+  const el=document.getElementById('dir-grid');if(!el)return;
+  el.innerHTML=list.length?list.map(m=>'<div class="dir-card" onclick="showMember('+m.id+')"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div style="width:52px;height:52px;border-radius:3px;background:'+col(m)+'12;border:1px solid '+col(m)+'20;display:flex;align-items:center;justify-content:center;font-size:26px">'+(m.emoji||'🏢')+'</div><span style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:'+col(m)+'">'+m.type+'</span></div><div><div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:3px">'+m.name+'</div><div style="font-size:12px;color:var(--muted)">'+m.person+' · '+m.city+'</div></div><p style="color:var(--muted);font-size:13px;line-height:1.6">'+m.tagline+'</p><div style="display:flex;gap:6px;flex-wrap:wrap">'+(m.tags||[]).map(t=>'<span class="tag tag-dim">'+t+'</span>').join('')+'</div></div>').join(''):'<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)"><p>No results found.</p></div>';
 }
-
 function setDF(f,btn){dirFilter=f;document.querySelectorAll('#dir-filters .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderDir();}
 
 function showMember(id){
@@ -781,42 +1039,22 @@ function showMember(id){
   const col=TCOLOR[m.type]||'var(--gold)';
   document.getElementById('dir-list').style.display='none';
   const dd=document.getElementById('dir-detail');dd.style.display='block';
-  dd.querySelector('div').innerHTML=`
-    <button class="back" onclick="document.getElementById('dir-list').style.display='block';document.getElementById('dir-detail').style.display='none'">← Back to Directory</button>
-    <div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:44px;margin-bottom:24px;position:relative;overflow:hidden">
-      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2))"></div>
-      <div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:22px">
-        <div style="width:80px;height:80px;border-radius:4px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0">${m.emoji||'🏢'}</div>
-        <div><div style="font-size:9px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:${col};margin-bottom:8px">${m.type}</div><h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,44px);letter-spacing:0.04em;color:var(--text);line-height:1;margin-bottom:6px">${m.name}</h1><p style="color:var(--muted);font-size:14px;margin-bottom:10px">${m.person} · ${m.city}</p><div class="member-badge">Verified Member</div></div>
-      </div>
-      <p style="color:var(--muted);font-size:15px;line-height:1.7;max-width:680px">${m.tagline}</p>
-    </div>
-    <div class="grid2" style="align-items:flex-start">
-      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Services Offered</p><div class="card" style="padding:24px">${(m.services||[]).map(s=>`<div class="svc-row"><span style="color:${col};flex-shrink:0;font-size:14px">◆</span><p style="color:var(--text);font-size:14px;line-height:1.5">${s}</p></div>`).join('')}</div></div>
-      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Contact & Book</p>${m.contact&&m.contact.consult?`<div style="background:${col}10;border:1px solid ${col}22;border-radius:3px;padding:12px 16px;margin-bottom:14px"><p style="color:${col};font-size:12px;font-weight:700">✓ ${m.contact.consult}</p></div>`:''}${m.contact?`<div class="cr"><div class="cr-ic">📞</div><div><div style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px">Phone</div><a href="tel:${m.contact.phone}" style="font-size:14px;font-weight:700;color:var(--text)">${m.contact.phone}</a></div></div><div class="cr"><div class="cr-ic">✉️</div><div><div style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px">Email</div><a href="mailto:${m.contact.email}" style="font-size:14px;font-weight:700;color:var(--text)">${m.contact.email}</a></div></div>`:''}
-      <button class="btn btn-gold" style="width:100%;margin-top:6px;padding:14px;font-size:11px">Contact ${m.name}</button></div>
-    </div>
-  `;window.scrollTo(0,0);
+  dd.querySelector('div').innerHTML='<button class="back" onclick="document.getElementById(\'dir-list\').style.display=\'block\';document.getElementById(\'dir-detail\').style.display=\'none\'">← Back to Directory</button><div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:44px;margin-bottom:24px;position:relative;overflow:hidden"><div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2))"></div><div style="display:flex;align-items:flex-start;gap:24px;margin-bottom:24px"><div style="width:80px;height:80px;border-radius:4px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:38px;flex-shrink:0">'+(m.emoji||'🏢')+'</div><div><div style="font-size:9px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:'+col+';margin-bottom:8px">'+m.type+'</div><h1 style="font-family:\'Bebas Neue\',sans-serif;font-size:clamp(28px,4vw,48px);letter-spacing:0.04em;color:var(--text);line-height:1;margin-bottom:8px">'+m.name+'</h1><p style="color:var(--muted);font-size:14px;margin-bottom:12px">'+m.person+' · '+m.city+'</p><div class="member-badge">Verified Member</div></div></div><p style="color:var(--muted);font-size:15px;line-height:1.75;max-width:680px">'+m.tagline+'</p></div><div class="grid2" style="align-items:flex-start"><div><p style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Services Offered</p><div class="card" style="padding:24px">'+(m.services||[]).map(s=>'<div class="svc-row"><span style="color:'+col+';flex-shrink:0;font-size:14px">◆</span><p style="color:var(--text);font-size:14px;line-height:1.6">'+s+'</p></div>').join('')+'</div></div><div><p style="font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:14px">Contact & Book</p>'+(m.contact&&m.contact.consult?'<div style="background:'+col+'10;border:1px solid '+col+'22;border-radius:3px;padding:14px 18px;margin-bottom:14px"><p style="color:'+col+';font-size:12px;font-weight:700">✓ '+m.contact.consult+'</p></div>':'')+(m.contact?'<div class="cr"><div class="cr-ic">📞</div><div><div style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px">Phone</div><a href="tel:'+m.contact.phone+'" style="font-size:14px;font-weight:700;color:var(--text)">'+m.contact.phone+'</a></div></div><div class="cr"><div class="cr-ic">✉️</div><div><div style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);margin-bottom:2px">Email</div><a href="mailto:'+m.contact.email+'" style="font-size:14px;font-weight:700;color:var(--text)">'+m.contact.email+'</a></div></div>':'')+'<button class="btn btn-gold" style="width:100%;margin-top:8px;padding:15px;font-size:11px">Contact '+m.name+'</button></div></div>';
+  window.scrollTo(0,0);
 }
 
-// =========== HAPPENINGS ===========
-function renderHapFull(){const el=document.getElementById('hap-full');if(!el)return;el.innerHTML=EVENTS.map(h=>hapCard(h)).join('');}
-
-// =========== PATHWAYS ===========
 function renderPaths(){
   const list=pathFilter==='All'?PATHS:PATHS.filter(p=>p.type===pathFilter);
   const sc={Open:"var(--green)",Active:"var(--blue)",Seasonal:"var(--gold)"};
-  document.getElementById('path-grid').innerHTML=list.map(p=>`
-    <div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px"><span style="font-size:32px">${p.emoji||'📋'}</span><span style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${sc[p.status]||'var(--green)'};background:${sc[p.status]||'var(--green)'}12;border:1px solid ${sc[p.status]||'var(--green)'}22;padding:4px 10px;border-radius:2px">${p.status}</span></div><p style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.3">${p.title}</p><div style="display:flex;gap:7px;margin-bottom:12px"><span class="tag tag-gold">${p.type}</span><span class="tag tag-dim">${p.city}</span></div><p style="color:var(--muted);font-size:13px;line-height:1.6">${p.desc}</p></div>
-  `).join('');
+  const el=document.getElementById('path-grid');if(!el)return;
+  el.innerHTML=list.map(p=>'<div class="card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px"><span style="font-size:32px">'+(p.emoji||'📋')+'</span><span style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:'+(sc[p.status]||'var(--green)')+';background:'+(sc[p.status]||'var(--green)')+'12;border:1px solid '+(sc[p.status]||'var(--green)')+'22;padding:4px 10px;border-radius:2px">'+p.status+'</span></div><p style="font-size:15px;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.3">'+p.title+'</p><div style="display:flex;gap:7px;margin-bottom:12px"><span class="tag tag-gold">'+p.type+'</span><span class="tag tag-dim">'+p.city+'</span></div><p style="color:var(--muted);font-size:13px;line-height:1.65">'+p.desc+'</p></div>').join('');
 }
 function setPF(f,btn){pathFilter=f;document.querySelectorAll('#path-filters .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderPaths();}
 
-// =========== SUBMIT ===========
 let selT=1;
 function selType(n){
   selT=n;
-  for(let i=1;i<=4;i++){
+  for(let i=1;i<=5;i++){
     const o=document.getElementById('so-'+i),c=document.getElementById('sc-'+i);
     if(!o||!c)continue;
     o.style.borderColor=i===n?'var(--gold)':'var(--border)';
@@ -828,182 +1066,117 @@ function selType(n){
   }
 }
 function submitForm(){
-  document.getElementById('submit-form').innerHTML=`<div style="text-align:center;padding:60px 20px"><div class="s-circle">✓</div><h3 style="font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:0.04em;color:var(--green);margin-bottom:10px">Submission Received</h3><p style="color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:28px">We review all submissions within 48 hours. If approved your listing goes live and we'll notify you.</p><button class="btn btn-ghost" onclick="location.reload()">Submit Another</button></div>`;
+  document.getElementById('submit-form').innerHTML='<div style="text-align:center;padding:60px 20px"><div style="width:80px;height:80px;border-radius:50%;background:rgba(61,190,138,0.1);border:1px solid rgba(61,190,138,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:32px">✓</div><h3 style="font-family:\'Bebas Neue\',sans-serif;font-size:36px;letter-spacing:0.04em;color:var(--green);margin-bottom:12px">Submission Received</h3><p style="color:var(--muted);font-size:15px;line-height:1.75;margin-bottom:8px;max-width:460px;margin-left:auto;margin-right:auto">We review all submissions within 48 hours. Selected submissions go live on the platform and you\'ll be notified directly.</p><p style="color:var(--dim);font-size:13px;margin-bottom:32px">Thank you for being part of something real.</p><button class="btn btn-ghost" onclick="location.reload()">Submit Another</button></div>';
 }
 
-// =========== CONFIG ===========
 function applyConfig(){
-  const e=document.getElementById('f-email');const ig=document.getElementById('f-ig');const tw=document.getElementById('f-tw');
+  const e=document.getElementById('f-email'),ig=document.getElementById('f-ig'),tw=document.getElementById('f-tw');
   if(e)e.textContent=CFG.email;if(ig)ig.textContent=CFG.ig;if(tw)tw.textContent=CFG.tw;
 }
 
-// =========== ADMIN ===========
-function openAdmin(){document.getElementById('admin-login').classList.add('show');document.getElementById('admin-pw').value='';document.getElementById('admin-pw').focus();}
+function openAdmin(){document.getElementById('admin-login').classList.add('show');document.getElementById('admin-pw').value='';setTimeout(()=>document.getElementById('admin-pw').focus(),100);}
 function checkPw(){
   const v=document.getElementById('admin-pw').value;
   if(v===PW){document.getElementById('admin-login').classList.remove('show');document.getElementById('admin-panel').classList.add('show');renderAdminAll();}
-  else{document.getElementById('admin-pw').style.borderColor='var(--red)';setTimeout(()=>document.getElementById('admin-pw').style.borderColor='',1200);}
+  else{document.getElementById('admin-pw').style.borderColor='var(--red)';setTimeout(()=>document.getElementById('admin-pw').style.borderColor='',1400);}
 }
 function closeAdmin(){document.getElementById('admin-panel').classList.remove('show');renderAll();}
+function aTab(id,btn){document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.at').forEach(b=>b.classList.remove('on'));document.getElementById('atab-'+id).classList.add('on');btn.classList.add('on');}
+function toggleForm(id){const f=document.getElementById(id);f.style.display=f.style.display==='none'?'block':'none';}
+function renderAdminAll(){renderVoicesAdminList();renderGameAdminList();renderOppsAdminList();renderAccessAdminList();renderMemberList();renderSpotAdminList();renderEventsAdminList();renderPathsAdminList();renderSectionsList();renderBGList();loadConfig();}
 
-function aTab(id,btn){
-  document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('on'));
-  document.querySelectorAll('.at').forEach(b=>b.classList.remove('on'));
-  document.getElementById('atab-'+id).classList.add('on');btn.classList.add('on');
-}
+function renderVoicesAdminList(){document.getElementById('voices-admin-list').innerHTML=VOICES.length?VOICES.map(v=>'<div class="a-card"><div class="a-card-info"><h4>'+(v.emoji||'👤')+' '+v.name+'</h4><p>'+v.prof+'</p></div><div class="a-card-actions"><button class="btn-del" onclick="deleteVoice('+v.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No voices yet.</p>';}
+function addVoice(){const name=document.getElementById('nv-name').value.trim();if(!name){alert('Name required');return;}VOICES.push({id:Date.now(),name,prof:document.getElementById('nv-prof').value,emoji:document.getElementById('nv-emoji').value||'👤',desc:document.getElementById('nv-desc').value,quote:document.getElementById('nv-quote').value});save('tcc_voices',VOICES);toggleForm('add-voice-form');['nv-name','nv-prof','nv-emoji','nv-desc','nv-quote'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderVoicesAdminList();alert('Voice added!');}
+function deleteVoice(id){if(!confirm('Remove?'))return;VOICES=VOICES.filter(v=>v.id!==id);save('tcc_voices',VOICES);renderVoicesAdminList();}
 
-function renderAdminAll(){renderMemberList();renderSpotAdminList();renderEventsAdminList();renderPathsAdminList();renderSectionsList();renderBGList();loadConfig();}
+function renderGameAdminList(){document.getElementById('game-admin-list').innerHTML=GAME.length?GAME.map(g=>'<div class="a-card"><div class="a-card-info"><h4>'+g.author+'</h4><p>'+g.industry+' · '+g.quote.substring(0,70)+'...</p></div><div class="a-card-actions"><button class="btn-del" onclick="deleteGame('+g.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No posts yet.</p>';}
+function addGame(){const quote=document.getElementById('ng-quote').value.trim();if(!quote){alert('Quote required');return;}GAME.push({id:Date.now(),author:document.getElementById('ng-author').value,industry:document.getElementById('ng-industry').value,quote});save('tcc_game',GAME);toggleForm('add-game-form');['ng-author','ng-industry','ng-quote'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderGameAdminList();alert('Post added!');}
+function deleteGame(id){if(!confirm('Remove?'))return;GAME=GAME.filter(g=>g.id!==id);save('tcc_game',GAME);renderGameAdminList();}
 
-// MEMBER ADMIN
-function renderMemberList(){
-  const el=document.getElementById('member-list');
-  el.innerHTML=MEMBERS.length?MEMBERS.map(m=>`
-    <div class="a-card"><div class="a-card-info"><h4>${m.emoji||'🏢'} ${m.name}</h4><p>${m.type} · ${m.person} · ${m.city}</p></div>
-    <div class="a-card-actions"><button class="btn-del" onclick="deleteMember(${m.id})">Remove</button></div></div>
-  `).join(''):`<p style="color:var(--muted);font-size:14px">No members yet.</p>`;
-}
-function openAddMember(){const f=document.getElementById('add-member-form');f.style.display=f.style.display==='none'?'block':'none';}
+function renderOppsAdminList(){document.getElementById('opps-admin-list').innerHTML=OPPS.length?OPPS.map(o=>'<div class="a-card"><div class="a-card-info"><h4>'+o.title+'</h4><p>'+o.type+' · '+o.by+' · '+o.deadline+'</p></div><div class="a-card-actions"><button class="btn-del" onclick="deleteOpp('+o.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No opportunities yet.</p>';}
+function addOpp(){const title=document.getElementById('no-title').value.trim();if(!title){alert('Title required');return;}OPPS.push({id:Date.now(),title,type:document.getElementById('no-type').value,by:document.getElementById('no-by').value,deadline:document.getElementById('no-deadline').value,desc:document.getElementById('no-desc').value,color:document.getElementById('no-color').value});save('tcc_opps',OPPS);toggleForm('add-opp-form');['no-title','no-by','no-deadline','no-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderOppsAdminList();alert('Opportunity added!');}
+function deleteOpp(id){if(!confirm('Remove?'))return;OPPS=OPPS.filter(o=>o.id!==id);save('tcc_opps',OPPS);renderOppsAdminList();}
+
+function renderAccessAdminList(){document.getElementById('access-admin-list').innerHTML=ACCESS.length?ACCESS.map(a=>'<div class="a-card"><div class="a-card-info"><h4>'+(a.emoji||'🎬')+' '+a.title+'</h4><p>'+a.type+'</p></div><div class="a-card-actions"><button class="btn-del" onclick="deleteAccess('+a.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No content yet.</p>';}
+function addAccess(){const title=document.getElementById('na-title').value.trim();if(!title){alert('Title required');return;}ACCESS.push({id:Date.now(),title,type:document.getElementById('na-type').value,emoji:document.getElementById('na-emoji').value||'🎬',desc:document.getElementById('na-desc').value});save('tcc_access',ACCESS);toggleForm('add-access-form');['na-title','na-emoji','na-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderAccessAdminList();alert('Content added!');}
+function deleteAccess(id){if(!confirm('Remove?'))return;ACCESS=ACCESS.filter(a=>a.id!==id);save('tcc_access',ACCESS);renderAccessAdminList();}
+
+function renderMemberList(){document.getElementById('member-list').innerHTML=MEMBERS.length?MEMBERS.map(m=>'<div class="a-card"><div class="a-card-info"><h4>'+(m.emoji||'🏢')+' '+m.name+'</h4><p>'+m.type+' · '+m.person+' · '+m.city+'</p></div><div class="a-card-actions"><button class="btn-del" onclick="deleteMember('+m.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No members yet.</p>';}
 function addMember(){
-  const name=document.getElementById('nm-name').value.trim();
-  if(!name){alert('Business name is required');return;}
+  const name=document.getElementById('nm-name').value.trim();if(!name){alert('Name required');return;}
   const svcs=document.getElementById('nm-services').value.split('\n').filter(s=>s.trim());
   const tags=document.getElementById('nm-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
-  const newId=Date.now();
-  MEMBERS.push({id:newId,type:document.getElementById('nm-type').value,name,person:document.getElementById('nm-person').value,city:document.getElementById('nm-city').value,emoji:document.getElementById('nm-emoji').value||'🏢',tagline:document.getElementById('nm-tagline').value,services:svcs,contact:{phone:document.getElementById('nm-phone').value,email:document.getElementById('nm-email').value,consult:document.getElementById('nm-consult').value},tags});
-  save('tcc_members',MEMBERS);document.getElementById('add-member-form').style.display='none';
+  MEMBERS.push({id:Date.now(),type:document.getElementById('nm-type').value,name,person:document.getElementById('nm-person').value,city:document.getElementById('nm-city').value,emoji:document.getElementById('nm-emoji').value||'🏢',tagline:document.getElementById('nm-tagline').value,services:svcs,contact:{phone:document.getElementById('nm-phone').value,email:document.getElementById('nm-email').value,consult:document.getElementById('nm-consult').value},tags});
+  save('tcc_members',MEMBERS);toggleForm('add-member-form');
   ['nm-name','nm-person','nm-city','nm-tagline','nm-services','nm-phone','nm-email','nm-consult','nm-tags','nm-emoji'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  renderMemberList();alert('✓ Member added!');
+  renderMemberList();alert('Member added!');
 }
-function deleteMember(id){if(!confirm('Remove this member?'))return;MEMBERS=MEMBERS.filter(m=>m.id!==id);save('tcc_members',MEMBERS);renderMemberList();}
+function deleteMember(id){if(!confirm('Remove?'))return;MEMBERS=MEMBERS.filter(m=>m.id!==id);save('tcc_members',MEMBERS);renderMemberList();}
 
-// SPOTLIGHT ADMIN
-function renderSpotAdminList(){
-  const el=document.getElementById('spotlight-admin-list');
-  el.innerHTML=SPOTLIGHTS.length?SPOTLIGHTS.map(s=>`
-    <div class="a-card"><div class="a-card-info"><h4>${s.name}</h4><p>${s.cat} · ${s.person}</p></div>
-    <div class="a-card-actions"><button class="btn-del" onclick="deleteSpot(${s.id})">Remove</button></div></div>
-  `).join(''):`<p style="color:var(--muted);font-size:14px">No spotlights yet.</p>`;
-}
-function openAddSpotlight(){const f=document.getElementById('add-spotlight-form');f.style.display=f.style.display==='none'?'block':'none';}
-function addSpotlight(){
-  const name=document.getElementById('ns-name').value.trim();if(!name){alert('Name required');return;}
-  SPOTLIGHTS.push({id:Date.now(),name,person:document.getElementById('ns-person').value,cat:document.getElementById('ns-cat').value,desc:document.getElementById('ns-desc').value});
-  save('tcc_spots',SPOTLIGHTS);document.getElementById('add-spotlight-form').style.display='none';
-  ['ns-name','ns-person','ns-cat','ns-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  renderSpotAdminList();alert('✓ Spotlight added!');
-}
-function deleteSpot(id){if(!confirm('Remove this spotlight?'))return;SPOTLIGHTS=SPOTLIGHTS.filter(s=>s.id!==id);save('tcc_spots',SPOTLIGHTS);renderSpotAdminList();}
+function renderSpotAdminList(){document.getElementById('spotlight-admin-list').innerHTML=SPOTLIGHTS.length?SPOTLIGHTS.map(s=>'<div class="a-card"><div class="a-card-info"><h4>'+s.name+'</h4><p>'+s.cat+' · '+s.person+'</p></div><div class="a-card-actions"><button class="btn-del" onclick="deleteSpot('+s.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No spotlights yet.</p>';}
+function addSpotlight(){const name=document.getElementById('ns-name').value.trim();if(!name){alert('Name required');return;}SPOTLIGHTS.push({id:Date.now(),name,person:document.getElementById('ns-person').value,cat:document.getElementById('ns-cat').value,desc:document.getElementById('ns-desc').value});save('tcc_spots',SPOTLIGHTS);toggleForm('add-spotlight-form');['ns-name','ns-person','ns-cat','ns-desc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderSpotAdminList();alert('Spotlight added!');}
+function deleteSpot(id){if(!confirm('Remove?'))return;SPOTLIGHTS=SPOTLIGHTS.filter(s=>s.id!==id);save('tcc_spots',SPOTLIGHTS);renderSpotAdminList();}
 
-// EVENTS ADMIN
-function renderEventsAdminList(){
-  const el=document.getElementById('events-admin-list');
-  el.innerHTML=EVENTS.length?EVENTS.map(h=>`
-    <div class="a-card"><div class="a-card-info"><h4>${h.month} ${h.day} — ${h.title}</h4><p>${h.type} · ${h.meta}</p></div>
-    <div class="a-card-actions"><button class="btn-del" onclick="deleteEvent(${h.id})">Remove</button></div></div>
-  `).join(''):`<p style="color:var(--muted);font-size:14px">No events yet.</p>`;
-}
-function openAddEvent(){const f=document.getElementById('add-event-form');f.style.display=f.style.display==='none'?'block':'none';}
-function addEvent(){
-  const title=document.getElementById('ne-title').value.trim();if(!title){alert('Title required');return;}
-  EVENTS.push({id:Date.now(),month:document.getElementById('ne-month').value,day:document.getElementById('ne-day').value,type:document.getElementById('ne-type').value,title,meta:document.getElementById('ne-meta').value,badge:document.getElementById('ne-badge').value});
-  save('tcc_events',EVENTS);document.getElementById('add-event-form').style.display='none';
-  ['ne-month','ne-day','ne-title','ne-meta'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  renderEventsAdminList();alert('✓ Event added!');
-}
-function deleteEvent(id){if(!confirm('Remove this event?'))return;EVENTS=EVENTS.filter(e=>e.id!==id);save('tcc_events',EVENTS);renderEventsAdminList();}
+function renderEventsAdminList(){document.getElementById('events-admin-list').innerHTML=EVENTS.length?EVENTS.map(h=>'<div class="a-card"><div class="a-card-info"><h4>'+h.month+' '+h.day+' — '+h.title+'</h4><p>'+h.type+' · '+h.meta+'</p></div><div class="a-card-actions"><button class="btn-del" onclick="deleteEvent('+h.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No events yet.</p>';}
+function addEvent(){const title=document.getElementById('ne-title').value.trim();if(!title){alert('Title required');return;}EVENTS.push({id:Date.now(),month:document.getElementById('ne-month').value,day:document.getElementById('ne-day').value,type:document.getElementById('ne-type').value,title,meta:document.getElementById('ne-meta').value,badge:document.getElementById('ne-badge').value});save('tcc_events',EVENTS);toggleForm('add-event-form');['ne-month','ne-day','ne-title','ne-meta'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderEventsAdminList();alert('Event added!');}
+function deleteEvent(id){if(!confirm('Remove?'))return;EVENTS=EVENTS.filter(e=>e.id!==id);save('tcc_events',EVENTS);renderEventsAdminList();}
 
-// PATHS ADMIN
-function renderPathsAdminList(){
-  const el=document.getElementById('paths-admin-list');
-  el.innerHTML=PATHS.length?PATHS.map(p=>`
-    <div class="a-card"><div class="a-card-info"><h4>${p.emoji} ${p.title}</h4><p>${p.type} · ${p.city} · ${p.status}</p></div>
-    <div class="a-card-actions"><button class="btn-del" onclick="deletePath(${p.id})">Remove</button></div></div>
-  `).join(''):`<p style="color:var(--muted);font-size:14px">No pathways yet.</p>`;
-}
-function openAddPath(){const f=document.getElementById('add-path-form');f.style.display=f.style.display==='none'?'block':'none';}
-function addPath(){
-  const title=document.getElementById('np-title').value.trim();if(!title){alert('Title required');return;}
-  PATHS.push({id:Date.now(),title,type:document.getElementById('np-type').value,city:document.getElementById('np-city').value,status:document.getElementById('np-status').value,desc:document.getElementById('np-desc').value,emoji:document.getElementById('np-emoji').value||'📋'});
-  save('tcc_paths',PATHS);document.getElementById('add-path-form').style.display='none';
-  ['np-title','np-city','np-desc','np-emoji'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  renderPathsAdminList();alert('✓ Resource added!');
-}
-function deletePath(id){if(!confirm('Remove this resource?'))return;PATHS=PATHS.filter(p=>p.id!==id);save('tcc_paths',PATHS);renderPathsAdminList();}
+function renderPathsAdminList(){document.getElementById('paths-admin-list').innerHTML=PATHS.length?PATHS.map(p=>'<div class="a-card"><div class="a-card-info"><h4>'+(p.emoji||'📋')+' '+p.title+'</h4><p>'+p.type+' · '+p.city+' · '+p.status+'</p></div><div class="a-card-actions"><button class="btn-del" onclick="deletePath('+p.id+')">Remove</button></div></div>').join(''):'<p style="color:var(--muted)">No pathways yet.</p>';}
+function addPath(){const title=document.getElementById('np-title').value.trim();if(!title){alert('Title required');return;}PATHS.push({id:Date.now(),title,type:document.getElementById('np-type').value,city:document.getElementById('np-city').value,status:document.getElementById('np-status').value,desc:document.getElementById('np-desc').value,emoji:document.getElementById('np-emoji').value||'📋'});save('tcc_paths',PATHS);toggleForm('add-path-form');['np-title','np-city','np-desc','np-emoji'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});renderPathsAdminList();alert('Resource added!');}
+function deletePath(id){if(!confirm('Remove?'))return;PATHS=PATHS.filter(p=>p.id!==id);save('tcc_paths',PATHS);renderPathsAdminList();}
 
-// SECTIONS ADMIN
 function renderSectionsList(){
   const secs=[
-    {key:'spotlights',label:'Member Spotlights',desc:'Featured businesses on the homepage'},
-    {key:'whoweare',label:'Who We Serve Section',desc:'Industry categories and mission statement'},
-    {key:'happeningspreview',label:"What's Happening Preview",desc:'Events preview on the homepage'},
-    {key:'joincta',label:'Join CTA Banner',desc:'Call-to-action to join or submit'},
+    {key:'stats',label:'Stat Strip',desc:'Impact numbers below the hero'},
+    {key:'vision',label:'Not Just a Platform',desc:'Ecosystem explanation section'},
+    {key:'voices',label:'Featured Voices',desc:'Selected professionals sharing knowledge'},
+    {key:'realgame',label:'Real Game',desc:'Daily knowledge drops'},
+    {key:'opportunities',label:'Opportunities',desc:'Casting calls, jobs, grants, collabs'},
+    {key:'access',label:'Inside Access',desc:'Backstage and exclusive content'},
+    {key:'spotlights',label:'Member Spotlights',desc:'Featured businesses this week'},
+    {key:'happeningspreview',label:"What's Happening Preview",desc:'Events on homepage'},
+    {key:'joincta',label:'Get Access CTA',desc:'Call to action banner'},
   ];
-  document.getElementById('sections-list').innerHTML=secs.map(s=>`
-    <div class="toggle-row"><div><h4>${s.label}</h4><p>${s.desc}</p></div>
-      <label class="toggle"><input type="checkbox" ${SECTIONS[s.key]?'checked':''} onchange="toggleSec('${s.key}',this.checked)"><span class="slider"></span></label>
-    </div>
-  `).join('');
+  document.getElementById('sections-list').innerHTML=secs.map(s=>'<div class="toggle-row"><div><h4>'+s.label+'</h4><p>'+s.desc+'</p></div><label class="toggle"><input type="checkbox" '+(SECTIONS[s.key]?'checked':'')+' onchange="toggleSec(\''+s.key+'\',this.checked)"><span class="slider"></span></label></div>').join('');
 }
 function toggleSec(key,val){SECTIONS[key]=val;save('tcc_sections',SECTIONS);applySection();}
 
 function renderBGList(){
-  const pages=Object.keys(DEFAULT_BGS);
-  document.getElementById('bg-page-list').innerHTML=pages.map(pg=>{
+  document.getElementById('bg-page-list').innerHTML=Object.keys(DEFAULT_BGS).map(pg=>{
     const url=BGS[pg]||'';
-    const previewStyle=url?"background-image:url('"+url+"')":'';
-    const previewClass=url?'bg-preview':'bg-preview bg-preview-none';
-    return '<div class="bg-page-card"><h4>'+PAGE_LABELS[pg]+'</h4><p>Paste a direct image URL. Leave blank for default dark background.</p><div class="'+previewClass+'" id="bgprev-'+pg+'" style="'+previewStyle+'">'+(url?'':'No Image Set')+'</div><input class="fi" id="bginput-'+pg+'" placeholder="https://... or /your-image.jpg" value="'+url+'" style="margin-bottom:8px" oninput="previewBG(\''+pg+'\')"><button class="btn-edit" onclick="clearBG(\''+pg+'\')">Clear</button></div>';
+    return '<div class="bg-page-card"><h4>'+PAGE_LABELS[pg]+'</h4><p>Paste a direct image URL. Leave blank for default dark background.</p><div class="bg-preview" id="bgprev-'+pg+'" style="'+(url?"background-image:url('"+url+"');background-size:cover":'')+'">'+(url?'':'No Image Set')+'</div><input class="fi" id="bginput-'+pg+'" placeholder="https://... or /image.jpg" value="'+url+'" style="margin-bottom:8px" oninput="previewBG(\''+pg+'\')"><button class="btn-edit" onclick="clearBG(\''+pg+'\')">Clear</button></div>';
   }).join('');
 }
-function previewBG(pg){
-  const url=document.getElementById('bginput-'+pg).value.trim();
-  const prev=document.getElementById('bgprev-'+pg);
-  if(url){prev.style.backgroundImage="url('"+url+"')";prev.classList.remove('bg-preview-none');prev.textContent='';}
-  else{prev.style.backgroundImage='';prev.classList.add('bg-preview-none');prev.textContent='No Image Set';}
-}
+function previewBG(pg){const url=document.getElementById('bginput-'+pg).value.trim();const prev=document.getElementById('bgprev-'+pg);if(url){prev.style.backgroundImage="url('"+url+"')";prev.style.backgroundSize='cover';prev.textContent='';}else{prev.style.backgroundImage='';prev.textContent='No Image Set';}}
 function clearBG(pg){document.getElementById('bginput-'+pg).value='';previewBG(pg);}
-function saveBGs(){
-  Object.keys(DEFAULT_BGS).forEach(pg=>{const inp=document.getElementById('bginput-'+pg);if(inp)BGS[pg]=inp.value.trim();});
-  save('tcc_bgs',BGS);
-  const msg=document.getElementById('bg-msg');
-  msg.textContent='Backgrounds saved!';
-  setTimeout(()=>msg.textContent='',2500);
-}
-function loadConfig(){
-  const e=document.getElementById('cfg-email');const i=document.getElementById('cfg-ig');const t=document.getElementById('cfg-tw');
-  if(e)e.value=CFG.email;if(i)i.value=CFG.ig;if(t)t.value=CFG.tw;
-}
-function saveConfig(){
-  CFG.email=document.getElementById('cfg-email').value;
-  CFG.ig=document.getElementById('cfg-ig').value;
-  CFG.tw=document.getElementById('cfg-tw').value;
-  save('tcc_cfg',CFG);applyConfig();
-  document.getElementById('cfg-msg').textContent='Saved!';
-  setTimeout(()=>{document.getElementById('cfg-msg').textContent='';},2000);
-}
+function saveBGs(){Object.keys(DEFAULT_BGS).forEach(pg=>{const inp=document.getElementById('bginput-'+pg);if(inp)BGS[pg]=inp.value.trim();});save('tcc_bgs',BGS);const msg=document.getElementById('bg-msg');msg.textContent='Backgrounds saved!';setTimeout(()=>msg.textContent='',2500);}
+
+function loadConfig(){const e=document.getElementById('cfg-email'),i=document.getElementById('cfg-ig'),t=document.getElementById('cfg-tw');if(e)e.value=CFG.email;if(i)i.value=CFG.ig;if(t)t.value=CFG.tw;}
+function saveConfig(){CFG.email=document.getElementById('cfg-email').value;CFG.ig=document.getElementById('cfg-ig').value;CFG.tw=document.getElementById('cfg-tw').value;save('tcc_cfg',CFG);applyConfig();document.getElementById('cfg-msg').textContent='Saved!';setTimeout(()=>document.getElementById('cfg-msg').textContent='',2000);}
 function changePw(){
-  const cur=document.getElementById('pw-current').value;
-  const nw=document.getElementById('pw-new').value;
-  const cf=document.getElementById('pw-confirm').value;
-  const msg=document.getElementById('pw-msg');
+  const cur=document.getElementById('pw-current').value,nw=document.getElementById('pw-new').value,cf=document.getElementById('pw-confirm').value,msg=document.getElementById('pw-msg');
   if(cur!==PW){msg.style.color='var(--red)';msg.textContent='Current password incorrect';return;}
-  if(nw!==cf){msg.style.color='var(--red)';msg.textContent='New passwords do not match';return;}
-  if(nw.length<4){msg.style.color='var(--red)';msg.textContent='Password must be at least 4 characters';return;}
+  if(nw!==cf){msg.style.color='var(--red)';msg.textContent='Passwords do not match';return;}
+  if(nw.length<4){msg.style.color='var(--red)';msg.textContent='Too short';return;}
   PW=nw;save('tcc_pw',PW);msg.style.color='var(--green)';msg.textContent='Password updated!';
   ['pw-current','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');
 }
 function resetAll(){
-  MEMBERS=[...DEFAULT_MEMBERS];SPOTLIGHTS=[...DEFAULT_SPOTLIGHTS];EVENTS=[...DEFAULT_EVENTS];
-  PATHS=[...DEFAULT_PATHS];SECTIONS={...DEFAULT_SECTIONS};CFG={...DEFAULT_CONFIG};
-  PW=DEFAULT_PW;BGS={...DEFAULT_BGS};
-  save('tcc_members',MEMBERS);save('tcc_spots',SPOTLIGHTS);save('tcc_events',EVENTS);
-  save('tcc_paths',PATHS);save('tcc_sections',SECTIONS);save('tcc_cfg',CFG);
-  save('tcc_pw',PW);save('tcc_bgs',BGS);
-  renderAdminAll();alert('Reset to defaults.');
+  MEMBERS=[...DEFAULT_MEMBERS];SPOTLIGHTS=[...DEFAULT_SPOTLIGHTS];VOICES=[...DEFAULT_VOICES];
+  OPPS=[...DEFAULT_OPPS];GAME=[...DEFAULT_GAME];ACCESS=[...DEFAULT_ACCESS];
+  EVENTS=[...DEFAULT_EVENTS];PATHS=[...DEFAULT_PATHS];SECTIONS={...DEFAULT_SECTIONS};
+  CFG={...DEFAULT_CONFIG};PW=DEFAULT_PW;BGS={...DEFAULT_BGS};
+  save('tcc_members',MEMBERS);save('tcc_spots',SPOTLIGHTS);save('tcc_voices',VOICES);
+  save('tcc_opps',OPPS);save('tcc_game',GAME);save('tcc_access',ACCESS);
+  save('tcc_events',EVENTS);save('tcc_paths',PATHS);save('tcc_sections',SECTIONS);
+  save('tcc_cfg',CFG);save('tcc_pw',PW);save('tcc_bgs',BGS);
+  renderAdminAll();alert('Reset complete.');
 }
-function closeModal(){document.getElementById('edit-modal').classList.remove('show');}
-function saveModal(){closeModal();}
-function renderAll(){renderHomeSpots();renderHomeEvents();renderDir();renderHapFull();renderPaths();applySection();applyConfig();applyBG('home');}
+
+function renderAll(){
+  renderHomeVoices();renderHomeGame();renderHomeSpots();renderHomeOpps();
+  renderHomeAccess();renderHomeEvents();applySection();applyConfig();applyBG('home');
+}
 renderAll();
 </script>
 </body>
