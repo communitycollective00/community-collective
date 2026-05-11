@@ -70,3 +70,32 @@ input, textarea {
 
 .gold-link { display: inline-block; }
 .muted { color: #d3c18e; }
+
+.status-success {
+  color: #94f0c7;
+  border: 1px solid #3d7a5f;
+  background: rgba(61, 190, 138, 0.1);
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+}
+
+.status-error {
+  color: #ffb1b1;
+  border: 1px solid #8a3d3d;
+  background: rgba(201, 74, 74, 0.1);
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+}
+
+.submissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.submission-item {
+  border: 1px solid #4c3a18;
+  border-radius: 10px;
+  padding: 1rem;
+  background: rgba(17, 17, 17, 0.9);
+}
