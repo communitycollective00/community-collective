@@ -1,12 +1,19 @@
+import CTASection from "../components/CTASection";
+import FeaturedVoices from "../components/FeaturedVoices";
+import Hero from "../components/Hero";
+import InsideAccess from "../components/InsideAccess";
+import Navbar from "../components/Navbar";
+import OpportunitiesPreview from "../components/OpportunitiesPreview";
+
 export default function HomePage() {
   return (
-    <iframe
-      src="/original.html"
-      style={{
-        width: "100%",
-        height: "100vh",
-        border: "none",
-      }}
-    />
+    <main>
+      <Navbar />
+      <Hero />
+      <FeaturedVoices />
+      <OpportunitiesPreview />
+      <InsideAccess />
+      <CTASection />
+    </main>
   );
 }
