@@ -1,12 +1,32 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const publicRoutes = [
+  "/",
+  "/get-access",
+  "/voices",
+  "/opportunities",
+  "/directory",
+  "/pathways",
+  "/login",
+  "/signup",
+];
+
 const protectedRoutes = ["/dashboard", "/profile", "/admin/submissions"];
+
+function matchesRoute(pathname: string, route: string) {
+  return pathname === route || pathname.startsWith(`${route}/`);
+}
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (!protectedRoutes.some((route) => pathname.startsWith(route))) {
+  if (publicRoutes.some((route) => matchesRoute(pathname, route))) {
+    return NextResponse.next();
+  }
+
+  const isProtected = protectedRoutes.some((route) => matchesRoute(pathname, route));
+  if (!isProtected) {
     return NextResponse.next();
   }
 
@@ -21,5 +41,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*", "/admin/submissions/:path*"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
