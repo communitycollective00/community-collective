@@ -33,6 +33,7 @@ export default function AuthNavbar() {
       <div className="premium-brand">Community Collective</div>
       <div className="premium-links">
         <Link href="/">Home</Link>
+        <Link href="/get-access" className="gold-link">Get Access</Link>
         {isAuthed ? (
           <>
             <Link href="/dashboard">Dashboard</Link>
