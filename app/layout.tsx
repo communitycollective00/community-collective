@@ -1,12 +1,12 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "The Community Collective",
-  description: "Real Access. Real Knowledge. Real Opportunity."
+  title: "Community Collective",
+  description: "Media + Opportunity + Access Platform",
 };
 
 export default function RootLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
