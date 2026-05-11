@@ -11,8 +11,11 @@ type ProfileData = {
   bio: string | null;
   city: string | null;
   state: string | null;
-  skills: string | null;
-  socials: string | null;
+  industry: string | null;
+  website: string | null;
+  instagram: string | null;
+  linkedin: string | null;
+  avatar_url: string | null;
 };
 
 export default function DashboardPage() {
@@ -40,7 +43,7 @@ export default function DashboardPage() {
       );
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,skills,socials")
+        .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -52,7 +55,7 @@ export default function DashboardPage() {
   const completion = useMemo(() => {
     if (!profile) return 0;
 
-    const values = [profile.full_name, profile.username, profile.bio, profile.city, profile.state, profile.skills, profile.socials];
+    const values = [profile.full_name, profile.username, profile.bio, profile.city, profile.state, profile.industry, profile.website, profile.instagram, profile.linkedin, profile.avatar_url];
     const done = values.filter((value) => Boolean(value && String(value).trim())).length;
     return Math.round((done / values.length) * 100);
   }, [profile]);
