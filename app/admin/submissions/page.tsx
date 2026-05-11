@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import { getSupabaseClient } from "../../../lib/supabase";
 
+type SubmissionStatus = "pending" | "reviewed" | "contacted" | "approved" | "declined";
+
+const STATUS_OPTIONS: SubmissionStatus[] = ["pending", "reviewed", "contacted", "approved", "declined"];
+
 type Submission = {
   id: string;
   full_name: string | null;
@@ -13,6 +17,7 @@ type Submission = {
   city: string | null;
   submission_type: string | null;
   description: string | null;
+  status: SubmissionStatus | null;
   created_at: string;
 };
 
@@ -20,6 +25,7 @@ export default function SubmissionsAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<Submission[]>([]);
+  const [savingId, setSavingId] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -31,12 +37,12 @@ export default function SubmissionsAdminPage() {
         const user = sessionData.session?.user;
 
         if (!user) {
-          setError("You must be logged in to view submissions.");
+          window.location.href = "/login?next=/admin/submissions";
           return;
         }
 
         const { data, error: queryError } = await (supabase.from("submissions") as any)
-          .select("id,full_name,email,phone,business_name,industry,city,submission_type,description,created_at")
+          .select("id,full_name,email,phone,business_name,industry,city,submission_type,description,status,created_at")
           .order("created_at", { ascending: false });
 
         if (queryError) throw queryError;
@@ -51,11 +57,30 @@ export default function SubmissionsAdminPage() {
     load();
   }, []);
 
+  async function updateStatus(id: string, status: SubmissionStatus) {
+    setSavingId(id);
+    setError(null);
+    try {
+      const supabase = getSupabaseClient();
+      const { error: updateError } = await (supabase.from("submissions") as any)
+        .update({ status, updated_at: new Date().toISOString() })
+        .eq("id", id);
+
+      if (updateError) throw updateError;
+
+      setItems((current) => current.map((item) => (item.id === id ? { ...item, status } : item)));
+    } catch (statusError: any) {
+      setError(statusError?.message ?? "Failed to update status.");
+    } finally {
+      setSavingId(null);
+    }
+  }
+
   return (
     <main className="premium-page">
-      <section className="premium-card" style={{ maxWidth: "960px" }}>
+      <section className="premium-card admin-card" style={{ maxWidth: "1120px" }}>
         <h1>Submissions Dashboard</h1>
-        <p className="muted">Newest submissions first.</p>
+        <p className="muted">All submissions, newest first.</p>
 
         {loading ? <p className="muted">Loading submissions...</p> : null}
         {error ? <p className="status-error">{error}</p> : null}
@@ -65,18 +90,30 @@ export default function SubmissionsAdminPage() {
         <div className="submissions-list">
           {items.map((item) => (
             <article key={item.id} className="submission-item">
-              <h3>{item.full_name ?? "Unknown"}</h3>
-              <p className="muted" style={{ marginTop: 0 }}>
-                {item.email ?? "No email"} • {item.phone ?? "No phone"}
-              </p>
-              <p>
-                <strong>Business:</strong> {item.business_name ?? "-"} | <strong>Industry:</strong> {item.industry ?? "-"} | <strong>City:</strong> {item.city ?? "-"}
-              </p>
-              <p>
-                <strong>Type:</strong> {item.submission_type ?? "-"}
-              </p>
-              <p>{item.description ?? ""}</p>
-              <p className="muted">{new Date(item.created_at).toLocaleString()}</p>
+              <div className="submission-grid">
+                <p><strong>Full name:</strong> {item.full_name ?? "-"}</p>
+                <p><strong>Email:</strong> {item.email ?? "-"}</p>
+                <p><strong>Phone:</strong> {item.phone ?? "-"}</p>
+                <p><strong>Business:</strong> {item.business_name ?? "-"}</p>
+                <p><strong>Industry:</strong> {item.industry ?? "-"}</p>
+                <p><strong>City:</strong> {item.city ?? "-"}</p>
+                <p><strong>Type:</strong> {item.submission_type ?? "-"}</p>
+                <p><strong>Created:</strong> {new Date(item.created_at).toLocaleString()}</p>
+              </div>
+              <p><strong>Description:</strong> {item.description ?? "-"}</p>
+
+              <label className="status-control">
+                <strong>Status:</strong>
+                <select
+                  value={item.status ?? "pending"}
+                  onChange={(e) => updateStatus(item.id, e.target.value as SubmissionStatus)}
+                  disabled={savingId === item.id}
+                >
+                  {STATUS_OPTIONS.map((statusOption) => (
+                    <option key={statusOption} value={statusOption}>{statusOption}</option>
+                  ))}
+                </select>
+              </label>
             </article>
           ))}
         </div>
