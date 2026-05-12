@@ -16,6 +16,8 @@ type ProfileData = {
   instagram: string | null;
   linkedin: string | null;
   avatar_url: string | null;
+  services_offered: string | null;
+  social_links: string | null;
 };
 
 export default function DashboardPage() {
@@ -32,18 +34,14 @@ export default function DashboardPage() {
       const user = data.session.user;
       setEmail(user.email ?? "");
 
-      await (getSupabaseClient().from("profiles") as any).upsert(
-        {
-          id: user.id,
-          email: user.email,
-          full_name: user.user_metadata?.full_name ?? null,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      );
+      await (getSupabaseClient().from("profiles") as any).upsert({
+        id: user.id,
+        email: user.email,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "id" });
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url")
+        .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url,services_offered,social_links")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -54,9 +52,15 @@ export default function DashboardPage() {
 
   const completion = useMemo(() => {
     if (!profile) return 0;
-
-    const values = [profile.full_name, profile.username, profile.bio, profile.city, profile.state, profile.industry, profile.website, profile.instagram, profile.linkedin, profile.avatar_url];
-    const done = values.filter((value) => Boolean(value && String(value).trim())).length;
+    let socialLinks = {} as Record<string, string>;
+    if (profile.social_links) {
+      try { socialLinks = JSON.parse(profile.social_links); } catch { socialLinks = {}; }
+    }
+    const values = [
+      profile.full_name, profile.username, profile.bio, profile.industry, profile.city, profile.state,
+      profile.website, profile.instagram, socialLinks.tiktok, socialLinks.youtube, profile.linkedin, profile.services_offered,
+    ];
+    const done = values.filter((v) => Boolean(v && String(v).trim())).length;
     return Math.round((done / values.length) * 100);
   }, [profile]);
 
@@ -64,23 +68,40 @@ export default function DashboardPage() {
     <main className="premium-page">
       <AuthNavbar />
       <section className="premium-card dashboard-card">
-        <h1>Dashboard</h1>
-        <p>Welcome back {email || "member"}.</p>
-        <p className="muted">Logged in as: {email || "-"}</p>
+        <article className="submission-item">
+          <h1 style={{ marginTop: 0 }}>Welcome back</h1>
+          <p className="muted">You&apos;re signed in as {email || "member"}.</p>
+        </article>
 
         <article className="submission-item">
           <h3 style={{ marginTop: 0 }}>Profile completion</h3>
-          <p className="muted" style={{ marginBottom: "0.5rem" }}>{completion}% complete</p>
-          <div className="progress-track">
-            <div className="progress-fill" style={{ width: `${completion}%` }} />
+          <p className="muted">{completion}% complete</p>
+          <div className="progress-track"><div className="progress-fill" style={{ width: `${completion}%` }} /></div>
+        </article>
+
+        <article className="submission-item">
+          <h3 style={{ marginTop: 0 }}>Quick links</h3>
+          <div className="quick-links">
+            <Link className="gold-link" href="/onboarding">Complete Profile</Link>
+            <Link className="gold-link" href="/directory">Browse Directory</Link>
+            <Link className="gold-link" href="/opportunities">View Opportunities</Link>
+            <Link className="gold-link" href="/apply">Apply to be Featured</Link>
           </div>
         </article>
 
-        <div className="quick-links">
-          <Link className="gold-link" href="/profile">Profile</Link>
-          <Link className="gold-link" href="/get-access">Get Access</Link>
-          <Link className="gold-link" href="/">Opportunities</Link>
-          <Link className="gold-link" href="/admin/submissions">Submissions</Link>
+        <div className="dashboard-grid">
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Your Feed</h3>
+            <p className="muted">Feed placeholder: updates from members, events, and opportunities will appear here.</p>
+          </article>
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Featured members</h3>
+            <p className="muted">Preview placeholder: top creators and brands from the directory.</p>
+          </article>
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Opportunities preview</h3>
+            <p className="muted">Preview placeholder: latest grants, partnerships, and open calls.</p>
+          </article>
         </div>
       </section>
     </main>
