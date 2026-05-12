@@ -8,8 +8,7 @@ import AuthNavbar from "../components/auth-navbar";
 
 type SocialState = {
   instagram: string;
-  tiktok: string;
-  youtube: string;
+  twitter: string;
   linkedin: string;
 };
 
@@ -17,7 +16,6 @@ const categories = ["Creator", "Brand", "Entrepreneur", "Artist", "Producer", "C
 
 export default function OnboardingPage() {
   const [userId, setUserId] = useState("");
-  const [email, setEmail] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
@@ -26,7 +24,7 @@ export default function OnboardingPage() {
   const [website, setWebsite] = useState("");
   const [whatDoYouDo, setWhatDoYouDo] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  const [socials, setSocials] = useState<SocialState>({ instagram: "", tiktok: "", youtube: "", linkedin: "" });
+  const [socials, setSocials] = useState<SocialState>({ instagram: "", twitter: "", linkedin: "" });
   const [status, setStatus] = useState("");
 
   useEffect(() => {
@@ -39,10 +37,9 @@ export default function OnboardingPage() {
 
       const user = data.session.user;
       setUserId(user.id);
-      setEmail(user.email ?? "");
 
       const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url,social_links,services_offered")
+        .select("full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url,social_links,services_offered,description")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -53,7 +50,7 @@ export default function OnboardingPage() {
       setBio(profile.bio ?? "");
       setCategory(profile.industry ?? "");
       setWebsite(profile.website ?? "");
-      setWhatDoYouDo(profile.services_offered ?? "");
+      setWhatDoYouDo(profile.services_offered ?? profile.description ?? "");
       setAvatarUrl(profile.avatar_url ?? "");
       const combinedCityState = [profile.city, profile.state].filter(Boolean).join(", ");
       setCityState(combinedCityState);
@@ -68,8 +65,7 @@ export default function OnboardingPage() {
       }
       setSocials({
         instagram: profile.instagram ?? existing.instagram ?? "",
-        tiktok: existing.tiktok ?? "",
-        youtube: existing.youtube ?? "",
+        twitter: profile.twitter ?? existing.twitter ?? "",
         linkedin: profile.linkedin ?? existing.linkedin ?? "",
       });
     };
@@ -86,9 +82,9 @@ export default function OnboardingPage() {
     setStatus("Uploading avatar...");
     const ext = file.name.split(".").pop() || "jpg";
     const path = `${userId}/avatar.${ext}`;
-    const { error } = await getSupabaseClient().storage.from("avatars").upload(path, file, { upsert: true });
+    const { error } = await getSupabaseClient().storage.from("media").upload(path, file, { upsert: true });
     if (error) { setStatus(error.message); return; }
-    const { data } = getSupabaseClient().storage.from("avatars").getPublicUrl(path);
+    const { data } = getSupabaseClient().storage.from("media").getPublicUrl(path);
     setAvatarUrl(data.publicUrl);
     setStatus("Avatar updated.");
   };
@@ -109,13 +105,14 @@ export default function OnboardingPage() {
         website,
         instagram: socials.instagram,
         linkedin: socials.linkedin,
+        twitter: socials.twitter,
         social_links: JSON.stringify({
           instagram: socials.instagram,
-          tiktok: socials.tiktok,
-          youtube: socials.youtube,
+          twitter: socials.twitter,
           linkedin: socials.linkedin,
         }),
         services_offered: whatDoYouDo,
+        description: whatDoYouDo,
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
       });
@@ -152,12 +149,11 @@ export default function OnboardingPage() {
           <input value={cityState} onChange={(e) => setCityState(e.target.value)} placeholder="City, State" />
           <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website" />
           <input value={socials.instagram} onChange={(e) => setSocials((s) => ({ ...s, instagram: e.target.value }))} placeholder="Instagram" />
-          <input value={socials.tiktok} onChange={(e) => setSocials((s) => ({ ...s, tiktok: e.target.value }))} placeholder="TikTok" />
-          <input value={socials.youtube} onChange={(e) => setSocials((s) => ({ ...s, youtube: e.target.value }))} placeholder="YouTube" />
+          <input value={socials.twitter} onChange={(e) => setSocials((s) => ({ ...s, twitter: e.target.value }))} placeholder="Twitter / X" />
           <input value={socials.linkedin} onChange={(e) => setSocials((s) => ({ ...s, linkedin: e.target.value }))} placeholder="LinkedIn" />
           <textarea rows={3} value={whatDoYouDo} onChange={(e) => setWhatDoYouDo(e.target.value)} placeholder="What do you do?" />
 
-          <button className="gold-btn" type="submit">Save profile</button>
+          <button className="gold-btn" type="submit">Save profile & continue</button>
           <Link className="muted" href="/dashboard">Skip for now</Link>
         </form>
         {status ? <p className="muted">{status}</p> : null}
