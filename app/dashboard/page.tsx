@@ -25,6 +25,7 @@ type ProfileData = {
 export default function DashboardPage() {
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [comingSoon, setComingSoon] = useState("");
 
   useEffect(() => {
     getSupabaseClient().auth.getSession().then(async ({ data }) => {
@@ -95,18 +96,19 @@ export default function DashboardPage() {
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Your Feed</h3>
             <p className="muted">No feed items yet. Member/media posts are launching soon.</p>
-            <button className="gold-link" type="button" onClick={() => alert("Coming Soon")}>Create Post (Coming Soon)</button>
+            <button className="gold-link" type="button" onClick={() => setComingSoon("Create Post is coming soon.")}>Create Post (Coming Soon)</button>
           </article>
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Featured members</h3>
             <p className="muted">Featured status: {profile?.username ? "Active member" : "Profile not completed"}.</p>
-            <button className="gold-link" type="button" onClick={() => alert("Coming Soon")}>Featured Submissions (Coming Soon)</button>
+            <button className="gold-link" type="button" onClick={() => setComingSoon("Featured submissions are coming soon.")}>Featured Submissions (Coming Soon)</button>
           </article>
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Opportunities preview</h3>
             <ul className="muted" style={{paddingLeft:"1rem", margin:"0.25rem 0"}}><li>Casting + Audition Calls</li><li>Jobs + Internships</li><li>Funding + Grants</li></ul><Link className="gold-link" href="/opportunities">Open full opportunities</Link>
           </article>
         </div>
+        {comingSoon ? <p className="muted">{comingSoon}</p> : null}
       </section>
     </main>
   );

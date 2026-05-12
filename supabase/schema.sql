@@ -7,10 +7,13 @@ create table if not exists public.profiles (
   city text,
   state text,
   industry text,
+  location text,
   website text,
   instagram text,
+  twitter text,
   linkedin text,
   avatar_url text,
+  description text,
   role text not null default 'member' check (role in ('member','pending_creator','verified_pending','verified','featured','admin')),
   is_approved boolean not null default false,
   featured boolean not null default false,
@@ -35,14 +38,14 @@ create policy "Users can upsert own profile" on public.profiles
 for all using (auth.uid() = id) with check (auth.uid() = id);
 
 insert into storage.buckets (id, name, public)
-values ('avatars', 'avatars', true)
+values ('media', 'media', true)
 on conflict (id) do nothing;
 
-create policy "Public avatar read" on storage.objects
-for select using (bucket_id = 'avatars');
+create policy "Public media read" on storage.objects
+for select using (bucket_id = 'media');
 
-create policy "Users upload own avatar" on storage.objects
-for insert with check (bucket_id = 'avatars' and auth.uid()::text = (storage.foldername(name))[1]);
+create policy "Users upload own media" on storage.objects
+for insert with check (bucket_id = 'media' and auth.uid()::text = (storage.foldername(name))[1]);
 
-create policy "Users update own avatar" on storage.objects
-for update using (bucket_id = 'avatars' and auth.uid()::text = (storage.foldername(name))[1]);
+create policy "Users update own media" on storage.objects
+for update using (bucket_id = 'media' and auth.uid()::text = (storage.foldername(name))[1]);
