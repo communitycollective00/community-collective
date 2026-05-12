@@ -22,6 +22,7 @@ export default function AdminDashboardPage() {
             <Link className="gold-link" href="/admin/opportunities">Opportunities</Link>
             <Link className="gold-link" href="/admin/events">Events</Link>
             <Link className="gold-link" href="/admin/pathways">Pathways</Link>
+            <Link className="gold-link" href="/admin/applications">Applications</Link>
           </div>
         ) : null}
       </section>

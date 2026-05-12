@@ -48,6 +48,7 @@ export default function AuthNavbar() {
           <>
             <Link href="/login">Login</Link>
             <Link href="/signup" className="gold-link">Sign up</Link>
+            <Link href="/apply">Apply</Link>
           </>
         )}
       </div>
