@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
-import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
+import { filterProfilePayload } from "../../lib/profile-fields";
 import AuthNavbar from "../components/auth-navbar";
 
 type ProfileData = {
@@ -15,6 +15,7 @@ type ProfileData = {
   industry: string | null;
   website: string | null;
   instagram: string | null;
+  twitter: string | null;
   linkedin: string | null;
   avatar_url: string | null;
   services_offered: string | null;
@@ -41,7 +42,7 @@ export default function DashboardPage() {
       }), { onConflict: "id" });
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url,services_offered,social_links")
+        .select("full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url,services_offered,social_links")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -58,7 +59,7 @@ export default function DashboardPage() {
     }
     const values = [
       profile.full_name, profile.username, profile.bio, profile.industry, profile.city, profile.state,
-      profile.website, profile.instagram, socialLinks.tiktok, socialLinks.youtube, profile.linkedin, profile.services_offered,
+      profile.website, profile.instagram, profile.twitter ?? socialLinks.twitter, profile.linkedin, profile.services_offered,
     ];
     const done = values.filter((v) => Boolean(v && String(v).trim())).length;
     return Math.round((done / values.length) * 100);
@@ -86,17 +87,20 @@ export default function DashboardPage() {
             <Link className="gold-link" href="/directory">Browse Directory</Link>
             <Link className="gold-link" href="/opportunities">View Opportunities</Link>
             <Link className="gold-link" href="/apply">Apply to be Featured</Link>
+            <Link className="gold-link" href="/profile">View Public Profile</Link>
           </div>
         </article>
 
         <div className="dashboard-grid">
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Your Feed</h3>
-            <p className="muted">Feed placeholder: updates from members, events, and opportunities will appear here.</p>
+            <p className="muted">No feed items yet. Member/media posts are launching soon.</p>
+            <button className="gold-link" type="button" onClick={() => alert("Coming Soon")}>Create Post (Coming Soon)</button>
           </article>
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Featured members</h3>
             <p className="muted">Featured status: {profile?.username ? "Active member" : "Profile not completed"}.</p>
+            <button className="gold-link" type="button" onClick={() => alert("Coming Soon")}>Featured Submissions (Coming Soon)</button>
           </article>
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Opportunities preview</h3>
