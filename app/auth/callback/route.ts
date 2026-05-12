@@ -35,8 +35,8 @@ async function ensureProfileRow(user: AuthUser) {
       email: user.email ?? null,
       full_name: fullName,
       username: createUsernamePlaceholder(user.id),
-      role: "member",
-      is_approved: false,
+      role: (user.user_metadata as any)?.role || "member",
+      is_approved: (user.user_metadata as any)?.is_approved ?? true,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "id" }
