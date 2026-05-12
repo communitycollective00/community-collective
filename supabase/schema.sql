@@ -11,7 +11,8 @@ create table if not exists public.profiles (
   instagram text,
   linkedin text,
   avatar_url text,
-  role text not null default 'community' check (role in ('community','verified','admin')),
+  role text not null default 'member' check (role in ('member','verified','admin')),
+  is_approved boolean not null default false,
   featured boolean not null default false,
   updated_at timestamptz not null default now(),
   created_at timestamptz not null default now()
