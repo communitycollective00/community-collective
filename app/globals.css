@@ -152,3 +152,11 @@ select {
 .directory-grid { display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:0.75rem; }
 .verify-badge { margin-left:0.5rem; font-size:0.75rem; padding:0.12rem 0.45rem; border-radius:999px; background:#1f1a0b; border:1px solid #c89d35; color:#f4cf70; }
 .profile-avatar { width:90px; height:90px; object-fit:cover; border-radius:50%; border:2px solid #c89d35; margin:0.5rem 0; }
+
+.onboarding-card { max-width: 680px; }
+.field-label { font-size: 0.9rem; color: #e4cf99; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-top: 0.75rem; }
+
+@media (min-width: 900px) {
+  .dashboard-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
