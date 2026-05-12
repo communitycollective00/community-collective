@@ -39,34 +39,26 @@ export default function OnboardingPage() {
       setUserId(user.id);
 
       const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url,social_links,services_offered,description")
+        .select("display_name,username,bio,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,description")
         .eq("id", user.id)
         .maybeSingle();
 
       if (!profile) return;
 
-      setDisplayName(profile.full_name ?? "");
+      setDisplayName(profile.display_name ?? "");
       setUsername(profile.username ?? "");
       setBio(profile.bio ?? "");
-      setCategory(profile.industry ?? "");
+      setCategory(profile.category ?? profile.industry ?? "");
       setWebsite(profile.website ?? "");
-      setWhatDoYouDo(profile.services_offered ?? profile.description ?? "");
+      setWhatDoYouDo(profile.description ?? "");
       setAvatarUrl(profile.avatar_url ?? "");
       const combinedCityState = [profile.city, profile.state].filter(Boolean).join(", ");
       setCityState(combinedCityState);
 
-      let existing = {} as Record<string, string>;
-      if (profile.social_links) {
-        try {
-          existing = JSON.parse(profile.social_links);
-        } catch {
-          existing = {};
-        }
-      }
       setSocials({
-        instagram: profile.instagram ?? existing.instagram ?? "",
-        twitter: profile.twitter ?? existing.twitter ?? "",
-        linkedin: profile.linkedin ?? existing.linkedin ?? "",
+        instagram: profile.instagram ?? "",
+        twitter: profile.twitter ?? "",
+        linkedin: profile.linkedin ?? "",
       });
     };
     load();
@@ -96,23 +88,20 @@ export default function OnboardingPage() {
 
     const payload = filterProfilePayload({
         id: userId,
-        full_name: displayName,
+        display_name: displayName,
         username,
         bio,
+        category,
         industry: category,
+        location: cityState,
         city: splitLocation.city,
         state: splitLocation.state,
         website,
         instagram: socials.instagram,
         linkedin: socials.linkedin,
         twitter: socials.twitter,
-        social_links: JSON.stringify({
-          instagram: socials.instagram,
-          twitter: socials.twitter,
-          linkedin: socials.linkedin,
-        }),
-        services_offered: whatDoYouDo,
         description: whatDoYouDo,
+        profile_completed: Boolean(displayName && username && bio && category && splitLocation.city && splitLocation.state),
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
       });

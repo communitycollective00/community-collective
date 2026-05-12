@@ -8,7 +8,7 @@ import AuthNavbar from "../components/auth-navbar";
 export default function ProfilePage() {
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
@@ -34,12 +34,12 @@ export default function ProfilePage() {
       setEmail(user.email ?? "");
 
       const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url")
+        .select("display_name,username,bio,description,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,banner_url")
         .eq("id", user.id)
         .maybeSingle();
 
       if (profile) {
-        setFullName(profile.full_name ?? "");
+        setDisplayName(profile.display_name ?? "");
         setUsername(profile.username ?? "");
         setBio(profile.bio ?? "");
         setCity(profile.city ?? "");
@@ -76,7 +76,11 @@ export default function ProfilePage() {
 
     const payload = filterProfilePayload({
         id: userId,
-        full_name: fullName,
+        display_name: displayName,
+        description: bio,
+        category: industry,
+        location: [city, stateRegion].filter(Boolean).join(", "),
+        profile_completed: Boolean(displayName && username && bio && industry && city && stateRegion),
         username,
         bio,
         city,
@@ -102,7 +106,7 @@ export default function ProfilePage() {
         <h1>Your Profile</h1>
         <form onSubmit={save} className="premium-form">
           <input disabled value={email} />
-          <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
+          <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Display name" />
           <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
           <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Short bio" rows={4} />
           <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
@@ -113,7 +117,7 @@ export default function ProfilePage() {
           <input value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
           <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
           <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
-          <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
+          <img src={avatarUrl || fallbackAvatar(displayName || username)} alt="Avatar preview" className="profile-avatar" />
           <button className="gold-btn" type="submit">Save</button>
         </form>
         {status && <p className="muted">{status}</p>}
