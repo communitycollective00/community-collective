@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
+import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
 import AuthNavbar from "../components/auth-navbar";
 
 type ProfileData = {
@@ -34,11 +35,10 @@ export default function DashboardPage() {
       const user = data.session.user;
       setEmail(user.email ?? "");
 
-      await (getSupabaseClient().from("profiles") as any).upsert({
+      await (getSupabaseClient().from("profiles") as any).upsert(filterProfilePayload({
         id: user.id,
-        email: user.email,
         updated_at: new Date().toISOString(),
-      }, { onConflict: "id" });
+      }), { onConflict: "id" });
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
         .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url,services_offered,social_links")
@@ -96,11 +96,11 @@ export default function DashboardPage() {
           </article>
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Featured members</h3>
-            <p className="muted">Preview placeholder: top creators and brands from the directory.</p>
+            <p className="muted">Featured status: {profile?.username ? "Active member" : "Profile not completed"}.</p>
           </article>
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Opportunities preview</h3>
-            <p className="muted">Preview placeholder: latest grants, partnerships, and open calls.</p>
+            <ul className="muted" style={{paddingLeft:"1rem", margin:"0.25rem 0"}}><li>Casting + Audition Calls</li><li>Jobs + Internships</li><li>Funding + Grants</li></ul><Link className="gold-link" href="/opportunities">Open full opportunities</Link>
           </article>
         </div>
       </section>
