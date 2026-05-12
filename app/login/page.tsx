@@ -6,7 +6,7 @@ import AuthNavbar from "../components/auth-navbar";
 
 function friendlyLoginError(message: string) {
   const lower = message.toLowerCase();
-  if (lower.includes("invalid login credentials") || lower.includes("invalid credentials")) return "Incorrect email or password.";
+  if (lower.includes("invalid login credentials") || lower.includes("invalid credentials")) return "We couldn’t find that email/password combination.";
   if (lower.includes("email not confirmed")) return "Please confirm your email before logging in.";
   return "Could not sign you in right now. Please try again.";
 }
@@ -15,6 +15,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
+  const googleEnabled = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_AUTH === "true";
   const next = typeof window !== "undefined" ? (new URLSearchParams(window.location.search).get("next") || "/dashboard") : "/dashboard";
 
   useEffect(() => {
@@ -48,5 +49,5 @@ export default function LoginPage() {
     setStatus(error ? "Could not send magic link right now. Please verify your email and try again." : "Magic link sent. Check your inbox.");
   };
 
-  return <main className="premium-page"><AuthNavbar /><section className="premium-card"><h1>Login</h1><p>Use email + password, Google, or magic link backup.</p><form onSubmit={login} className="premium-form"><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /><input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" /><button className="gold-btn" type="submit">Login</button></form><div className="quick-links"><button className="gold-btn" onClick={googleLogin}>Continue with Google</button><button className="gold-btn" onClick={magicLink}>Send Magic Link (Backup)</button></div>{status && <p className="muted">{status}</p>}</section></main>;
+  return <main className="premium-page"><AuthNavbar /><section className="premium-card"><h1>Login</h1><p>Use email + password, Google, or magic link backup.</p><form onSubmit={login} className="premium-form"><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /><input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" /><button className="gold-btn" type="submit">Login</button></form><div className="quick-links"><button className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in is currently disabled." : "Continue with Google"}>Continue with Google</button><button className="gold-btn" onClick={magicLink}>Send Magic Link (Backup)</button></div>{!googleEnabled && <p className="muted">Google sign-in is not enabled yet. Please use email login or magic link.</p>}{status && <p className="muted">{status}</p>}</section></main>;
 }
