@@ -6,12 +6,13 @@ import { getSupabaseClient } from "../../lib/supabase";
 import AuthNavbar from "../components/auth-navbar";
 import { useRouter } from "next/navigation";
 
-function friendlyAuthError(message: string) {
-  const lower = message.toLowerCase();
-  if (lower.includes("already registered") || lower.includes("already been registered")) return "That email is already registered. Please log in instead.";
-  if (lower.includes("invalid email")) return "Please enter a valid email address.";
-  if (lower.includes("password")) return "Please use a stronger password and try again.";
-  return "We couldn't create your account right now. Please try again.";
+function friendlySignupError(code: string) {
+  if (code === "username_taken") return "That username is already taken.";
+  if (code === "invalid_email") return "Please enter a valid email address.";
+  if (code === "weak_password") return "Please use a stronger password (at least 8 characters).";
+  if (code === "account_exists") return "An account with that email already exists. Please log in.";
+  if (code === "password_mismatch") return "Confirm password must match.";
+  return "Signup is temporarily unavailable. Please try again.";
 }
 
 export default function SignupPage() {
@@ -42,59 +43,33 @@ export default function SignupPage() {
 
     setIsSubmitting(true);
     setStatus("Creating your account...");
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase.auth.signUp({
-      email: form.email,
-      password: form.password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
-        data: {
-          full_name: form.fullName,
-          username: form.username,
-        },
-      },
-    });
-
-    if (error) {
-      setStatus(friendlyAuthError(error.message));
-      setIsSubmitting(false);
-      return;
-    }
-
-    if (!data.user) {
-      setStatus("We couldn't finish creating your account. Please try again.");
-      setIsSubmitting(false);
-      return;
-    }
 
     try {
-      const provisionResponse = await fetch("/api/profiles/provision", {
+      const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: data.user.id,
-          email: form.email,
-          full_name: form.fullName,
-          username: form.username,
-        }),
+        body: JSON.stringify(form),
       });
+      const result = await response.json();
 
-      if (!provisionResponse.ok) {
-        throw new Error("profile_provision_failed");
+      if (!response.ok) {
+        setStatus(friendlySignupError(result?.error || "signup_unavailable"));
+        setIsSubmitting(false);
+        return;
       }
-    } catch {
-      setStatus("We created your account, but couldn't complete setup yet. Please try again in a moment.");
+
       setIsSubmitting(false);
-      return;
-    }
+      if (!result.hasSession) {
+        router.push(`/signup/check-email?email=${encodeURIComponent(form.email)}`);
+        return;
+      }
 
-    setIsSubmitting(false);
-    if (!data.session) {
-      router.push(`/signup/check-email?email=${encodeURIComponent(form.email)}`);
-      return;
+      await getSupabaseClient().auth.signInWithPassword({ email: form.email, password: form.password });
+      router.push("/onboarding");
+    } catch {
+      setStatus("Signup is temporarily unavailable. Please try again.");
+      setIsSubmitting(false);
     }
-
-    router.push("/onboarding");
   };
 
   const continueWithGoogle = async () => {
