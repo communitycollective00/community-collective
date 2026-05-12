@@ -26,6 +26,11 @@ function normalizeAuthAdminError(message: string) {
   return { code: "signup_unavailable", status: 503 };
 }
 
+function isMissingColumnError(error: { message?: string; details?: string } | null | undefined) {
+  const text = `${error?.message || ""} ${error?.details || ""}`.toLowerCase();
+  return text.includes("could not find") && text.includes("column");
+}
+
 export async function POST(request: Request) {
   try {
     const payload = (await request.json()) as SignupPayload;
@@ -57,7 +62,7 @@ export async function POST(request: Request) {
 
     const { data: existingProfile } = await (adminClient.from("profiles") as any)
       .select("id")
-       .or(`username.eq.${username},email.eq.${email}`)
+      .eq("username", username)
       .limit(1)
       .maybeSingle();
 
@@ -95,7 +100,7 @@ export async function POST(request: Request) {
 
     const userId = createData.user.id;
 
-    const { error: profileError } = await (adminClient.from("profiles") as any).insert({
+    const richProfilePayload = {
       id: userId,
       email,
       full_name: fullName,
@@ -104,7 +109,20 @@ export async function POST(request: Request) {
       is_approved: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-    });
+    };
+
+    let { error: profileError } = await (adminClient.from("profiles") as any).insert(richProfilePayload);
+
+    if (profileError && isMissingColumnError(profileError as { message?: string; details?: string })) {
+      const { error: fallbackError } = await (adminClient.from("profiles") as any).insert({
+        id: userId,
+        full_name: fullName,
+        username,
+        role: "member",
+        created_at: new Date().toISOString(),
+      });
+      profileError = fallbackError ?? null;
+    }
 
     if (profileError) {
       console.error("[signup] profile provisioning failed", profileError);
