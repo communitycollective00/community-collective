@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 function friendlySignupError(code: string) {
   if (code === "username_taken") return "That username is already taken.";
   if (code === "invalid_email") return "Please enter a valid email address.";
+  if (code === "invalid_username") return "Username must be 3-30 characters and use letters, numbers, underscores, or periods.";
   if (code === "weak_password") return "Please use a stronger password (at least 8 characters).";
   if (code === "account_exists") return "An account with that email already exists. Please log in.";
   if (code === "password_mismatch") return "Confirm password must match.";
@@ -59,12 +60,14 @@ export default function SignupPage() {
       }
 
       setIsSubmitting(false);
-      if (!result.hasSession) {
-        router.push(`/signup/check-email?email=${encodeURIComponent(form.email)}`);
+      const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({ email: form.email, password: form.password });
+      if (signInError) {
+        setStatus("Account created, but we could not sign you in automatically. Please log in.");
+        setIsSubmitting(false);
+        router.push("/login");
         return;
       }
 
-      await getSupabaseClient().auth.signInWithPassword({ email: form.email, password: form.password });
       router.push("/onboarding");
     } catch {
       setStatus("Signup is temporarily unavailable. Please try again.");
@@ -106,8 +109,8 @@ export default function SignupPage() {
     <input required type="password" placeholder="Confirm password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} />
     <button className="gold-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Creating..." : "Create Account"}</button>
   </form>
-  <div className="quick-links"><button className="gold-btn" onClick={continueWithGoogle} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in is currently disabled." : "Continue with Google"}>Continue with Google</button><button className="gold-btn" onClick={sendMagicLink}>Send Magic Link (Backup)</button></div>
-  {!googleEnabled && <p className="muted">Google sign-in is not enabled yet. Please use email signup or magic link.</p>}
+  <div className="quick-links"><button className="gold-btn" onClick={continueWithGoogle} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>{googleEnabled ? "Continue with Google" : "Google sign-in coming soon"}</button><button className="gold-btn" onClick={sendMagicLink}>Send Magic Link (Backup)</button></div>
+  {!googleEnabled && <p className="muted">Google sign-in coming soon. Please use email signup or magic link.</p>}
   <p className="muted">Professional or brand? <Link className="gold-link" href="/apply">Apply to be featured</Link></p>
   {status && <p className="muted">{status}</p>}</section></main>;
 }
