@@ -37,11 +37,29 @@ on conflict (id) do update set
   file_size_limit = excluded.file_size_limit,
   allowed_mime_types = excluded.allowed_mime_types;
 
-create policy if not exists "Public media read" on storage.objects
-for select using (bucket_id = 'media');
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'Public media read'
+  ) THEN
+    CREATE POLICY "Public media read" ON storage.objects
+    FOR SELECT USING (bucket_id = 'media');
+  END IF;
 
-create policy if not exists "Users upload own media" on storage.objects
-for insert with check (bucket_id = 'media' and auth.uid()::text = (storage.foldername(name))[1]);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'Users upload own media'
+  ) THEN
+    CREATE POLICY "Users upload own media" ON storage.objects
+    FOR INSERT WITH CHECK (bucket_id = 'media' AND auth.uid()::text = (storage.foldername(name))[1]);
+  END IF;
 
-create policy if not exists "Users update own media" on storage.objects
-for update using (bucket_id = 'media' and auth.uid()::text = (storage.foldername(name))[1]);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'storage' AND tablename = 'objects' AND policyname = 'Users update own media'
+  ) THEN
+    CREATE POLICY "Users update own media" ON storage.objects
+    FOR UPDATE USING (bucket_id = 'media' AND auth.uid()::text = (storage.foldername(name))[1]);
+  END IF;
+END $$;

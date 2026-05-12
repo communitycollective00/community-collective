@@ -16,6 +16,7 @@ export default function ProfilePage() {
   const [industry, setIndustry] = useState("");
   const [website, setWebsite] = useState("");
   const [instagram, setInstagram] = useState("");
+  const [twitter, setTwitter] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [status, setStatus] = useState("");
@@ -33,7 +34,7 @@ export default function ProfilePage() {
       setEmail(user.email ?? "");
 
       const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,city,state,industry,website,instagram,linkedin,avatar_url")
+        .select("full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -46,6 +47,7 @@ export default function ProfilePage() {
         setIndustry(profile.industry ?? "");
         setWebsite(profile.website ?? "");
         setInstagram(profile.instagram ?? "");
+        setTwitter(profile.twitter ?? "");
         setLinkedin(profile.linkedin ?? "");
         setAvatarUrl(profile.avatar_url ?? "");
       }
@@ -58,12 +60,12 @@ export default function ProfilePage() {
     if (!userId) return;
     setStatus("Uploading avatar...");
     const path = `${userId}/${Date.now()}-${file.name}`;
-    const { error } = await getSupabaseClient().storage.from("avatars").upload(path, file, { upsert: true });
+    const { error } = await getSupabaseClient().storage.from("media").upload(path, file, { upsert: true });
     if (error) {
       setStatus(error.message);
       return;
     }
-    const { data } = getSupabaseClient().storage.from("avatars").getPublicUrl(path);
+    const { data } = getSupabaseClient().storage.from("media").getPublicUrl(path);
     setAvatarUrl(data.publicUrl);
     setStatus("Avatar uploaded.");
   };
@@ -82,6 +84,7 @@ export default function ProfilePage() {
         industry,
         website,
         instagram,
+        twitter,
         linkedin,
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
@@ -107,6 +110,7 @@ export default function ProfilePage() {
           <input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="Industry" />
           <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
           <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
+          <input value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
           <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
           <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
           <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
