@@ -85,7 +85,6 @@ export default function ProfilePage() {
         instagram,
         linkedin,
         avatar_url: avatarUrl,
-        role: "community",
         updated_at: new Date().toISOString(),
       },
       { onConflict: "id" }
