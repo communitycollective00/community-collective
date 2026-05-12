@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { getSupabaseClient } from "../../../lib/supabase";
+import { useAdminGuard } from "../../components/admin-guard";
 
 type SubmissionStatus = "pending" | "reviewed" | "contacted" | "approved" | "declined";
 
-type ProfileRole = "admin" | "verified" | "community";
 
 const STATUS_OPTIONS: SubmissionStatus[] = ["pending", "reviewed", "contacted", "approved", "declined"];
 
@@ -24,40 +25,16 @@ type Submission = {
 };
 
 export default function SubmissionsAdminPage() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { loading, error, isAdmin, setError } = useAdminGuard("/admin/submissions");
   const [items, setItems] = useState<Submission[]>([]);
   const [savingId, setSavingId] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     async function load() {
-      setLoading(true);
+      if (!isAdmin) return;
       setError(null);
       try {
         const supabase = getSupabaseClient();
-        const { data: sessionData } = await supabase.auth.getSession();
-        const user = sessionData.session?.user;
-
-        if (!user) {
-          window.location.href = "/login?next=/admin/submissions";
-          return;
-        }
-
-        const { data: profile, error: profileError } = await (supabase.from("profiles") as any)
-          .select("role")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (profileError) throw profileError;
-
-        if ((profile?.role as ProfileRole | undefined) !== "admin") {
-          setIsAdmin(false);
-          return;
-        }
-
-        setIsAdmin(true);
-
         const { data, error: queryError } = await (supabase.from("submissions") as any)
           .select("id,full_name,email,phone,business_name,industry,city,submission_type,description,status,created_at")
           .order("created_at", { ascending: false });
@@ -66,13 +43,11 @@ export default function SubmissionsAdminPage() {
         setItems(data ?? []);
       } catch (loadError: any) {
         setError(loadError?.message ?? "Failed to load submissions.");
-      } finally {
-        setLoading(false);
       }
     }
 
-    load();
-  }, []);
+    if (!loading && isAdmin) load();
+  }, [loading, isAdmin, setError]);
 
   async function updateStatus(id: string, status: SubmissionStatus) {
     if (!isAdmin) return;
@@ -100,6 +75,7 @@ export default function SubmissionsAdminPage() {
       <section className="premium-card admin-card" style={{ maxWidth: "1120px" }}>
         <h1>Submissions Dashboard</h1>
         <p className="muted">All submissions, newest first.</p>
+        <div className="quick-links"><Link className="gold-link" href="/admin">Back to Admin Dashboard</Link></div>
 
         {loading ? <p className="muted">Loading submissions...</p> : null}
         {error ? <p className="status-error">{error}</p> : null}
