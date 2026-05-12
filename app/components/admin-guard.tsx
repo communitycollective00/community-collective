@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 
-export type ProfileRole = "admin" | "verified" | "community";
+export type ProfileRole = "admin" | "verified" | "member";
 
 export function useAdminGuard(nextPath: string) {
   const [loading, setLoading] = useState(true);

@@ -2,6 +2,51 @@ import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+type AuthUser = {
+  id: string;
+  email?: string | null;
+  user_metadata?: {
+    full_name?: string;
+    name?: string;
+  } | null;
+};
+
+function createUsernamePlaceholder(userId: string) {
+  return `user-${userId.replace(/-/g, "").slice(0, 8)}`;
+}
+
+async function ensureProfileRow(user: AuthUser) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Missing Supabase server credentials for profile provisioning.");
+  }
+
+  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+
+  const fullName = user.user_metadata?.full_name?.trim() || user.user_metadata?.name?.trim() || user.email?.split("@")[0] || "";
+
+  const { error } = await (adminClient.from("profiles") as any).upsert(
+    {
+      id: user.id,
+      email: user.email ?? null,
+      full_name: fullName,
+      username: createUsernamePlaceholder(user.id),
+      role: "member",
+      is_approved: false,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "id" }
+  );
+
+  if (error) {
+    throw error;
+  }
+}
+
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
@@ -29,6 +74,15 @@ export async function GET(request: NextRequest) {
     const response = NextResponse.redirect(loginUrl);
     response.cookies.delete("cc-auth");
     return response;
+  }
+
+  try {
+    await ensureProfileRow(data.session.user as AuthUser);
+  } catch {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("next", safeNext);
+    loginUrl.searchParams.set("error", "profile_provision_failed");
+    return NextResponse.redirect(loginUrl);
   }
 
   const response = NextResponse.redirect(new URL(safeNext, request.url));
