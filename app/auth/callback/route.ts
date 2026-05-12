@@ -11,9 +11,7 @@ type AuthUser = {
   } | null;
 };
 
-function createUsernamePlaceholder(userId: string) {
-  return `user-${userId.replace(/-/g, "").slice(0, 8)}`;
-}
+import { createUsernamePlaceholder } from "../../../lib/profile-provisioning";
 
 async function ensureProfileRow(user: AuthUser) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -29,22 +27,27 @@ async function ensureProfileRow(user: AuthUser) {
 
   const fullName = user.user_metadata?.full_name?.trim() || user.user_metadata?.name?.trim() || user.email?.split("@")[0] || "";
 
-  const { error } = await (adminClient.from("profiles") as any).upsert(
-    {
-      id: user.id,
-      email: user.email ?? null,
-      full_name: fullName,
-      username: createUsernamePlaceholder(user.id),
-      role: (user.user_metadata as any)?.role || "member",
-      is_approved: (user.user_metadata as any)?.is_approved ?? true,
-      updated_at: new Date().toISOString(),
-    },
-    { onConflict: "id" }
-  );
+  let lastError: unknown = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    const { error } = await (adminClient.from("profiles") as any).upsert(
+      {
+        id: user.id,
+        email: user.email ?? null,
+        full_name: fullName,
+        username: (user.user_metadata as any)?.username || createUsernamePlaceholder(user.id),
+        role: (user.user_metadata as any)?.role || "member",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "id" }
+    );
 
-  if (error) {
-    throw error;
+    if (!error) return;
+    lastError = error;
+    await new Promise((resolve) => setTimeout(resolve, 250 * (attempt + 1)));
   }
+
+  throw lastError;
 }
 
 export async function GET(request: NextRequest) {
@@ -79,10 +82,9 @@ export async function GET(request: NextRequest) {
   try {
     await ensureProfileRow(data.session.user as AuthUser);
   } catch {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", safeNext);
-    loginUrl.searchParams.set("error", "profile_provision_failed");
-    return NextResponse.redirect(loginUrl);
+    const fallbackUrl = new URL("/onboarding", request.url);
+    fallbackUrl.searchParams.set("setup", "retry");
+    return NextResponse.redirect(fallbackUrl);
   }
 
   const response = NextResponse.redirect(new URL(safeNext, request.url));

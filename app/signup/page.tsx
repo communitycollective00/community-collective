@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getSupabaseClient } from "../../lib/supabase";
 import AuthNavbar from "../components/auth-navbar";
 import { useRouter } from "next/navigation";
+import { upsertProfileWithRetry } from "../../lib/profile-provisioning";
 
 function friendlyAuthError(message: string) {
   const lower = message.toLowerCase();
@@ -67,18 +68,16 @@ export default function SignupPage() {
       return;
     }
 
-    const { error: profileError } = await (supabase.from("profiles") as any).upsert({
+    try {
+      await upsertProfileWithRetry(supabase, {
         id: data.user.id,
         email: form.email,
-        full_name: form.fullName,
+        fullName: form.fullName,
         username: form.username,
         role: "member",
-        is_approved: true,
-        updated_at: new Date().toISOString(),
-    });
-
-    if (profileError) {
-      setStatus("Your account was created, but we couldn't finish your profile setup. Please try signing in.");
+      });
+    } catch {
+      setStatus("We created your account, but couldn't complete setup yet. Please try again in a moment.");
       setIsSubmitting(false);
       return;
     }
