@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
+import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
 import AuthNavbar from "../components/auth-navbar";
 
 export default function ProfilePage() {
@@ -71,10 +72,8 @@ export default function ProfilePage() {
     e.preventDefault();
     setStatus("Saving profile...");
 
-    const { error } = await (getSupabaseClient().from("profiles") as any).upsert(
-      {
+    const payload = filterProfilePayload({
         id: userId,
-        email,
         full_name: fullName,
         username,
         bio,
@@ -86,9 +85,9 @@ export default function ProfilePage() {
         linkedin,
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
-      },
-      { onConflict: "id" }
-    );
+      });
+
+    const { error } = await (getSupabaseClient().from("profiles") as any).upsert(payload, { onConflict: "id" });
 
     setStatus(error ? error.message : "Profile updated.");
   };
@@ -110,7 +109,7 @@ export default function ProfilePage() {
           <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
           <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
           <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
-          {avatarUrl ? <img src={avatarUrl} alt="Avatar preview" className="profile-avatar" /> : null}
+          <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
           <button className="gold-btn" type="submit">Save</button>
         </form>
         {status && <p className="muted">{status}</p>}

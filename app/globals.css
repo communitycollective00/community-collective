@@ -160,3 +160,12 @@ select {
 @media (min-width: 900px) {
   .dashboard-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
+
+@media (max-width: 768px) {
+  .premium-nav { padding: 0.75rem 1rem; }
+  .premium-links { gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+  .premium-card { margin: 1rem; padding: 1rem; border-radius: 12px; }
+  .directory-filters { grid-template-columns: 1fr; }
+  .gold-btn, .gold-link, input, textarea, select { min-height: 44px; }
+  .quick-links { display: grid; grid-template-columns: 1fr; }
+}

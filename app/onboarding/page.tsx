@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
+import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
 import AuthNavbar from "../components/auth-navbar";
 
 type SocialState = {
@@ -80,8 +81,16 @@ export default function OnboardingPage() {
     return { city: city?.trim() ?? "", state: rest.join(",").trim() };
   }, [cityState]);
 
-  const uploadAvatarPlaceholder = () => {
-    setStatus("Photo upload placeholder added. Connect storage upload flow when ready.");
+  const uploadAvatar = async (file: File) => {
+    if (!userId) return;
+    setStatus("Uploading avatar...");
+    const ext = file.name.split(".").pop() || "jpg";
+    const path = `${userId}/avatar.${ext}`;
+    const { error } = await getSupabaseClient().storage.from("avatars").upload(path, file, { upsert: true });
+    if (error) { setStatus(error.message); return; }
+    const { data } = getSupabaseClient().storage.from("avatars").getPublicUrl(path);
+    setAvatarUrl(data.publicUrl);
+    setStatus("Avatar updated.");
   };
 
   const save = async (e: FormEvent) => {
@@ -89,10 +98,8 @@ export default function OnboardingPage() {
     if (!userId) return;
     setStatus("Saving profile...");
 
-    const { error } = await (getSupabaseClient().from("profiles") as any).upsert(
-      {
+    const payload = filterProfilePayload({
         id: userId,
-        email,
         full_name: displayName,
         username,
         bio,
@@ -111,9 +118,9 @@ export default function OnboardingPage() {
         services_offered: whatDoYouDo,
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
-      },
-      { onConflict: "id" }
-    );
+      });
+
+    const { error } = await (getSupabaseClient().from("profiles") as any).upsert(payload, { onConflict: "id" });
 
     if (error) {
       setStatus(error.message);
@@ -132,7 +139,8 @@ export default function OnboardingPage() {
 
         <form onSubmit={save} className="premium-form">
           <label className="field-label">Profile photo</label>
-          <button className="gold-link" type="button" onClick={uploadAvatarPlaceholder}>Upload photo (placeholder)</button>
+          <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
+          <img src={avatarUrl || fallbackAvatar(displayName || username)} alt="Avatar preview" className="profile-avatar" />
 
           <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Display name" />
           <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
