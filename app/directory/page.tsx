@@ -7,15 +7,16 @@ import { getSupabaseClient } from "../../lib/supabase";
 
 type DirectoryProfile = {
   id: string;
-  full_name: string | null;
+  display_name: string | null;
   username: string | null;
   bio: string | null;
   city: string | null;
   state: string | null;
+  category: string | null;
   industry: string | null;
   avatar_url: string | null;
-  role: "community" | "verified" | "admin" | null;
-  featured: boolean | null;
+  role: string | null;
+  is_featured: boolean | null;
 };
 
 export default function DirectoryPage() {
@@ -27,10 +28,10 @@ export default function DirectoryPage() {
   useEffect(() => {
     const loadProfiles = async () => {
       const { data, error } = await (getSupabaseClient().from("profiles") as any)
-        .select("id,full_name,username,bio,city,state,industry,avatar_url,role,featured")
+        .select("id,display_name,username,bio,city,state,category,industry,avatar_url,role,is_featured")
         .not("username", "is", null)
-        .order("featured", { ascending: false })
-        .order("full_name", { ascending: true });
+        .order("is_featured", { ascending: false })
+        .order("display_name", { ascending: true });
 
       if (!error) setProfiles(data ?? []);
     };
@@ -39,7 +40,7 @@ export default function DirectoryPage() {
   }, []);
 
   const industryOptions = useMemo(
-    () => ["all", ...Array.from(new Set(profiles.map((profile) => profile.industry).filter(Boolean)))],
+    () => ["all", ...Array.from(new Set(profiles.map((profile) => profile.category || profile.industry).filter(Boolean)))],
     [profiles]
   );
   const cityOptions = useMemo(
@@ -49,14 +50,14 @@ export default function DirectoryPage() {
 
   const filteredProfiles = useMemo(() => {
     return profiles.filter((profile) => {
-      const matchesSearch = !search || [profile.full_name, profile.username, profile.bio].some((value) => value?.toLowerCase().includes(search.toLowerCase()));
-      const matchesIndustry = industry === "all" || profile.industry === industry;
+      const matchesSearch = !search || [profile.display_name, profile.username, profile.bio].some((value) => value?.toLowerCase().includes(search.toLowerCase()));
+      const matchesIndustry = industry === "all" || (profile.category || profile.industry) === industry;
       const matchesCity = city === "all" || profile.city === city;
       return matchesSearch && matchesIndustry && matchesCity;
     });
   }, [profiles, search, industry, city]);
 
-  const featured = filteredProfiles.filter((profile) => profile.featured).slice(0, 3);
+  const is_featured = filteredProfiles.filter((profile) => profile.is_featured).slice(0, 3);
 
   return (
     <main className="premium-page">
@@ -76,11 +77,11 @@ export default function DirectoryPage() {
           </select>
         </div>
 
-        {featured.length > 0 && (
+        {is_featured.length > 0 && (
           <>
             <h2 style={{ marginTop: "1.25rem" }}>Featured Profiles</h2>
             <div className="directory-grid">
-              {featured.map((profile) => <ProfileCard key={profile.id} profile={profile} />)}
+              {is_featured.map((profile) => <ProfileCard key={profile.id} profile={profile} />)}
             </div>
           </>
         )}
@@ -98,12 +99,12 @@ function ProfileCard({ profile }: { profile: DirectoryProfile }) {
   return (
     <article className="submission-item">
       <p style={{ margin: 0, fontWeight: 700 }}>
-        {profile.full_name || profile.username}
+        {profile.display_name || profile.username}
         {profile.role && profile.role !== "community" ? <span className="verify-badge">{profile.role === "admin" ? "Admin" : "Verified"}</span> : null}
       </p>
       <p className="muted" style={{ marginTop: "0.25rem" }}>@{profile.username}</p>
       <p style={{ margin: "0.25rem 0" }}>{profile.bio || "No bio added yet."}</p>
-      <p className="muted" style={{ margin: 0 }}>{profile.industry || "General"} • {profile.city || "Unknown city"}</p>
+      <p className="muted" style={{ margin: 0 }}>{profile.category || profile.industry || "General"} • {profile.city || "Unknown city"}</p>
       <Link className="gold-link" style={{ marginTop: "0.6rem" }} href={`/directory/${profile.username}`}>View profile</Link>
     </article>
   );
