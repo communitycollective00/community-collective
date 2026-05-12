@@ -13,7 +13,7 @@ const publicRoutes = [
   "/signup",
 ];
 
-const protectedRoutes = ["/dashboard", "/profile", "/admin"];
+const protectedRoutes = ["/dashboard", "/profile", "/onboarding", "/admin"];
 
 function matchesRoute(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);
