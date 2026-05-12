@@ -5,6 +5,8 @@ import { getSupabaseClient } from "../../../lib/supabase";
 
 type SubmissionStatus = "pending" | "reviewed" | "contacted" | "approved" | "declined";
 
+type ProfileRole = "admin" | "verified" | "community";
+
 const STATUS_OPTIONS: SubmissionStatus[] = ["pending", "reviewed", "contacted", "approved", "declined"];
 
 type Submission = {
@@ -26,6 +28,7 @@ export default function SubmissionsAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [items, setItems] = useState<Submission[]>([]);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     async function load() {
@@ -40,6 +43,20 @@ export default function SubmissionsAdminPage() {
           window.location.href = "/login?next=/admin/submissions";
           return;
         }
+
+        const { data: profile, error: profileError } = await (supabase.from("profiles") as any)
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle();
+
+        if (profileError) throw profileError;
+
+        if ((profile?.role as ProfileRole | undefined) !== "admin") {
+          setIsAdmin(false);
+          return;
+        }
+
+        setIsAdmin(true);
 
         const { data, error: queryError } = await (supabase.from("submissions") as any)
           .select("id,full_name,email,phone,business_name,industry,city,submission_type,description,status,created_at")
@@ -58,6 +75,8 @@ export default function SubmissionsAdminPage() {
   }, []);
 
   async function updateStatus(id: string, status: SubmissionStatus) {
+    if (!isAdmin) return;
+
     setSavingId(id);
     setError(null);
     try {
@@ -85,38 +104,42 @@ export default function SubmissionsAdminPage() {
         {loading ? <p className="muted">Loading submissions...</p> : null}
         {error ? <p className="status-error">{error}</p> : null}
 
-        {!loading && !error && items.length === 0 ? <p className="muted">No submissions yet.</p> : null}
+        {!loading && !error && !isAdmin ? <p className="status-error">You do not have admin access.</p> : null}
 
-        <div className="submissions-list">
-          {items.map((item) => (
-            <article key={item.id} className="submission-item">
-              <div className="submission-grid">
-                <p><strong>Full name:</strong> {item.full_name ?? "-"}</p>
-                <p><strong>Email:</strong> {item.email ?? "-"}</p>
-                <p><strong>Phone:</strong> {item.phone ?? "-"}</p>
-                <p><strong>Business:</strong> {item.business_name ?? "-"}</p>
-                <p><strong>Industry:</strong> {item.industry ?? "-"}</p>
-                <p><strong>City:</strong> {item.city ?? "-"}</p>
-                <p><strong>Type:</strong> {item.submission_type ?? "-"}</p>
-                <p><strong>Created:</strong> {new Date(item.created_at).toLocaleString()}</p>
-              </div>
-              <p><strong>Description:</strong> {item.description ?? "-"}</p>
+        {!loading && !error && isAdmin && items.length === 0 ? <p className="muted">No submissions yet.</p> : null}
 
-              <label className="status-control">
-                <strong>Status:</strong>
-                <select
-                  value={item.status ?? "pending"}
-                  onChange={(e) => updateStatus(item.id, e.target.value as SubmissionStatus)}
-                  disabled={savingId === item.id}
-                >
-                  {STATUS_OPTIONS.map((statusOption) => (
-                    <option key={statusOption} value={statusOption}>{statusOption}</option>
-                  ))}
-                </select>
-              </label>
-            </article>
-          ))}
-        </div>
+        {isAdmin ? (
+          <div className="submissions-list">
+            {items.map((item) => (
+              <article key={item.id} className="submission-item">
+                <div className="submission-grid">
+                  <p><strong>Full name:</strong> {item.full_name ?? "-"}</p>
+                  <p><strong>Email:</strong> {item.email ?? "-"}</p>
+                  <p><strong>Phone:</strong> {item.phone ?? "-"}</p>
+                  <p><strong>Business:</strong> {item.business_name ?? "-"}</p>
+                  <p><strong>Industry:</strong> {item.industry ?? "-"}</p>
+                  <p><strong>City:</strong> {item.city ?? "-"}</p>
+                  <p><strong>Type:</strong> {item.submission_type ?? "-"}</p>
+                  <p><strong>Created:</strong> {new Date(item.created_at).toLocaleString()}</p>
+                </div>
+                <p><strong>Description:</strong> {item.description ?? "-"}</p>
+
+                <label className="status-control">
+                  <strong>Status:</strong>
+                  <select
+                    value={item.status ?? "pending"}
+                    onChange={(e) => updateStatus(item.id, e.target.value as SubmissionStatus)}
+                    disabled={savingId === item.id}
+                  >
+                    {STATUS_OPTIONS.map((statusOption) => (
+                      <option key={statusOption} value={statusOption}>{statusOption}</option>
+                    ))}
+                  </select>
+                </label>
+              </article>
+            ))}
+          </div>
+        ) : null}
       </section>
     </main>
   );
