@@ -16,7 +16,7 @@ const categories = ["Creator", "Brand", "Entrepreneur", "Artist", "Producer", "C
 
 export default function OnboardingPage() {
   const [userId, setUserId] = useState("");
-  const [displayName, setDisplayName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
   const [category, setCategory] = useState("");
@@ -39,13 +39,13 @@ export default function OnboardingPage() {
       setUserId(user.id);
 
       const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("display_name,username,bio,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,description")
+        .select("full_name,username,bio,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,description")
         .eq("id", user.id)
         .maybeSingle();
 
       if (!profile) return;
 
-      setDisplayName(profile.display_name ?? "");
+      setFullName(profile.full_name ?? "");
       setUsername(profile.username ?? "");
       setBio(profile.bio ?? "");
       setCategory(profile.category ?? profile.industry ?? "");
@@ -88,7 +88,7 @@ export default function OnboardingPage() {
 
     const payload = filterProfilePayload({
         id: userId,
-        display_name: displayName,
+        full_name: fullName,
         username,
         bio,
         category,
@@ -101,7 +101,8 @@ export default function OnboardingPage() {
         linkedin: socials.linkedin,
         twitter: socials.twitter,
         description: whatDoYouDo,
-        profile_completed: Boolean(displayName && username && bio && category && splitLocation.city && splitLocation.state),
+        onboarding_completed: Boolean(fullName && username && bio && category && splitLocation.city && splitLocation.state),
+        profile_completed: Boolean(fullName && username && bio && category && splitLocation.city && splitLocation.state),
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
       });
@@ -126,9 +127,9 @@ export default function OnboardingPage() {
         <form onSubmit={save} className="premium-form">
           <label className="field-label">Profile photo</label>
           <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
-          <img src={avatarUrl || fallbackAvatar(displayName || username)} alt="Avatar preview" className="profile-avatar" />
+          <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
 
-          <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Display name" />
+          <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
           <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
           <textarea rows={4} value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Bio" />
           <select value={category} onChange={(e) => setCategory(e.target.value)}>
