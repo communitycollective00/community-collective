@@ -3,6 +3,7 @@
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import AuthNavbar from "../components/auth-navbar";
+import { upsertProfileWithRetry } from "../../lib/profile-provisioning";
 
 function friendlyLoginError(message: string) {
   const lower = message.toLowerCase();
@@ -28,9 +29,27 @@ export default function LoginPage() {
   const login = async (e: FormEvent) => {
     e.preventDefault();
     setStatus("Signing in...");
-    const { error } = await getSupabaseClient().auth.signInWithPassword({ email, password });
-    if (error) setStatus(friendlyLoginError(error.message));
-    else window.location.href = next;
+    const supabase = getSupabaseClient();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      setStatus(friendlyLoginError(error.message));
+      return;
+    }
+
+    try {
+      if (data.user) {
+        await upsertProfileWithRetry(supabase, {
+          id: data.user.id,
+          email: data.user.email,
+          fullName: data.user.user_metadata?.full_name ?? data.user.user_metadata?.name,
+          username: data.user.user_metadata?.username,
+          role: data.user.user_metadata?.role,
+        });
+      }
+      window.location.href = next;
+    } catch {
+      setStatus("We're finishing your account setup. Please try signing in again in a moment.");
+    }
   };
 
   const googleLogin = async () => {
