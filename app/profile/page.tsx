@@ -34,7 +34,7 @@ export default function ProfilePage() {
       setEmail(user.email ?? "");
 
       const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,description,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,banner_url")
+        .select("full_name,username,bio,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,banner_url")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -77,7 +77,6 @@ export default function ProfilePage() {
     const payload = filterProfilePayload({
         id: userId,
         full_name: fullName,
-        description: bio,
         category: industry,
         location: [city, stateRegion].filter(Boolean).join(", "),
         profile_completed: Boolean(fullName && username && bio && industry && city && stateRegion),
