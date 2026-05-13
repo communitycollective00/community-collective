@@ -7,12 +7,10 @@ import AuthNavbar from "../components/auth-navbar";
 
 type ProfileData = {
   full_name: string | null;
-  display_name: string | null;
   username: string | null;
   bio: string | null;
   description: string | null;
   category: string | null;
-  industry: string | null;
   location: string | null;
   city: string | null;
   state: string | null;
@@ -20,6 +18,8 @@ type ProfileData = {
   instagram: string | null;
   twitter: string | null;
   linkedin: string | null;
+  tiktok: string | null;
+  youtube: string | null;
   avatar_url: string | null;
   featured_status: string | null;
   is_featured: boolean | null;
@@ -41,7 +41,7 @@ export default function DashboardPage() {
       setEmail(user.email ?? "");
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,display_name,username,bio,description,category,industry,location,city,state,website,instagram,twitter,linkedin,avatar_url,featured_status,is_featured")
+        .select("full_name,username,bio,description,category,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,featured_status,is_featured")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -56,14 +56,17 @@ export default function DashboardPage() {
       profile.full_name,
       profile.username,
       profile.bio,
-      profile.category || profile.industry,
+      profile.description,
+      profile.category,
+      profile.location,
       profile.city,
       profile.state,
       profile.website,
       profile.instagram,
       profile.twitter,
       profile.linkedin,
-      profile.description,
+      profile.tiktok,
+      profile.youtube,
       profile.avatar_url,
     ];
     const filled = fields.filter((v) => Boolean(v && String(v).trim())).length;
