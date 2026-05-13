@@ -33,24 +33,33 @@ export default function ProfilePage() {
       setUserId(user.id);
       setEmail(user.email ?? "");
 
-      const { data: profile } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,banner_url")
+      const { data: profile, error: profileError } = await (getSupabaseClient().from("profiles") as any)
+        .select(
+          "full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url"
+        )
         .eq("id", user.id)
         .maybeSingle();
 
-      if (profile) {
-        setFullName(profile.full_name ?? "");
-        setUsername(profile.username ?? "");
-        setBio(profile.bio ?? "");
-        setCity(profile.city ?? "");
-        setStateRegion(profile.state ?? "");
-        setIndustry(profile.industry ?? "");
-        setWebsite(profile.website ?? "");
-        setInstagram(profile.instagram ?? "");
-        setTwitter(profile.twitter ?? "");
-        setLinkedin(profile.linkedin ?? "");
-        setAvatarUrl(profile.avatar_url ?? "");
+      if (profileError) {
+        console.error("[profile] failed to load profile", profileError);
+        return;
       }
+
+      if (!profile) {
+        return;
+      }
+
+      if (profile.full_name != null) setFullName(profile.full_name);
+      if (profile.username != null) setUsername(profile.username);
+      if (profile.bio != null) setBio(profile.bio);
+      if (profile.city != null) setCity(profile.city);
+      if (profile.state != null) setStateRegion(profile.state);
+      if (profile.industry != null) setIndustry(profile.industry);
+      if (profile.website != null) setWebsite(profile.website);
+      if (profile.instagram != null) setInstagram(profile.instagram);
+      if (profile.twitter != null) setTwitter(profile.twitter);
+      if (profile.linkedin != null) setLinkedin(profile.linkedin);
+      if (profile.avatar_url != null) setAvatarUrl(profile.avatar_url);
     };
 
     load();
