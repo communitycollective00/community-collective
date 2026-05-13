@@ -11,6 +11,7 @@ type ProfileData = {
   bio: string | null;
   description: string | null;
   category: string | null;
+  industry: string | null;
   location: string | null;
   city: string | null;
   state: string | null;
@@ -41,7 +42,7 @@ export default function DashboardPage() {
       setEmail(user.email ?? "");
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,description,category,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,featured_status,is_featured")
+        .select("full_name,username,bio,description,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,featured_status,is_featured")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -57,7 +58,7 @@ export default function DashboardPage() {
       profile.username,
       profile.bio,
       profile.description,
-      profile.category,
+      profile.category || profile.industry,
       profile.location,
       profile.city,
       profile.state,
