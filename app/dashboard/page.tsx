@@ -32,13 +32,16 @@ export default function DashboardPage() {
   const [comingSoon, setComingSoon] = useState("");
 
   useEffect(() => {
-    getSupabaseClient().auth.getSession().then(async ({ data }) => {
-      if (!data.session) {
+    const loadProfile = async () => {
+      const sessionResult = await getSupabaseClient().auth.getSession();
+      const session = sessionResult.data?.session;
+
+      if (!session) {
         window.location.href = "/login";
         return;
       }
 
-      const user = data.session.user;
+      const user = session.user;
       setEmail(user.email ?? "");
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
@@ -48,7 +51,9 @@ export default function DashboardPage() {
 
       setProfile(profileData || null);
       document.cookie = "cc-auth=1; Path=/; Max-Age=604800; SameSite=Lax";
-    });
+    };
+
+    loadProfile();
   }, []);
 
   const completion = useMemo(() => {
