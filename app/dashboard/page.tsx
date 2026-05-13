@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
-import { computeProfileCompleted, filterProfilePayload } from "../../lib/profile-fields";
 import AuthNavbar from "../components/auth-navbar";
 
 type ProfileData = {
+  full_name: string | null;
   display_name: string | null;
   username: string | null;
   bio: string | null;
   description: string | null;
   category: string | null;
+  industry: string | null;
+  location: string | null;
   city: string | null;
   state: string | null;
   website: string | null;
@@ -21,7 +23,6 @@ type ProfileData = {
   avatar_url: string | null;
   featured_status: string | null;
   is_featured: boolean | null;
-  profile_completed: boolean | null;
 };
 
 export default function DashboardPage() {
@@ -40,30 +41,33 @@ export default function DashboardPage() {
       setEmail(user.email ?? "");
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("display_name,username,bio,description,category,city,state,website,instagram,twitter,linkedin,avatar_url,featured_status,is_featured,profile_completed")
+        .select("full_name,display_name,username,bio,description,category,industry,location,city,state,website,instagram,twitter,linkedin,avatar_url,featured_status,is_featured")
         .eq("id", user.id)
         .maybeSingle();
 
-      const completed = profileData ? computeProfileCompleted(profileData) : false;
-      await (getSupabaseClient().from("profiles") as any).upsert(filterProfilePayload({
-        id: user.id,
-        profile_completed: completed,
-        updated_at: new Date().toISOString(),
-      }), { onConflict: "id" });
-
-      setProfile(profileData ? { ...profileData, profile_completed: completed } : null);
+      setProfile(profileData || null);
       document.cookie = "cc-auth=1; Path=/; Max-Age=604800; SameSite=Lax";
     });
   }, []);
 
   const completion = useMemo(() => {
     if (!profile) return 0;
-    const values = [
-      profile.display_name, profile.username, profile.bio, profile.category, profile.city, profile.state,
-      profile.website, profile.instagram, profile.twitter, profile.linkedin, profile.description, profile.avatar_url,
+    const fields = [
+      profile.full_name,
+      profile.username,
+      profile.bio,
+      profile.category || profile.industry,
+      profile.city,
+      profile.state,
+      profile.website,
+      profile.instagram,
+      profile.twitter,
+      profile.linkedin,
+      profile.description,
+      profile.avatar_url,
     ];
-    const done = values.filter((v) => Boolean(v && String(v).trim())).length;
-    return Math.round((done / values.length) * 100);
+    const filled = fields.filter((v) => Boolean(v && String(v).trim())).length;
+    return Math.round((filled / fields.length) * 100);
   }, [profile]);
 
   return (<main className="premium-page"><AuthNavbar /><section className="premium-card dashboard-card">
