@@ -86,6 +86,13 @@ export default function OnboardingPage() {
     if (!userId) return;
     setStatus("Saving profile...");
 
+    const { data: sessionData } = await getSupabaseClient().auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+    if (!accessToken) {
+      window.location.href = "/login";
+      return;
+    }
+
     const payload = filterProfilePayload({
         id: userId,
         full_name: fullName,
@@ -107,10 +114,18 @@ export default function OnboardingPage() {
         updated_at: new Date().toISOString(),
       });
 
-    const { error } = await (getSupabaseClient().from("profiles") as any).upsert(payload, { onConflict: "id" });
+    const response = await fetch("/api/profiles/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
-    if (error) {
-      setStatus(error.message);
+    const result = await response.json().catch(() => null);
+    if (!response.ok) {
+      setStatus(result?.error || "Unable to save profile. Please try again.");
       return;
     }
 

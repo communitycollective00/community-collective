@@ -72,7 +72,18 @@ export default function ProfilePage() {
 
   const save = async (e: FormEvent) => {
     e.preventDefault();
+    if (!userId) {
+      setStatus("Not signed in.");
+      return;
+    }
+
     setStatus("Saving profile...");
+    const { data: sessionData } = await getSupabaseClient().auth.getSession();
+    const accessToken = sessionData.session?.access_token;
+    if (!accessToken) {
+      window.location.href = "/login";
+      return;
+    }
 
     const payload = filterProfilePayload({
         id: userId,
@@ -93,9 +104,22 @@ export default function ProfilePage() {
         updated_at: new Date().toISOString(),
       });
 
-    const { error } = await (getSupabaseClient().from("profiles") as any).upsert(payload, { onConflict: "id" });
+    const response = await fetch("/api/profiles/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(payload),
+    });
 
-    setStatus(error ? error.message : "Profile updated.");
+    const result = await response.json().catch(() => null);
+    if (!response.ok) {
+      setStatus(result?.error || "Unable to save profile. Please try again.");
+      return;
+    }
+
+    setStatus("Profile updated.");
   };
 
   return (
