@@ -26,7 +26,7 @@ export async function upsertProfileWithRetry(
     email: seed.email ?? null,
     full_name: seed.fullName?.trim() || (seed.email?.split("@")[0] ?? ""),
     username: seed.username?.trim() || createUsernamePlaceholder(seed.id),
-    role: seed.role || "member",
+    role: seed.role || "public",
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };

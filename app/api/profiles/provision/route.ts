@@ -34,7 +34,7 @@ export async function POST(request: Request) {
         email: payload.email,
         full_name: payload.full_name,
         username: payload.username,
-        role: "member",
+        role: "public",
         is_approved: true,
         updated_at: new Date().toISOString(),
       },

@@ -1,38 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import AuthNavbar from "../components/auth-navbar";
+import { isProfessionalRole } from "../../lib/roles";
 
 type ProfileData = {
   full_name: string | null;
   username: string | null;
-  bio: string | null;
-  description: string | null;
-  category: string | null;
-  industry: string | null;
-  location: string | null;
-  city: string | null;
-  state: string | null;
-  website: string | null;
-  instagram: string | null;
-  twitter: string | null;
-  linkedin: string | null;
-  tiktok: string | null;
-  youtube: string | null;
-  avatar_url: string | null;
-  featured_status: string | null;
-  is_featured: boolean | null;
+  email: string | null;
+  role: string | null;
+};
+
+type PostData = {
+  id: string;
+  title: string | null;
+  body: string | null;
+  post_type: string | null;
+  created_at: string | null;
 };
 
 export default function DashboardPage() {
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [comingSoon, setComingSoon] = useState("");
+  const [posts, setPosts] = useState<PostData[]>([]);
+  const [status, setStatus] = useState("");
 
   useEffect(() => {
-    const loadProfile = async () => {
+    const load = async () => {
       const sessionResult = await getSupabaseClient().auth.getSession();
       const session = sessionResult.data?.session;
 
@@ -45,49 +41,87 @@ export default function DashboardPage() {
       setEmail(user.email ?? "");
 
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("full_name,username,bio,description,category,industry,location,city,state,website,instagram,tiktok,youtube,twitter,linkedin,avatar_url,featured_status,is_featured")
+        .select("full_name,username,email,role")
         .eq("id", user.id)
         .maybeSingle();
 
       setProfile(profileData || null);
       document.cookie = "cc-auth=1; Path=/; Max-Age=604800; SameSite=Lax";
+
+      const { data: postsData } = await (getSupabaseClient().from("posts") as any)
+        .select("id,title,body,post_type,created_at")
+        .eq("author_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      setPosts(postsData || []);
     };
 
-    loadProfile();
+    load();
   }, []);
 
-  const completion = useMemo(() => {
-    if (!profile) return 0;
-    const fields = [
-      profile.full_name,
-      profile.username,
-      profile.bio,
-      profile.description,
-      profile.category || profile.industry,
-      profile.location,
-      profile.city,
-      profile.state,
-      profile.website,
-      profile.instagram,
-      profile.twitter,
-      profile.linkedin,
-      profile.tiktok,
-      profile.youtube,
-      profile.avatar_url,
-    ];
-    const filled = fields.filter((v) => Boolean(v && String(v).trim())).length;
-    return Math.round((filled / fields.length) * 100);
-  }, [profile]);
+  const isProfessional = isProfessionalRole(profile?.role);
 
-  return (<main className="premium-page"><AuthNavbar /><section className="premium-card dashboard-card">
-    <article className="submission-item"><h1 style={{ marginTop: 0 }}>Welcome back</h1><p className="muted">You&apos;re signed in as {email || "member"}.</p></article>
-    <article className="submission-item"><h3 style={{ marginTop: 0 }}>Profile completion</h3><p className="muted">{completion}% complete</p><div className="progress-track"><div className="progress-fill" style={{ width: `${completion}%` }} /></div></article>
-    <article className="submission-item"><h3 style={{ marginTop: 0 }}>Quick links</h3><div className="quick-links"><Link className="gold-link" href="/onboarding">Complete Profile</Link><Link className="gold-link" href="/directory">Browse Directory</Link><Link className="gold-link" href="/opportunities">View Opportunities</Link><Link className="gold-link" href="/apply">Apply to be Featured</Link><Link className="gold-link" href="/profile">View Public Profile</Link></div></article>
-    <div className="dashboard-grid">
-      <article className="submission-item"><h3 style={{ marginTop: 0 }}>Your Feed</h3><p className="muted">No feed items yet. Member/media posts are launching soon.</p><button className="gold-link" type="button" onClick={() => setComingSoon("Create Post is coming soon.")}>Create Post (Coming Soon)</button></article>
-      <article className="submission-item"><h3 style={{ marginTop: 0 }}>Featured members</h3><p className="muted">Featured status: {profile?.featured_status || (profile?.is_featured ? "featured" : "none")}.</p><button className="gold-link" type="button" onClick={() => setComingSoon("Featured submissions are coming soon.")}>Featured Submissions (Coming Soon)</button></article>
-      <article className="submission-item"><h3 style={{ marginTop: 0 }}>Opportunities preview</h3><ul className="muted" style={{paddingLeft:"1rem", margin:"0.25rem 0"}}><li>Casting + Audition Calls</li><li>Jobs + Internships</li><li>Funding + Grants</li></ul><Link className="gold-link" href="/opportunities">Open full opportunities</Link></article>
-    </div>
-    {comingSoon ? <p className="muted">{comingSoon}</p> : null}
-  </section></main>);
+  return (
+    <main className="premium-page">
+      <AuthNavbar />
+      <section className="premium-card dashboard-card">
+        <article className="submission-item">
+          <h1 style={{ marginTop: 0 }}>Welcome back</h1>
+          <p className="muted">Signed in as {profile?.full_name || email || "member"}.</p>
+          <p className="muted">Role: {profile?.role || "public"}</p>
+        </article>
+
+        <article className="submission-item">
+          <h3 style={{ marginTop: 0 }}>{isProfessional ? "Professional dashboard" : "Member home"}</h3>
+          <p className="muted">{isProfessional ? "Manage your profile, posts, and opportunities in one trusted place." : "Browse verified professionals, discover opportunities, and apply to become a featured professional."}</p>
+        </article>
+
+        <article className="submission-item">
+          <h3 style={{ marginTop: 0 }}>Quick actions</h3>
+          <div className="quick-links">
+            {isProfessional ? <Link className="gold-link" href="/posts/create">Create post</Link> : null}
+            <Link className="gold-link" href="/profile">Edit Profile</Link>
+            <Link className="gold-link" href="/directory">Browse Directory</Link>
+            <Link className="gold-link" href="/opportunities">View Opportunities</Link>
+            <Link className="gold-link" href="/apply">Apply to be featured</Link>
+          </div>
+        </article>
+
+        <div className="dashboard-grid">
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Latest posts</h3>
+            {posts.length === 0 ? (
+              <p className="muted">No published posts yet.</p>
+            ) : (
+              <div className="submissions-list">
+                {posts.map((post) => (
+                  <article key={post.id} className="submission-item" style={{ padding: "0.75rem" }}>
+                    <p style={{ margin: 0, fontWeight: 700 }}>{post.title || "Untitled post"}</p>
+                    <p className="muted">{post.post_type || "Update"}</p>
+                    <p className="muted" style={{ margin: 0 }}>{post.body?.slice(0, 100) || "Shared media content."}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+          </article>
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Opportunity essentials</h3>
+            <ul className="muted" style={{ paddingLeft: "1rem", margin: "0.25rem 0" }}>
+              <li>Jobs + internships</li>
+              <li>Mentorships + coaching</li>
+              <li>Events + learning</li>
+            </ul>
+            <Link className="gold-link" href="/opportunities">Open opportunities</Link>
+          </article>
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Trust signals</h3>
+            <p className="muted">Verified professionals can be surfaced, reviewed, and trusted. Public members browse without posting public profiles.</p>
+          </article>
+        </div>
+
+        {status ? <p className="muted">{status}</p> : null}
+      </section>
+    </main>
+  );
 }

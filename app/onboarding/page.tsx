@@ -108,8 +108,6 @@ export default function OnboardingPage() {
         linkedin: socials.linkedin,
         twitter: socials.twitter,
         description: whatDoYouDo,
-        onboarding_completed: Boolean(fullName && username && bio && category && splitLocation.city && splitLocation.state),
-        profile_completed: Boolean(fullName && username && bio && category && splitLocation.city && splitLocation.state),
         avatar_url: avatarUrl,
         updated_at: new Date().toISOString(),
       });

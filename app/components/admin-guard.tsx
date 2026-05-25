@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
-
-export type ProfileRole = "admin" | "verified" | "member";
+import { isAdminRole } from "../../lib/roles";
 
 export function useAdminGuard(nextPath: string) {
   const [loading, setLoading] = useState(true);
@@ -31,7 +30,7 @@ export function useAdminGuard(nextPath: string) {
 
         if (profileError) throw profileError;
 
-        setIsAdmin((profile?.role as ProfileRole | undefined) === "admin");
+        setIsAdmin(isAdminRole(profile?.role));
       } catch (loadError: any) {
         setError(loadError?.message ?? "Failed to verify admin access.");
       } finally {

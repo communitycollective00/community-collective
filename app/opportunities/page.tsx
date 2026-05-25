@@ -1,9 +1,12 @@
 import AuthNavbar from "../components/auth-navbar";
 
 const opportunities = [
-  { title: "Casting + Audition Calls", type: "Creative", detail: "Placeholder listings for upcoming castings, open auditions, and creator submissions." },
-  { title: "Jobs + Internships", type: "Career", detail: "Placeholder listings for paid roles, apprenticeships, and growth opportunities." },
-  { title: "Funding + Grants", type: "Capital", detail: "Placeholder listings for grant cycles, sponsorships, and support programs." },
+  { title: "Jobs + Internships", category: "Career", detail: "Paid roles, apprenticeships, and entry-level growth pathways from verified organizations." },
+  { title: "Mentorships + Coaching", category: "Development", detail: "Guided learning, mentoring sessions, and career support from trusted professionals." },
+  { title: "Events + Workshops", category: "Experience", detail: "Live sessions, panels, and resource-driven events that connect people to the right room." },
+  { title: "Auditions + Casting Calls", category: "Creative", detail: "Auditions, talent calls, and studio opportunities shared by industry experts." },
+  { title: "Grants + Funding", category: "Capital", detail: "Non-dilutive grants, sponsorships, and supported funding opportunities for growing professionals." },
+  { title: "Educational Resources", category: "Learning", detail: "Courses, guides, and resource libraries built to help users translate access into outcomes." },
 ];
 
 export default function OpportunitiesPage() {
@@ -11,14 +14,14 @@ export default function OpportunitiesPage() {
     <main className="premium-page">
       <AuthNavbar />
       <section className="premium-card dashboard-card" style={{ marginTop: "2rem" }}>
-        <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Community Collective</p>
+        <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Verified Opportunities</p>
         <h1 style={{ marginTop: 8 }}>Opportunities</h1>
-        <p className="muted">A public feed of pathways to work, visibility, and long-term momentum.</p>
+        <p className="muted">A trusted collection of pathways, not a noisy listing. Browse curated jobs, mentorships, events, auditions, grants, and educational resources.</p>
         <div className="submissions-list" style={{ marginTop: "1.25rem" }}>
           {opportunities.map((opportunity, idx) => (
             <article className="submission-item" key={idx}>
               <h3 style={{ margin: "0 0 0.25rem" }}>{opportunity.title}</h3>
-              <p className="muted" style={{ margin: "0 0 0.5rem" }}>{opportunity.type}</p>
+              <p className="muted" style={{ margin: "0 0 0.5rem" }}>{opportunity.category}</p>
               <p style={{ margin: 0 }}>{opportunity.detail}</p>
             </article>
           ))}

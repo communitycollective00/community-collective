@@ -82,7 +82,7 @@ export async function POST(request: Request) {
       user_metadata: {
         full_name: fullName,
         username,
-        role: "member",
+        role: "public",
         is_approved: true,
       },
     });
@@ -105,7 +105,7 @@ export async function POST(request: Request) {
       email,
       full_name: fullName,
       username,
-      role: "member",
+      role: "public",
       is_approved: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),

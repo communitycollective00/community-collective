@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import AuthNavbar from "../components/auth-navbar";
 import { getSupabaseClient } from "../../lib/supabase";
+import { isProfessionalRole } from "../../lib/roles";
 
 type DirectoryProfile = {
   id: string;
@@ -14,6 +15,8 @@ type DirectoryProfile = {
   state: string | null;
   industry: string | null;
   avatar_url: string | null;
+  role: string | null;
+  posts?: Array<{ id: string; title: string | null; body: string | null; post_type: string | null; created_at: string | null }>;
 };
 
 export default function DirectoryPage() {
@@ -25,7 +28,7 @@ export default function DirectoryPage() {
   useEffect(() => {
     const loadProfiles = async () => {
       const { data, error } = await (getSupabaseClient().from("profiles") as any)
-        .select("id,full_name,username,bio,city,state,industry,avatar_url")
+        .select("id,full_name,username,bio,city,state,industry,avatar_url,role,posts(id,title,body,post_type,created_at)")
         .or("full_name.not.is.null,username.not.is.null")
         .order("full_name", { ascending: true });
 
@@ -57,12 +60,12 @@ export default function DirectoryPage() {
     <main className="premium-page">
       <AuthNavbar />
       <section className="premium-card directory-card" style={{ marginTop: "2rem" }}>
-        <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Community Collective</p>
+        <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Professional Directory</p>
         <h1 style={{ marginTop: 8 }}>Directory</h1>
-        <p className="muted">Discover community members, verified experts, and local leaders.</p>
+        <p className="muted">Browse trusted professionals, verified organizations, and the latest expert content previews.</p>
 
         <div className="directory-filters">
-          <input placeholder="Search name, username, or bio" value={search} onChange={(e) => setSearch(e.target.value)} />
+          <input placeholder="Search name, username, or expertise" value={search} onChange={(e) => setSearch(e.target.value)} />
           <select value={industry} onChange={(e) => setIndustry(e.target.value)}>
             {industryOptions.map((value) => <option key={value} value={value}>{value === "all" ? "All industries" : value}</option>)}
           </select>
@@ -71,7 +74,7 @@ export default function DirectoryPage() {
           </select>
         </div>
 
-        <h2 style={{ marginTop: "1.25rem" }}>All Profiles</h2>
+        <h2 style={{ marginTop: "1.25rem" }}>Verified professionals</h2>
         {filteredProfiles.length === 0 ? (
           <p className="muted">No profiles found yet.</p>
         ) : (
@@ -85,14 +88,19 @@ export default function DirectoryPage() {
 }
 
 function ProfileCard({ profile }: { profile: DirectoryProfile }) {
+  const latestPost = profile.posts?.slice().sort((a, b) => Number(new Date(b.created_at || "")) - Number(new Date(a.created_at || "")))[0];
   return (
     <article className="submission-item">
-      <p style={{ margin: 0, fontWeight: 700 }}>
-        {profile.full_name || profile.username}
-      </p>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <p style={{ margin: 0, fontWeight: 700 }}>{profile.full_name || profile.username}</p>
+        {isProfessionalRole(profile.role) ? <span className="verify-badge">Verified</span> : null}
+      </div>
       <p className="muted" style={{ marginTop: "0.25rem" }}>@{profile.username || "unknown"}</p>
-      <p style={{ margin: "0.25rem 0" }}>{profile.bio || "No bio added yet."}</p>
-      <p className="muted" style={{ margin: 0 }}>{profile.industry || "General"} • {profile.city || "Unknown city"}</p>
+      <p style={{ margin: "0.35rem 0" }}>{profile.bio || "Trusted professional profile."}</p>
+      <p className="muted" style={{ margin: 0 }}>{profile.industry || "General"} • {profile.city || "Location not listed"}</p>
+      <p className="muted" style={{ margin: "0.75rem 0 0" }}>
+        <strong>Latest content:</strong> {latestPost ? (latestPost.title || latestPost.body?.slice(0, 80) || "Published media") : "No published content yet."}
+      </p>
       <Link className="gold-link" style={{ marginTop: "0.6rem" }} href={`/directory/${profile.username}`}>View profile</Link>
     </article>
   );

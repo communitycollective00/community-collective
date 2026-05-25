@@ -99,7 +99,6 @@ export default function ProfilePage() {
         full_name: fullName,
         category: industry,
         location: [city, stateRegion].filter(Boolean).join(", "),
-        profile_completed: Boolean(fullName && username && bio && industry && city && stateRegion),
         username,
         bio,
         city,

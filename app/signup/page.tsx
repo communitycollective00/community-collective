@@ -94,7 +94,7 @@ export default function SignupPage() {
     const { error } = await getSupabaseClient().auth.signInWithOtp({
       email: form.email,
       options: {
-        data: { full_name: form.fullName, username: form.username, role: "member", is_approved: true },
+        data: { full_name: form.fullName, username: form.username, role: "public", is_approved: true },
         emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
       },
     });
