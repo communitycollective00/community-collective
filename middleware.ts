@@ -3,7 +3,6 @@ import type { NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const publicRoutes = [
-  "/",
   "/get-access",
   "/voices",
   "/opportunities",
@@ -21,6 +20,10 @@ function matchesRoute(pathname: string, route: string) {
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (pathname === "/") {
+    return NextResponse.rewrite(new URL("/original.html", request.url));
+  }
 
   if (publicRoutes.some((route) => matchesRoute(pathname, route))) {
     return NextResponse.next();

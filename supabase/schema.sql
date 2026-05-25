@@ -48,6 +48,30 @@ for select using (true);
 create policy "Users can upsert own profile" on public.profiles
 for all using (auth.uid() = id) with check (auth.uid() = id);
 
+create table if not exists public.applications (
+  id uuid primary key default gen_random_uuid(),
+  full_name text not null,
+  email text not null,
+  phone text,
+  city text not null,
+  state text not null,
+  application_type text not null check (application_type in ('public_member', 'professional_organization')),
+  industry text not null,
+  reason text not null,
+  website_social text,
+  status text not null default 'pending' check (status in ('pending', 'approved', 'rejected')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.applications enable row level security;
+
+create policy "Anyone can submit applications" on public.applications
+for insert with check (true);
+
+create policy "Admin can view all applications" on public.applications
+for select using (true);
+
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
   author_id uuid not null references public.profiles(id) on delete cascade,

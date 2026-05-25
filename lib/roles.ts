@@ -12,8 +12,8 @@ export function isAdminRole(role?: string | null): role is typeof ADMIN_ROLE {
   return role === ADMIN_ROLE;
 }
 
-export function isProfessionalRole(role?: string | null): role is typeof PROFESSIONAL_ROLE | typeof PROFESSIONAL_PENDING_ROLE | (typeof LEGACY_PROFESSIONAL_ROLES)[number] {
-  return role === PROFESSIONAL_ROLE || role === PROFESSIONAL_PENDING_ROLE || LEGACY_PROFESSIONAL_ROLES.includes(role as any);
+export function isProfessionalRole(role?: string | null): role is typeof PROFESSIONAL_ROLE | (typeof LEGACY_PROFESSIONAL_ROLES)[number] {
+  return role === PROFESSIONAL_ROLE || LEGACY_PROFESSIONAL_ROLES.includes(role as any);
 }
 
 export function normalizeRole(role?: string | null): ProfileRole {
