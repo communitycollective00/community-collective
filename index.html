@@ -191,7 +191,7 @@ section{padding:64px 0}
       <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);letter-spacing:0.1em">TCC Admin</div>
       <div class="admin-tabs">
         <button class="at on" onclick="aTab('voices',this)">Voices</button>
-        <button class="at" onclick="aTab('realgame',this)">Real Game</button>
+        <button class="at" onclick="aTab('realgame',this)">Real Knowledge</button>
         <button class="at" onclick="aTab('opportunities',this)">Opportunities</button>
         <button class="at" onclick="aTab('access',this)">Inside Access</button>
         <button class="at" onclick="aTab('directory',this)">Directory</button>
@@ -221,7 +221,7 @@ section{padding:64px 0}
         </div>
         <div class="a-field"><label class="fl">Emoji Avatar</label><input class="fi" id="nv-emoji" placeholder="⚖️" style="max-width:80px;font-size:20px"></div>
         <div class="a-field"><label class="fl">What they do for the community</label><textarea class="fi" id="nv-desc" rows="3" style="resize:none"></textarea></div>
-        <div class="a-field"><label class="fl">Daily Knowledge / Quote</label><textarea class="fi" id="nv-quote" rows="2" style="resize:none" placeholder="Real game they share with the community..."></textarea></div>
+        <div class="a-field"><label class="fl">Daily Knowledge / Quote</label><textarea class="fi" id="nv-quote" rows="2" style="resize:none" placeholder="Real knowledge they share with the community..."></textarea></div>
         <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addVoice()">Add Voice</button><button class="btn btn-ghost" onclick="toggleForm('add-voice-form')">Cancel</button></div>
       </div>
       <div id="voices-admin-list"></div>
@@ -229,17 +229,17 @@ section{padding:64px 0}
 
     <div class="admin-section" id="atab-realgame">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Real Game Posts</h2>
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.04em">Real Knowledge Posts</h2>
         <button class="btn btn-gold btn-sm" onclick="toggleForm('add-game-form')">+ Add Post</button>
       </div>
       <p style="color:var(--muted);font-size:13px;margin-bottom:24px">Daily knowledge drops — real advice from real people. Updated regularly.</p>
       <div class="a-form" id="add-game-form" style="display:none">
-        <h3>Add Real Game Post</h3>
+        <h3>Add Real Knowledge Post</h3>
         <div class="a-grid">
           <div class="a-field"><label class="fl">Author</label><input class="fi" id="ng-author" placeholder="Name or title"></div>
           <div class="a-field"><label class="fl">Industry / Field</label><input class="fi" id="ng-industry" placeholder="Legal, Finance, Trades..."></div>
         </div>
-        <div class="a-field"><label class="fl">The Knowledge Drop</label><textarea class="fi" id="ng-quote" rows="5" style="resize:none" placeholder="Real game people need to know..."></textarea></div>
+        <div class="a-field"><label class="fl">The Knowledge Drop</label><textarea class="fi" id="ng-quote" rows="5" style="resize:none" placeholder="Real knowledge people need to know..."></textarea></div>
         <div style="display:flex;gap:12px"><button class="btn btn-gold" onclick="addGame()">Post It</button><button class="btn btn-ghost" onclick="toggleForm('add-game-form')">Cancel</button></div>
       </div>
       <div id="game-admin-list"></div>
@@ -413,7 +413,7 @@ section{padding:64px 0}
   <div class="nav-w">
     <div class="logo" onclick="go('home')">
       <div class="logo-mark">TC</div>
-      <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Real People · Real Game · Real Access</div></div>
+      <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Real People · Real Knowledge · Real Access</div></div>
     </div>
     <div class="nav-links">
       <button class="nl on" id="nl-home" onclick="go('home')">Home</button>
@@ -422,6 +422,7 @@ section{padding:64px 0}
       <button class="nl" id="nl-directory" onclick="go('directory')">Directory</button>
       <button class="nl" id="nl-pathways" onclick="go('pathways')">Pathways</button>
       <button class="nav-cta" onclick="go('submit')">Get Access</button>
+      <button class="nl" onclick="window.location.href='/login'">Login</button>
     </div>
   </div>
 </nav>
@@ -435,7 +436,7 @@ section{padding:64px 0}
         <div class="pulse"></div>
         <span style="font-size:10px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold)">Now Accepting Founding Members — National</span>
       </div>
-      <h1 class="hero-hl">REAL <span class="g">PEOPLE.</span><br>REAL <span class="gr">GAME.</span><br>REAL <span class="g">ACCESS.</span></h1>
+      <h1 class="hero-hl">REAL <span class="g">PEOPLE.</span><br>REAL <span class="gr">KNOWLEDGE.</span><br>REAL <span class="g">ACCESS.</span></h1>
       <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:48px;flex-wrap:wrap">
         <div>
           <p class="sub" style="margin-bottom:32px;font-size:16px">A trusted ecosystem where top lawyers post free legal game, professionals from every walk of life share real knowledge, and communities finally get access to the rooms, people, and opportunities that were always there — just never for them.</p>
@@ -457,7 +458,7 @@ section{padding:64px 0}
   <div class="ticker-wrap">
     <div class="ticker-track">
       <span class="ticker-item">Real People</span><span class="tdot">◆</span>
-      <span class="ticker-item">Real Game</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real Knowledge</span><span class="tdot">◆</span>
       <span class="ticker-item">Real Access</span><span class="tdot">◆</span>
       <span class="ticker-item">Know Your Rights</span><span class="tdot">◆</span>
       <span class="ticker-item">Free Legal Game Daily</span><span class="tdot">◆</span>
@@ -467,7 +468,7 @@ section{padding:64px 0}
       <span class="ticker-item">Inside Access</span><span class="tdot">◆</span>
       <span class="ticker-item">Community First</span><span class="tdot">◆</span>
       <span class="ticker-item">Real People</span><span class="tdot">◆</span>
-      <span class="ticker-item">Real Game</span><span class="tdot">◆</span>
+      <span class="ticker-item">Real Knowledge</span><span class="tdot">◆</span>
       <span class="ticker-item">Real Access</span><span class="tdot">◆</span>
       <span class="ticker-item">Know Your Rights</span><span class="tdot">◆</span>
       <span class="ticker-item">Free Legal Game Daily</span><span class="tdot">◆</span>
@@ -527,7 +528,7 @@ section{padding:64px 0}
           </div>
           <div style="background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px;display:flex;gap:16px;align-items:flex-start">
             <span style="font-size:32px;flex-shrink:0">🔧</span>
-            <div><p style="font-weight:800;font-size:14px;color:var(--text);margin-bottom:4px">Trades & Skills</p><p style="color:var(--muted);font-size:13px">Welders, electricians, truckers, barbers — real game from real work</p></div>
+            <div><p style="font-weight:800;font-size:14px;color:var(--text);margin-bottom:4px">Trades & Skills</p><p style="color:var(--muted);font-size:13px">Welders, electricians, truckers, barbers — real knowledge from real work</p></div>
           </div>
         </div>
       </div>
@@ -551,12 +552,12 @@ section{padding:64px 0}
     </div>
   </section>
 
-  <!-- REAL GAME -->
+  <!-- REAL KNOWLEDGE -->
   <section id="sec-realgame" style="background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
     <div class="w">
       <div class="sec-hd">
         <div>
-          <div class="kicker">Real Game</div>
+          <div class="kicker">Real Knowledge</div>
           <h2 class="h2">What They Never<br>Taught You.</h2>
         </div>
         <div style="max-width:400px">
@@ -652,13 +653,13 @@ section{padding:64px 0}
     <div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:28px;margin-bottom:44px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:24px">
       <div><p style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">Selected & Verified</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Every voice is reviewed and selected based on credibility, community impact, and commitment to sharing real knowledge.</p></div>
       <div><p style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--green);margin-bottom:8px">Free Knowledge Always</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Voices post free game — legal advice, financial tips, trade knowledge — no paywalls, no subscriptions, no gatekeeping.</p></div>
-      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);margin-bottom:8px">All Industries Welcome</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Lawyers to welders, barbers to CEOs, directors to electricians — if you have real game and want to share it, this is your platform.</p></div>
+      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--blue);margin-bottom:8px">All Industries Welcome</p><p style="color:var(--muted);font-size:13px;line-height:1.7">Lawyers to welders, barbers to CEOs, directors to electricians — if you have real knowledge and want to share it, this is your platform.</p></div>
     </div>
     <div class="grid3" id="voices-full"></div>
     <div style="margin-top:52px;background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:44px;text-align:center">
       <div class="kicker" style="margin-bottom:12px">Want to Be a Voice?</div>
       <h2 style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.04em;margin-bottom:16px">Apply to Share Your Knowledge</h2>
-      <p style="color:var(--muted);font-size:14px;line-height:1.7;max-width:520px;margin:0 auto 28px">If you're a professional, tradesperson, or expert who wants to give real game to the community — apply to become a Featured Voice.</p>
+      <p style="color:var(--muted);font-size:14px;line-height:1.7;max-width:520px;margin:0 auto 28px">If you're a professional, tradesperson, or expert who wants to give real knowledge to the community — apply to become a Featured Voice.</p>
       <button class="btn btn-gold" onclick="go('submit')">Apply to Be a Voice →</button>
     </div>
   </div>
@@ -833,7 +834,7 @@ section{padding:64px 0}
       <div>
         <div class="logo" style="margin-bottom:16px;cursor:default">
           <div class="logo-mark">TC</div>
-          <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Real People · Real Game · Real Access</div></div>
+          <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Real People · Real Knowledge · Real Access</div></div>
         </div>
         <p style="color:var(--muted);font-size:13px;line-height:1.8;max-width:300px">A trust-based access network where top professionals share real knowledge, culture gets documented, and communities finally get access to the rooms, people, and opportunities they deserve.</p>
         <p style="color:var(--dim);font-size:11px;margin-top:16px;font-style:italic">"Building a platform that transcends generations."</p>
@@ -884,7 +885,7 @@ const DEFAULT_VOICES=[
   {id:0,name:"Keisha Odom, Esq.",prof:"Criminal Defense & Expungement Attorney",emoji:"⚖️",desc:"Offers free 20-min consultations every Friday. Posts weekly on what you need to know about your rights — before you're in a situation where you need to know them.",quote:"If you don't know your rights, you don't have them. Learn them before you need them — not after."},
   {id:1,name:"Dr. Aisha Patterson",prof:"Licensed Therapist & Life Coach",emoji:"🧠",desc:"Specializes in trauma, generational cycles, and community mental health. Posts daily mental health tips that meet people where they are — no clinical jargon.",quote:"Your healing is not a luxury. It is the foundation everything else gets built on. You cannot pour from an empty cup."},
   {id:2,name:"Marcus Bellamy, Esq.",prof:"Business & Entertainment Attorney",emoji:"📋",desc:"Helps entrepreneurs protect their ideas and build real businesses. Posts weekly on contracts, LLCs, intellectual property, and protecting your creative work.",quote:"Sign nothing without reading it. Own everything you create. Get every agreement in writing. These three rules will save your career."},
-  {id:3,name:"Raymond 'Ray' Torres",prof:"Master Electrician & Trades Educator",emoji:"🔧",desc:"25 years in the trades. Posts real game on licensing, starting your own business, and why skilled trades are one of the most overlooked wealth-building paths available.",quote:"You don't need a degree to make six figures. You need a skill, a license, and the courage to bet on yourself."},
+  {id:3,name:"Raymond 'Ray' Torres",prof:"Master Electrician & Trades Educator",emoji:"🔧",desc:"25 years in the trades. Posts real knowledge on licensing, starting your own business, and why skilled trades are one of the most overlooked wealth-building paths available.",quote:"You don't need a degree to make six figures. You need a skill, a license, and the courage to bet on yourself."},
   {id:4,name:"Sandra Washington, CPA",prof:"Certified Public Accountant",emoji:"💰",desc:"Specializes in small business taxes, credit building, and generational wealth strategy. Posts weekly financial tips that actually apply to regular people.",quote:"The tax code was written by wealthy people, for wealthy people. Learn how to use it before you pay more than you have to."},
 ];
 const DEFAULT_OPPS=[
@@ -1130,7 +1131,7 @@ function renderSectionsList(){
     {key:'stats',label:'Stat Strip',desc:'Impact numbers below the hero'},
     {key:'vision',label:'Not Just a Platform',desc:'Ecosystem explanation section'},
     {key:'voices',label:'Featured Voices',desc:'Selected professionals sharing knowledge'},
-    {key:'realgame',label:'Real Game',desc:'Daily knowledge drops'},
+    {key:'realgame',label:'Real Knowledge',desc:'Daily knowledge drops'},
     {key:'opportunities',label:'Opportunities',desc:'Casting calls, jobs, grants, collabs'},
     {key:'access',label:'Inside Access',desc:'Backstage and exclusive content'},
     {key:'spotlights',label:'Member Spotlights',desc:'Featured businesses this week'},

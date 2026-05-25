@@ -13,7 +13,7 @@ export default function VoicesPage() {
       <section className="premium-card dashboard-card" style={{ marginTop: "2rem" }}>
         <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Community Collective</p>
         <h1 style={{ marginTop: 8 }}>Voices</h1>
-        <p className="muted">Selected community experts sharing real game, lived knowledge, and practical next steps.</p>
+        <p className="muted">Selected community experts sharing real knowledge, lived knowledge, and practical next steps.</p>
         <div className="submissions-list" style={{ marginTop: "1.25rem" }}>
           {voices.map((voice, idx) => (
             <article className="submission-item" key={idx}>
