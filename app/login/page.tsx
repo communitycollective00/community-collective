@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { getSupabaseClient } from "../../lib/supabase";
 import AuthNavbar from "../components/auth-navbar";
 
@@ -49,9 +50,40 @@ export default function LoginPage() {
   };
 
   const magicLink = async () => {
+    setStatus("Sending magic link...");
     const { error } = await getSupabaseClient().auth.signInWithOtp({ email, options: { emailRedirectTo: `${window.location.origin}/auth/callback?next=/dashboard` } });
-    setStatus(error ? "Could not send magic link right now. Please verify your email and try again." : "Magic link sent. Check your inbox.");
+    if (error) {
+      setStatus(`Magic link failed: ${error.message}. You can still sign in with email and password.`);
+    } else {
+      setStatus("Magic link sent. Check your inbox.");
+    }
   };
 
-  return <main className="premium-page"><AuthNavbar /><section className="premium-card"><h1>Login</h1><p>Use email + password, Google, or magic link backup.</p><form onSubmit={login} className="premium-form"><input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" /><input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" /><button className="gold-btn" type="submit">Login</button></form><div className="quick-links"><button className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>{googleEnabled ? "Continue with Google" : "Google sign-in coming soon"}</button><button className="gold-btn" onClick={magicLink}>Send Magic Link (Backup)</button></div>{!googleEnabled && <p className="muted">Google sign-in coming soon. Please use email login or magic link.</p>}{status && <p className="muted">{status}</p>}</section></main>;
+  return (
+    <main className="premium-page">
+      <AuthNavbar />
+      <section className="premium-card">
+        <h1>Login</h1>
+        <p>Use email + password, Google, or magic link backup.</p>
+
+        <form onSubmit={login} className="premium-form">
+          <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
+          <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+          <button className="gold-btn" type="submit">Login</button>
+        </form>
+
+        <div className="quick-links">
+          <button className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>
+            {googleEnabled ? "Continue with Google" : "Google sign-in coming soon"}
+          </button>
+          <button className="gold-btn" onClick={magicLink}>Send Magic Link (Backup)</button>
+        </div>
+
+        <p className="muted" style={{ marginTop: 12 }}>Don't have an account? <Link href="/signup" className="gold-link">Sign up</Link></p>
+
+        {!googleEnabled && <p className="muted">Google sign-in coming soon. Please use email login or magic link.</p>}
+        {status && <p className="muted">{status}</p>}
+      </section>
+    </main>
+  );
 }

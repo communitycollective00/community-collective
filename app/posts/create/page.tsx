@@ -39,7 +39,7 @@ export default function CreatePostPage() {
     load();
   }, []);
 
-  const canPublish = isProfessionalRole(profile?.role);
+  const canPublish = isProfessionalRole(profile?.role) || profile?.role === "admin";
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();

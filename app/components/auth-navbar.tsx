@@ -3,17 +3,34 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
+import { isAdminRole } from "../../lib/roles";
 
 export default function AuthNavbar() {
   const [isAuthed, setIsAuthed] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    getSupabaseClient().auth.getSession().then(({ data }) => {
-      setIsAuthed(Boolean(data.session));
+    const supabase = getSupabaseClient();
+    supabase.auth.getSession().then(async ({ data }) => {
+      const user = data.session?.user;
+      setIsAuthed(Boolean(user));
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+        setRole((profile as any)?.role ?? null);
+      } else {
+        setRole(null);
+      }
     });
 
-    const { data: listener } = getSupabaseClient().auth.onAuthStateChange((_event, session) => {
-      setIsAuthed(Boolean(session));
+    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const user = session?.user;
+      setIsAuthed(Boolean(user));
+      if (user) {
+        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+        setRole((profile as any)?.role ?? null);
+      } else {
+        setRole(null);
+      }
       document.cookie = `cc-auth=${session ? "1" : "0"}; Path=/; Max-Age=${
         session ? 60 * 60 * 24 * 7 : 0
       }; SameSite=Lax`;
@@ -40,6 +57,7 @@ export default function AuthNavbar() {
         <Link href="/get-access" className="gold-link">Get Access</Link>
         {isAuthed ? (
           <>
+            {isAdminRole(role) ? <Link href="/admin">Admin</Link> : null}
             <Link href="/dashboard">Dashboard</Link>
             <Link href="/profile">Profile</Link>
             <button onClick={logout} className="gold-btn">Logout</button>
