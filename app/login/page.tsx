@@ -16,6 +16,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const googleEnabled = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_AUTH === "true";
 
   useEffect(() => {
@@ -28,14 +29,26 @@ export default function LoginPage() {
   const login = async (e: FormEvent) => {
     e.preventDefault();
     setStatus("Signing in...");
-    const supabase = getSupabaseClient();
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setStatus(friendlyLoginError(error.message));
-      return;
-    }
+    setIsLoading(true);
 
-    window.location.href = "/dashboard";
+    try {
+      const supabase = getSupabaseClient();
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        console.error("Login failed:", error);
+        setStatus(error.message);
+        return;
+      }
+
+      window.location.href = "/dashboard";
+    } catch (err) {
+      console.error("Login failed:", err);
+      const message = err instanceof Error ? err.message : "An unknown error occurred while signing in.";
+      setStatus(message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const googleLogin = async () => {
@@ -69,7 +82,7 @@ export default function LoginPage() {
         <form onSubmit={login} className="premium-form">
           <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
           <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-          <button className="gold-btn" type="submit">Login</button>
+          <button className="gold-btn" type="submit" disabled={isLoading}>Login</button>
         </form>
 
         <div className="quick-links">
