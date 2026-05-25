@@ -11,7 +11,7 @@ function friendlySignupError(code: string) {
   if (code === "invalid_email") return "Please enter a valid email address.";
   if (code === "invalid_username") return "Username must be 3-30 characters and use letters, numbers, underscores, or periods.";
   if (code === "weak_password") return "Please use a stronger password (at least 8 characters).";
-  if (code === "account_exists") return "An account with that email already exists. Please log in.";
+  if (code === "account_exists") return "Account already exists. Please log in.";
   if (code === "password_mismatch") return "Confirm password must match.";
   return "Signup is temporarily unavailable. Please try again.";
 }
@@ -46,31 +46,39 @@ export default function SignupPage() {
     setStatus("Creating your account...");
 
     try {
+      const payload = {
+        ...form,
+        email: form.email.trim().toLowerCase(),
+      };
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       const result = await response.json();
 
       if (!response.ok) {
-        setStatus(friendlySignupError(result?.error || "signup_unavailable"));
-        setIsSubmitting(false);
+        console.error("Signup failed:", result);
+        setStatus(result?.message || friendlySignupError(result?.error || "signup_unavailable"));
         return;
       }
 
-      setIsSubmitting(false);
-      const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({ email: form.email, password: form.password });
+      const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({
+        email: payload.email,
+        password: form.password,
+      });
       if (signInError) {
-        setStatus("Account created, but we could not sign you in automatically. Please log in.");
-        setIsSubmitting(false);
-        router.push("/login");
+        console.error("Signup sign-in failed:", signInError);
+        setStatus(signInError.message || "Account created, but we could not sign you in automatically. Please log in.");
         return;
       }
 
       router.push("/dashboard");
-    } catch {
-      setStatus("Signup is temporarily unavailable. Please try again.");
+    } catch (err) {
+      console.error("Signup failed:", err);
+      const message = err instanceof Error ? err.message : "Signup is temporarily unavailable. Please try again.";
+      setStatus(message);
+    } finally {
       setIsSubmitting(false);
     }
   };

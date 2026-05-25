@@ -7,9 +7,11 @@ import AuthNavbar from "../components/auth-navbar";
 
 function friendlyLoginError(message: string) {
   const lower = message.toLowerCase();
-  if (lower.includes("invalid login credentials") || lower.includes("invalid credentials")) return "We couldn’t find that email/password combination.";
+  if (lower.includes("invalid login credentials") || lower.includes("invalid credentials") || lower.includes("invalid password") || lower.includes("invalid email")) {
+    return "Invalid email or password.";
+  }
   if (lower.includes("email not confirmed")) return "Please confirm your email before logging in.";
-  return "Could not sign you in right now. Please try again.";
+  return message;
 }
 
 export default function LoginPage() {
@@ -32,12 +34,13 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
+      const trimmedEmail = email.trim().toLowerCase();
       const supabase = getSupabaseClient();
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email: trimmedEmail, password });
 
       if (error) {
         console.error("Login failed:", error);
-        setStatus(error.message);
+        setStatus(friendlyLoginError(error.message));
         return;
       }
 
