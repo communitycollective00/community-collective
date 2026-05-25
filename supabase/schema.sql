@@ -69,8 +69,10 @@ alter table public.applications enable row level security;
 create policy "Anyone can submit applications" on public.applications
 for insert with check (true);
 
-create policy "Admin can view all applications" on public.applications
-for select using (true);
+create policy "Only admins can view applications" on public.applications
+for select using (
+  auth.uid() in (select id from public.profiles where role = 'admin')
+);
 
 create table if not exists public.posts (
   id uuid primary key default gen_random_uuid(),
