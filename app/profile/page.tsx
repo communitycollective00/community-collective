@@ -136,7 +136,9 @@ export default function ProfilePage() {
       <section className="premium-card">
         <h1>Your Profile</h1>
         <form onSubmit={save} className="premium-form">
+          <label className="field-label">Email</label>
           <input disabled value={email} />
+          <label className="field-label">Full name</label>
           <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
           <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
           <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Short bio" rows={4} />
