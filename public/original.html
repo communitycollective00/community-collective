@@ -420,7 +420,6 @@ section{padding:64px 0}
       <button class="nl" id="nl-voices" onclick="go('voices')">Voices</button>
       <button class="nl" id="nl-opportunities" onclick="go('opportunities')">Opportunities</button>
       <button class="nl" id="nl-directory" onclick="go('directory')">Directory</button>
-      <button class="nl" id="nl-pathways" onclick="go('pathways')">Pathways</button>
       <button class="nav-cta" onclick="go('submit')">Get Access</button>
       <button class="nl" onclick="window.location.href='/login'">Login</button>
     </div>
@@ -929,8 +928,8 @@ const DEFAULT_PATHS=[
 const DEFAULT_SECTIONS={stats:true,vision:true,voices:true,realgame:true,opportunities:true,access:true,spotlights:true,happeningspreview:true,joincta:true};
 const DEFAULT_CONFIG={email:"hello@thecommunitycollective.com",ig:"@communitycollective",tw:"@thecollective"};
 const DEFAULT_PW="tcc2026";
-const DEFAULT_BGS={home:"",voices:"",opportunities:"",directory:"",pathways:"",happenings:"",submit:""};
-const PAGE_LABELS={home:"Home",voices:"Voices",opportunities:"Opportunities",directory:"Directory",pathways:"Pathways",happenings:"What's Happening",submit:"Get Access"};
+const DEFAULT_BGS={home:"",voices:"",opportunities:"",directory:"",happenings:"",submit:""};
+const PAGE_LABELS={home:"Home",voices:"Voices",opportunities:"Opportunities",directory:"Directory",happenings:"What's Happening",submit:"Get Access"};
 
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch{return def}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
@@ -947,6 +946,23 @@ let SECTIONS=load('tcc_sections',DEFAULT_SECTIONS);
 let CFG=load('tcc_cfg',DEFAULT_CONFIG);
 let PW=load('tcc_pw',DEFAULT_PW);
 let BGS=load('tcc_bgs',DEFAULT_BGS);
+
+// Hide internal nav when embedded in iframe
+window.addEventListener('message',(e)=>{
+  if(e.data?.type==='hideInternalNav'){
+    const nav=document.getElementById('sitenav');
+    const footer=document.querySelector('footer');
+    if(nav)nav.style.display='none';
+    if(footer)footer.style.display='none';
+  }
+});
+
+// Redirect Pathways to Opportunities
+const originalGo=window.go;
+window.go=function(page){
+  if(page==='pathways')page='opportunities';
+  return originalGo(page);
+};
 
 const TCOLOR={Legal:"var(--gold)","Film & Media":"var(--blue)","Food & Catering":"var(--green)",Finance:"var(--blue)",Retail:"var(--text)","Health & Wellness":"var(--green)",Tech:"var(--blue)",Corporate:"var(--gold)","Music & Entertainment":"var(--gold)",Trades:"var(--red)",Education:"var(--green)"};
 
@@ -1180,6 +1196,33 @@ function renderAll(){
   renderHomeAccess();renderHomeEvents();applySection();applyConfig();applyBG('home');
 }
 renderAll();
+    
+    // Listen for messages from parent app to hide internal nav/footer and receive auth updates
+    window.addEventListener('message', (e) => {
+      try {
+        const msg = e.data || {};
+        if (msg.type === 'hideInternalNav') {
+          console.log('[original.html] hiding internal nav/footer per parent request');
+          const nav = document.getElementById('sitenav');
+          if (nav) nav.style.display = 'none';
+          const footer = document.querySelector('footer');
+          if (footer) footer.style.display = 'none';
+          // hide admin panel trigger too
+          const adminTrigger = document.getElementById('admin-panel');
+          if (adminTrigger) adminTrigger.style.display = 'none';
+          // remap pathways button if present
+          const pathwaysBtn = document.getElementById('nl-pathways');
+          if (pathwaysBtn) pathwaysBtn.onclick = () => go('opportunities');
+        }
+    
+        if (msg.type === 'auth:update') {
+          console.log('[original.html] auth update from parent:', { user: msg.user?.id, profileId: msg.profile?.id, role: msg.role });
+          // no-op for now; parent React navbar will reflect auth state
+        }
+      } catch (err) {
+        console.error('[original.html] message handler error', err);
+      }
+    });
 </script>
 </body>
 </html>

@@ -4,8 +4,10 @@ import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
 import AuthNavbar from "../components/auth-navbar";
+import { useAuth } from "../components/auth-provider";
 
 export default function ProfilePage() {
+  const { user, profile: providerProfile, loading: authLoading } = useAuth();
   const [userId, setUserId] = useState("");
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
@@ -22,17 +24,18 @@ export default function ProfilePage() {
   const [status, setStatus] = useState("");
 
   useEffect(() => {
-    const load = async () => {
-      const { data } = await getSupabaseClient().auth.getSession();
-      if (!data.session) {
-        window.location.href = "/login";
-        return;
-      }
+    if (authLoading) return;
 
-      const user = data.session.user;
-      setUserId(user.id);
-      setEmail(user.email ?? "");
+    if (!user) {
+      window.location.href = "/login";
+      return;
+    }
 
+    setUserId(user.id);
+    setEmail(user.email ?? "");
+
+    // Provider already fetched basic profile; fetch any additional fields needed
+    const loadProfile = async () => {
       const { data: profile, error: profileError } = await (getSupabaseClient().from("profiles") as any)
         .select(
           "full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url"
@@ -62,8 +65,8 @@ export default function ProfilePage() {
       if (profile.avatar_url != null) setAvatarUrl(profile.avatar_url);
     };
 
-    load();
-  }, []);
+    loadProfile();
+  }, [user, authLoading]);
 
   const uploadAvatar = async (file: File) => {
     if (!userId) return;

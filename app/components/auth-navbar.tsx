@@ -17,7 +17,6 @@ export default function AuthNavbar() {
         <Link href="/voices">Voices</Link>
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
-        <Link href="/pathways">Pathways</Link>
         {isAuthed ? (
           <>
             {isAdminRole(role) ? <Link href="/admin">Admin</Link> : null}
