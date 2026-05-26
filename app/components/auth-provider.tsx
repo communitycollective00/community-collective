@@ -29,22 +29,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     let mounted = true;
 
-    supabase.auth.getSession().then(async ({ data }) => {
-      if (!mounted) return;
-      const user = data.session?.user;
-      setIsAuthed(Boolean(user));
-      setUserId(user?.id ?? null);
-      if (user) {
-        const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
-        setRole((profile as any)?.role ?? null);
-      } else {
-        setRole(null);
-      }
-    }).catch((err) => {
-      console.error("[AuthProvider] getSession failed", err);
-    });
+    function getCookie(name: string) {
+      const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\\+^])/g, '\\$1') + '=([^;]*)'));
+      return match ? decodeURIComponent(match[1]) : undefined;
+    }
 
-    const { data: listener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    async function init() {
+      try {
+        const { data } = await supabase.auth.getSession();
+        let user = data.session?.user;
+
+        // If no session found client-side, try hydrating from tokens set as cookies by the auth callback.
+        if (!user) {
+          const access = getCookie('sb-access-token');
+          const refresh = getCookie('sb-refresh-token');
+          if (access && refresh) {
+            try {
+              const { data: setData, error: setErr } = await supabase.auth.setSession({ access_token: access, refresh_token: refresh });
+              if (!setErr) {
+                user = setData.session?.user;
+              }
+            } catch (e) {
+              console.error('[AuthProvider] setSession failed', e);
+            }
+          }
+        }
+
+        if (!mounted) return;
+        setIsAuthed(Boolean(user));
+        setUserId(user?.id ?? null);
+        if (user) {
+          try {
+            const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+            setRole((profile as any)?.role ?? null);
+          } catch (err) {
+            console.error("[AuthProvider] profile fetch failed", err);
+            setRole(null);
+          }
+        } else {
+          setRole(null);
+        }
+      } catch (err) {
+        console.error("[AuthProvider] getSession failed", err);
+      }
+    }
+
+    init();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
       const user = session?.user;
       setIsAuthed(Boolean(user));
       setUserId(user?.id ?? null);
@@ -64,17 +96,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       mounted = false;
-      listener.subscription.unsubscribe();
+      try {
+        subscription.unsubscribe();
+      } catch {}
     };
   }, []);
 
   const signOut = async () => {
     try {
-      await getSupabaseClient().auth.signOut();
+      const supabase = getSupabaseClient();
+      await supabase.auth.signOut();
     } catch (err) {
       console.error("[AuthProvider] signOut failed", err);
     }
+    // Clear cookie-based tokens and cc-auth marker
     document.cookie = "cc-auth=0; Path=/; Max-Age=0; SameSite=Lax";
+    document.cookie = "sb-access-token=; Path=/; Max-Age=0; SameSite=Lax";
+    document.cookie = "sb-refresh-token=; Path=/; Max-Age=0; SameSite=Lax";
     window.location.href = "/login";
   };
 

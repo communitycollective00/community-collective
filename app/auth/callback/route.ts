@@ -27,6 +27,15 @@ async function ensureProfileRow(user: AuthUser) {
 
   const fullName = user.user_metadata?.full_name?.trim() || user.user_metadata?.name?.trim() || user.email?.split("@")[0] || "";
 
+  // Preserve any existing role in the profiles table. Do not rely on auth user_metadata for role.
+  const { data: existingProfile } = await (adminClient.from("profiles") as any)
+    .select("role, username")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const roleToSet = (existingProfile as any)?.role || "public";
+  const usernameToSet = (existingProfile as any)?.username || (user.user_metadata as any)?.username || createUsernamePlaceholder(user.id);
+
   let lastError: unknown = null;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     const { error } = await (adminClient.from("profiles") as any).upsert(
@@ -34,8 +43,8 @@ async function ensureProfileRow(user: AuthUser) {
         id: user.id,
         email: user.email ?? null,
         full_name: fullName,
-        username: (user.user_metadata as any)?.username || createUsernamePlaceholder(user.id),
-        role: (user.user_metadata as any)?.role || "public",
+        username: usernameToSet,
+        role: roleToSet,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       },

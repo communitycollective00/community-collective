@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../lib/supabase";
 import { isAdminRole } from "../../lib/roles";
 
 export function useAdminGuard(nextPath: string) {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -19,7 +21,7 @@ export function useAdminGuard(nextPath: string) {
         const user = sessionData.session?.user;
 
         if (!user) {
-          window.location.href = `/login?next=${encodeURIComponent(nextPath)}`;
+          router.push(`/login?next=${encodeURIComponent(nextPath)}`);
           return;
         }
 
@@ -30,7 +32,14 @@ export function useAdminGuard(nextPath: string) {
 
         if (profileError) throw profileError;
 
-        setIsAdmin(isAdminRole(profile?.role));
+        const isAdminFromProfile = isAdminRole(profile?.role);
+        if (!isAdminFromProfile) {
+          // Explicitly redirect non-admins away from the admin area using router.push for SPA navigation.
+          router.push("/dashboard");
+          return;
+        }
+
+        setIsAdmin(true);
       } catch (loadError: any) {
         setError(loadError?.message ?? "Failed to verify admin access.");
       } finally {

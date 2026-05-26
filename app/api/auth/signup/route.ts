@@ -81,7 +81,6 @@ export async function POST(request: Request) {
       user_metadata: {
         full_name: fullName,
         username,
-        role: "public",
         is_approved: true,
       },
     });
