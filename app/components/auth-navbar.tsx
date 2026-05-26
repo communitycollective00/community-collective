@@ -16,7 +16,6 @@ export default function AuthNavbar() {
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
         <Link href="/pathways">Pathways</Link>
-        <Link href="/get-access" className="gold-link">Get Access</Link>
         {isAuthed ? (
           <>
             {isAdminRole(role) ? <Link href="/admin">Admin</Link> : null}
@@ -26,6 +25,7 @@ export default function AuthNavbar() {
           </>
         ) : (
           <>
+            <Link href="/get-access" className="gold-link">Get Access</Link>
             <Link href="/login">Login</Link>
           </>
         )}

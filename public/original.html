@@ -861,10 +861,10 @@ section{padding:64px 0}
         <p style="color:var(--muted);font-size:13px;padding:5px 0" id="f-tw">Twitter / X</p>
       </div>
     </div>
-    <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
-      <p style="color:var(--dim);font-size:11px;letter-spacing:0.06em">© 2026 The Community Collective · Qalyx Technologies · Built to Transcend Generations</p>
-      <span style="color:var(--bg);font-size:10px;cursor:pointer;user-select:none;transition:color 0.3s" onmouseover="this.style.color='var(--dim)'" onmouseout="this.style.color='var(--bg)'" onclick="openAdmin()">◆</span>
-    </div>
+      <div style="border-top:1px solid var(--border);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+        <p style="color:var(--dim);font-size:11px;letter-spacing:0.06em">© 2026 The Community Collective · Qalyx Technologies · Built to Transcend Generations</p>
+        <span style="color:var(--bg);font-size:10px;cursor:pointer;user-select:none;transition:color 0.3s" onmouseover="this.style.color='var(--dim)'" onmouseout="this.style.color='var(--bg)'" onclick="openAdmin()">◆</span>
+      </div>
   </div>
 </footer>
 <script>
@@ -1075,11 +1075,15 @@ function applyConfig(){
   if(e)e.textContent=CFG.email;if(ig)ig.textContent=CFG.ig;if(tw)tw.textContent=CFG.tw;
 }
 
-function openAdmin(){document.getElementById('admin-login').classList.add('show');document.getElementById('admin-pw').value='';setTimeout(()=>document.getElementById('admin-pw').focus(),100);}
+function openAdmin(){
+  // Hidden admin trigger now delegates to the Next.js admin route.
+  // Next.js `useAdminGuard` will enforce role-based access via `public.profiles.role`.
+  window.location.href = '/admin';
+}
+
 function checkPw(){
-  const v=document.getElementById('admin-pw').value;
-  if(v===PW){document.getElementById('admin-login').classList.remove('show');document.getElementById('admin-panel').classList.add('show');renderAdminAll();}
-  else{document.getElementById('admin-pw').style.borderColor='var(--red)';setTimeout(()=>document.getElementById('admin-pw').style.borderColor='',1400);}
+  // Legacy password modal removed — direct to /admin so server-side role checks apply.
+  window.location.href = '/admin';
 }
 function closeAdmin(){document.getElementById('admin-panel').classList.remove('show');renderAll();}
 function aTab(id,btn){document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.at').forEach(b=>b.classList.remove('on'));document.getElementById('atab-'+id).classList.add('on');btn.classList.add('on');}
@@ -1155,12 +1159,9 @@ function saveBGs(){Object.keys(DEFAULT_BGS).forEach(pg=>{const inp=document.getE
 function loadConfig(){const e=document.getElementById('cfg-email'),i=document.getElementById('cfg-ig'),t=document.getElementById('cfg-tw');if(e)e.value=CFG.email;if(i)i.value=CFG.ig;if(t)t.value=CFG.tw;}
 function saveConfig(){CFG.email=document.getElementById('cfg-email').value;CFG.ig=document.getElementById('cfg-ig').value;CFG.tw=document.getElementById('cfg-tw').value;save('tcc_cfg',CFG);applyConfig();document.getElementById('cfg-msg').textContent='Saved!';setTimeout(()=>document.getElementById('cfg-msg').textContent='',2000);}
 function changePw(){
-  const cur=document.getElementById('pw-current').value,nw=document.getElementById('pw-new').value,cf=document.getElementById('pw-confirm').value,msg=document.getElementById('pw-msg');
-  if(cur!==PW){msg.style.color='var(--red)';msg.textContent='Current password incorrect';return;}
-  if(nw!==cf){msg.style.color='var(--red)';msg.textContent='Passwords do not match';return;}
-  if(nw.length<4){msg.style.color='var(--red)';msg.textContent='Too short';return;}
-  PW=nw;save('tcc_pw',PW);msg.style.color='var(--green)';msg.textContent='Password updated!';
-  ['pw-current','pw-new','pw-confirm'].forEach(id=>document.getElementById(id).value='');
+  // Admin password management has been removed. Admin access is controlled
+  // exclusively via the `public.profiles.role` column in the database.
+  alert('Admin password removed. Manage admin users via the database roles (public.profiles.role).');
 }
 function resetAll(){
   MEMBERS=[...DEFAULT_MEMBERS];SPOTLIGHTS=[...DEFAULT_SPOTLIGHTS];VOICES=[...DEFAULT_VOICES];

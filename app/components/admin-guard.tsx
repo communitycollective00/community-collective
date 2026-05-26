@@ -34,8 +34,8 @@ export function useAdminGuard(nextPath: string) {
 
         const isAdminFromProfile = isAdminRole(profile?.role);
         if (!isAdminFromProfile) {
-          // Explicitly redirect non-admins away from the admin area using router.push for SPA navigation.
-          router.push("/dashboard");
+          // Redirect non-admins away from the admin area and show a clear message on the dashboard.
+          router.push(`/dashboard?admin_required=1`);
           return;
         }
 

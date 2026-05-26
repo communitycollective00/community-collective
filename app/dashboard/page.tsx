@@ -58,6 +58,13 @@ export default function DashboardPage() {
     };
 
     load();
+    // If redirected from admin guard, show a clear message.
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("admin_required")) {
+        setStatus("Admin access required.");
+      }
+    } catch (e) {}
   }, []);
 
   const isProfessional = isProfessionalRole(profile?.role);
