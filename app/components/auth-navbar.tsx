@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Link from "next/link";
 import { isAdminRole } from "../../lib/roles";
 import { useAuth } from "./auth-provider";
 
