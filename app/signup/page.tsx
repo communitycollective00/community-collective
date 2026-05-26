@@ -24,8 +24,8 @@ export default function SignupPage() {
   const googleEnabled = process.env.NEXT_PUBLIC_ENABLE_GOOGLE_AUTH === "true";
 
   const validateForm = () => {
-    if (!form.fullName.trim()) return "Full name is required.";
-    if (!form.username.trim()) return "Username is required.";
+    // Only require truly mandatory fields: email + password confirmation.
+    // Full name and username are optional during signup.
     if (!form.email.trim()) return "Email is required.";
     if (!form.password) return "Password is required.";
     if (form.password.length < 8) return "Password must be at least 8 characters.";
@@ -45,40 +45,66 @@ export default function SignupPage() {
     setIsSubmitting(true);
     setStatus("Creating your account...");
 
+    const controller = new AbortController();
+    const timeout = 30000;
+    const timeoutId = setTimeout(() => {
+      console.error("[signup] Request timeout after 30 seconds");
+      controller.abort();
+      setStatus("Request took too long. Please try again.");
+      setIsSubmitting(false);
+    }, timeout);
+
     try {
       const payload = {
-        ...form,
+        fullName: form.fullName?.trim() || undefined,
+        username: form.username?.trim().toLowerCase() || undefined,
         email: form.email.trim().toLowerCase(),
+        password: form.password,
+        confirmPassword: form.confirmPassword,
       };
+
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
       const result = await response.json();
 
       if (!response.ok) {
-        console.error("Signup failed:", result);
+        console.error("[signup] API error:", result);
+        // Show exact server message when available, otherwise map to friendly code
         setStatus(result?.message || friendlySignupError(result?.error || "signup_unavailable"));
+        clearTimeout(timeoutId);
+        setIsSubmitting(false);
         return;
       }
 
-      const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({
-        email: payload.email,
-        password: form.password,
-      });
-      if (signInError) {
-        console.error("Signup sign-in failed:", signInError);
-        setStatus(signInError.message || "Account created, but we could not sign you in automatically. Please log in.");
-        return;
+      // Signup succeeded on the server. Attempt sign-in in background, but do not block redirect.
+      try {
+        const { error: signInError } = await getSupabaseClient().auth.signInWithPassword({
+          email: payload.email,
+          password: payload.password,
+        });
+        if (signInError) {
+          console.error("[signup] sign-in after signup failed:", signInError);
+          // Show sign-in error but still redirect as signup succeeded.
+          setStatus(signInError.message || "Account created, but we could not sign you in automatically. Please log in.");
+        }
+      } catch (siErr) {
+        console.error("[signup] unexpected sign-in error:", siErr);
       }
 
+      clearTimeout(timeoutId);
       router.push("/dashboard");
     } catch (err) {
-      console.error("Signup failed:", err);
+      // AbortError is expected on timeout; ensure we surface a helpful message.
+      console.error("[signup] try-catch error:", err);
       const message = err instanceof Error ? err.message : "Signup is temporarily unavailable. Please try again.";
       setStatus(message);
+      clearTimeout(timeoutId);
     } finally {
+      clearTimeout(timeoutId);
       setIsSubmitting(false);
     }
   };
@@ -110,8 +136,8 @@ export default function SignupPage() {
   };
 
   return <main className="premium-page"><AuthNavbar /><section className="premium-card"><h1>Member Signup</h1><p className="muted">Create your Community Collective member account.</p><form onSubmit={signup} className="premium-form">
-    <input required placeholder="Full name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
-    <input required placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
+    <input placeholder="Full name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
+    <input placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
     <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
     <input required type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
     <input required type="password" placeholder="Confirm password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} />

@@ -40,11 +40,12 @@ export async function POST(request: Request) {
     const password = payload.password || "";
     const confirmPassword = payload.confirmPassword || "";
 
-    if (!fullName || !username || !email || !password || !confirmPassword) {
+    // Only email and password are required. Full name and username are optional.
+    if (!email || !password || !confirmPassword) {
       return errorResponse("missing_fields", undefined, 400);
     }
     if (!EMAIL_REGEX.test(email)) return errorResponse("invalid_email", undefined, 400);
-    if (!USERNAME_REGEX.test(username)) return errorResponse("invalid_username", undefined, 400);
+    if (username && !USERNAME_REGEX.test(username)) return errorResponse("invalid_username", undefined, 400);
     if (password.length < 8) return errorResponse("weak_password", undefined, 400);
     if (password !== confirmPassword) return errorResponse("password_mismatch", undefined, 400);
 
@@ -60,14 +61,17 @@ export async function POST(request: Request) {
       auth: { persistSession: false, autoRefreshToken: false },
     });
 
-    const { data: existingProfile } = await (adminClient.from("profiles") as any)
-      .select("id")
-      .eq("username", username)
-      .limit(1)
-      .maybeSingle();
+    if (username) {
+      const { data: existingProfile } = await (adminClient.from("profiles") as any)
+        .select("id")
+        .eq("username", username)
+        .limit(1)
+        .maybeSingle();
 
-    if (existingProfile) {
-      return errorResponse("username_taken", "That username is already taken.", 409);
+      if (existingProfile) {
+        console.error("[signup] username already taken (pre-check)", username);
+        return errorResponse("username_taken", "That username is already taken.", 409);
+      }
     }
 
     const { data: createData, error: createError } = await adminClient.auth.admin.createUser({
@@ -95,49 +99,30 @@ export async function POST(request: Request) {
 
     const userId = createData.user.id;
 
-    const richProfilePayload = {
+    const profilePayload: any = {
       id: userId,
-      email,
-      full_name: fullName,
-      username,
       role: "public",
-      is_approved: true,
       created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
     };
+    if (fullName) profilePayload.full_name = fullName;
+    if (username) profilePayload.username = username;
 
-    let { error: profileError } = await (adminClient.from("profiles") as any).upsert(richProfilePayload, { onConflict: "id" });
-
-    if (profileError && isMissingColumnError(profileError as { message?: string; details?: string })) {
-      const { error: fallbackError } = await (adminClient.from("profiles") as any).upsert(
-        {
-          id: userId,
-          full_name: fullName,
-          username,
-          role: "public",
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: "id" }
-      );
-      profileError = fallbackError ?? null;
-    }
+    let { error: profileError } = await (adminClient.from("profiles") as any).upsert(profilePayload, { onConflict: "id" });
 
     if (profileError) {
-      console.error("[signup] profile provisioning failed", profileError);
+      console.error("[signup] profile upsert failed", profileError);
       const { error: rollbackError } = await adminClient.auth.admin.deleteUser(userId);
       if (rollbackError) {
-        console.error("[signup] rollback failed after profile provisioning error", rollbackError);
+        console.error("[signup] rollback failed after profile upsert error", rollbackError);
       }
       if ((profileError as { code?: string }).code === "23505") {
         const profileMessage = String((profileError as { message?: string }).message || "").toLowerCase();
         if (profileMessage.includes("username")) {
+          console.error("[signup] username conflict:", profileMessage);
           return errorResponse("username_taken", "That username is already taken.", 409);
         }
-        if (profileMessage.includes("email")) {
-          return errorResponse("account_exists", "Account already exists. Please log in.", 409);
-        }
       }
+      console.error("[signup] profile upsert error response:", profileError);
       return errorResponse("signup_unavailable", (profileError as { message?: string }).message, 503);
     }
 

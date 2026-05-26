@@ -41,7 +41,7 @@ select {
 }
 
 .premium-brand { font-weight: 700; letter-spacing: 0.04em; }
-.premium-links { display: flex; gap: 1rem; align-items: center; }
+.premium-links { display: flex; gap: 1.25rem; align-items: center; }
 
 .premium-card {
   max-width: 560px;
