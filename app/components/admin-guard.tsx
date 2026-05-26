@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSupabaseClient } from "../../lib/supabase";
 import { isAdminRole } from "../../lib/roles";
+import { useAuth } from "./auth-provider";
 
 function getCookie(name: string) {
   const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
@@ -16,60 +16,35 @@ export function useAdminGuard(nextPath: string) {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
+  const { user, role: providerRole, loading: authLoading, error: authError } = useAuth();
+
   useEffect(() => {
-    async function load() {
-      setLoading(true);
-      setError(null);
-      try {
-        const supabase = getSupabaseClient();
-        const { data: sessionData } = await supabase.auth.getSession();
-        let user = sessionData.session?.user;
+    setLoading(true);
+    setError(null);
 
-        if (!user) {
-          const access = getCookie("sb-access-token");
-          const refresh = getCookie("sb-refresh-token");
-          if (access && refresh) {
-            const { data: setData, error: setErr } = await supabase.auth.setSession({
-              access_token: access,
-              refresh_token: refresh,
-            });
-            if (!setErr) {
-              user = setData.session?.user;
-            }
-          }
-        }
-
-        if (!user) {
-          router.push(`/login?next=${encodeURIComponent(nextPath)}`);
-          return;
-        }
-
-        const { data: profile, error: profileError } = await (supabase.from("profiles") as any)
-          .select("id,role")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (profileError) throw profileError;
-
-        console.log("[AdminGuard] auth.user.id:", user.id, "profile.id:", (profile as any)?.id, "profile.role:", (profile as any)?.role);
-
-        const isAdminFromProfile = isAdminRole(profile?.role);
-        if (!isAdminFromProfile) {
-          // Redirect non-admins away from the admin area and show a clear message on the dashboard.
-          router.push(`/dashboard?admin_required=1`);
-          return;
-        }
-
-        setIsAdmin(true);
-      } catch (loadError: any) {
-        setError(loadError?.message ?? "Failed to verify admin access.");
-      } finally {
-        setLoading(false);
-      }
+    if (authLoading) {
+      // still checking; keep loading state
+      return;
     }
 
-    load();
-  }, [nextPath]);
+    if (!user) {
+      router.push(`/login?next=${encodeURIComponent(nextPath)}`);
+      setLoading(false);
+      return;
+    }
+
+    console.log("[AdminGuard] auth.user.id:", user.id, "profile role:", providerRole);
+
+    const isAdminFromProfile = isAdminRole(providerRole);
+    if (!isAdminFromProfile) {
+      router.push(`/dashboard?admin_required=1`);
+      setLoading(false);
+      return;
+    }
+
+    setIsAdmin(true);
+    setLoading(false);
+  }, [nextPath, user, providerRole, authLoading]);
 
   return { loading, error, isAdmin, setError };
 }

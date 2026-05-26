@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getSupabaseClient } from "../../lib/supabase";
 import AuthNavbar from "../components/auth-navbar";
 import { isProfessionalRole } from "../../lib/roles";
+import { useAuth } from "../components/auth-provider";
 
 type ProfileData = {
   id: string | null;
@@ -35,55 +35,42 @@ export default function DashboardPage() {
   const [posts, setPosts] = useState<PostData[]>([]);
   const [status, setStatus] = useState("");
 
+  const { user, profile: providerProfile, role, loading: authLoading, error: authError } = useAuth();
+
   useEffect(() => {
     const load = async () => {
-      const supabase = getSupabaseClient();
-      const sessionResult = await supabase.auth.getSession();
-      let session = sessionResult.data?.session;
 
       try {
-        if (!session) {
-          const access = getCookie("sb-access-token");
-          const refresh = getCookie("sb-refresh-token");
-          if (access && refresh) {
-            const { data: setData, error: setErr } = await supabase.auth.setSession({
-              access_token: access,
-              refresh_token: refresh,
-            });
-            if (!setErr) {
-              session = setData.session;
-            }
-          }
-        }
 
-        if (!session) {
+
+
+
+
+
+        if (authLoading) return;
+        if (!user) {
           window.location.href = "/login";
           return;
         }
 
-        const user = session.user;
         setEmail(user.email ?? "");
+        setProfile((providerProfile as any) || null);
+        setProfileLoading(false);
 
-        const { data: profileData } = await (supabase.from("profiles") as any)
-          .select("id,full_name,username,email,role")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        console.log("[Dashboard] auth.user.id:", user.id, "profile.id:", profileData?.id, "profile.role:", profileData?.role);
-        setProfile(profileData || null);
-        document.cookie = "cc-auth=1; Path=/; Max-Age=604800; SameSite=Lax";
-
-        const { data: postsData } = await (supabase.from("posts") as any)
-          .select("id,title,body,post_type,created_at")
-          .eq("author_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(5);
-
-        setPosts(postsData || []);
+        // fetch recent posts (still OK to fetch here)
+        try {
+          const supabase = (await import("../../lib/supabase")).getSupabaseClient();
+          const { data: postsData } = await (supabase.from("posts") as any)
+            .select("id,title,body,post_type,created_at")
+            .eq("author_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(5);
+          setPosts(postsData || []);
+        } catch (e) {
+          console.error("[Dashboard] posts fetch failed", e);
+        }
       } catch (err) {
         console.error("[Dashboard] load failed", err);
-      } finally {
-        setProfileLoading(false);
       }
     };
 
@@ -97,7 +84,7 @@ export default function DashboardPage() {
     } catch (e) {}
   }, []);
 
-  const isProfessional = isProfessionalRole(profile?.role);
+  const isProfessional = isProfessionalRole(profile?.role ?? role);
 
   return (
     <main className="premium-page">
@@ -106,7 +93,7 @@ export default function DashboardPage() {
         <article className="submission-item">
           <h1 style={{ marginTop: 0 }}>Welcome back</h1>
           <p className="muted">Signed in as {profile?.full_name || email || "member"}.</p>
-          <p className="muted">Role: {profileLoading ? "loading..." : profile ? profile.role ?? "unknown" : "public"}</p>
+          <p className="muted">Role: {authLoading ? "loading..." : authError ? authError : profile ? profile.role ?? "unknown" : "Profile not found for this user."}</p>
         </article>
 
         <article className="submission-item">

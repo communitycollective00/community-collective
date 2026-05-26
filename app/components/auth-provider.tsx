@@ -3,97 +3,124 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 
-type AuthContextValue = {
-  isAuthed: boolean;
+type Profile = {
+  id: string;
   role: string | null;
-  userId: string | null;
+  full_name?: string | null;
+  username?: string | null;
+};
+
+type AuthContextValue = {
+  session: any | null;
+  user: any | null;
+  profile: Profile | null;
+  role: string | null;
+  loading: boolean;
+  error: string | null;
   signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthed, setIsAuthed] = useState<boolean>(() => {
-    try {
-      const match = document.cookie.match(/cc-auth=1/);
-      return Boolean(match);
-    } catch {
-      return false;
-    }
-  });
+  const [session, setSession] = useState<any | null>(null);
+  const [user, setUser] = useState<any | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<string | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let mounted = true;
     const supabase = getSupabaseClient();
 
-    let mounted = true;
+    async function fetchProfileForUser(u: any) {
+      if (!u) return;
+      console.log("[AuthProvider] auth user id:", u.id);
+      try {
+        const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
 
-    function getCookie(name: string) {
-      const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\\+^])/g, '\\$1') + '=([^;]*)'));
-      return match ? decodeURIComponent(match[1]) : undefined;
+        const result = await Promise.race([
+          fetchPromise,
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)),
+        ] as any);
+
+        const { data, error: fetchErr } = result as any;
+        if (fetchErr) {
+          console.error("[AuthProvider] profile fetch error", fetchErr);
+          setError(fetchErr.message ?? String(fetchErr));
+          setProfile(null);
+          setRole(null);
+          return;
+        }
+
+        console.log("[AuthProvider] fetched profile row:", data);
+
+        if (!data) {
+          setError("Profile not found for this user.");
+          setProfile(null);
+          setRole(null);
+          return;
+        }
+
+        setProfile(data as Profile);
+        setRole((data as Profile).role ?? null);
+        setError(null);
+      } catch (e: any) {
+        console.error("[AuthProvider] profile fetch failed", e);
+        setError(e?.message ?? String(e));
+        setProfile(null);
+        setRole(null);
+      }
     }
 
     async function init() {
+      setLoading(true);
+      setError(null);
       try {
         const { data } = await supabase.auth.getSession();
-        let user = data.session?.user;
-
-        // If no session found client-side, try hydrating from tokens set as cookies by the auth callback.
-        if (!user) {
-          const access = getCookie('sb-access-token');
-          const refresh = getCookie('sb-refresh-token');
-          if (access && refresh) {
-            try {
-              const { data: setData, error: setErr } = await supabase.auth.setSession({ access_token: access, refresh_token: refresh });
-              if (!setErr) {
-                user = setData.session?.user;
-              }
-            } catch (e) {
-              console.error('[AuthProvider] setSession failed', e);
-            }
-          }
-        }
-
+        const s = data?.session ?? null;
+        const u = s?.user ?? null;
         if (!mounted) return;
-        setIsAuthed(Boolean(user));
-        setUserId(user?.id ?? null);
-        if (user) {
-          try {
-            const { data: profile } = await supabase.from("profiles").select("id,role").eq("id", user.id).maybeSingle();
-            console.log("[AuthProvider] auth.user.id:", user.id, "profile.id:", (profile as any)?.id, "profile.role:", (profile as any)?.role);
-            setRole((profile as any)?.role ?? null);
-          } catch (err) {
-            console.error("[AuthProvider] profile fetch failed", err);
-            setRole(null);
-          }
+        setSession(s);
+        setUser(u);
+        if (u) {
+          await fetchProfileForUser(u);
         } else {
+          setProfile(null);
           setRole(null);
         }
-      } catch (err) {
-        console.error("[AuthProvider] getSession failed", err);
+      } catch (e: any) {
+        console.error("[AuthProvider] getSession failed", e);
+        setError(e?.message ?? String(e));
+      } finally {
+        if (mounted) setLoading(false);
       }
     }
 
     init();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const user = session?.user;
-      setIsAuthed(Boolean(user));
-      setUserId(user?.id ?? null);
-      if (user) {
-        try {
-          const { data: profile } = await supabase.from("profiles").select("id,role").eq("id", user.id).maybeSingle();
-          console.log("[AuthProvider] auth.user.id:", user.id, "profile.id:", (profile as any)?.id, "profile.role:", (profile as any)?.role);
-          setRole((profile as any)?.role ?? null);
-        } catch (err) {
-          console.error("[AuthProvider] profile fetch failed", err);
-          setRole(null);
-        }
-      } else {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
+      console.log("[AuthProvider] onAuthStateChange event:", event);
+      const u = newSession?.user ?? null;
+      setSession(newSession ?? null);
+      setUser(u);
+      if (event === "SIGNED_OUT") {
+        console.log("[AuthProvider] signed out");
+        setProfile(null);
         setRole(null);
+        setError(null);
+        setLoading(false);
+      } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+        setLoading(true);
+        await fetchProfileForUser(u);
+        setLoading(false);
       }
-      document.cookie = `cc-auth=${session ? "1" : "0"}; Path=/; Max-Age=${session ? 60 * 60 * 24 * 7 : 0}; SameSite=Lax`;
+
+      // Keep cookie marker for middleware behavior (non-authoritative)
+      try {
+        document.cookie = `cc-auth=${newSession ? "1" : "0"}; Path=/; Max-Age=${newSession ? 60 * 60 * 24 * 7 : 0}; SameSite=Lax`;
+      } catch (e) {}
     });
 
     return () => {
@@ -105,21 +132,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signOut = async () => {
+    const supabase = getSupabaseClient();
     try {
-      const supabase = getSupabaseClient();
-      await supabase.auth.signOut();
-    } catch (err) {
-      console.error("[AuthProvider] signOut failed", err);
+      const { error: signErr } = await supabase.auth.signOut();
+      if (signErr) {
+        console.error("[AuthProvider] signOut error:", signErr);
+      } else {
+        console.log("[AuthProvider] logout success");
+      }
+    } catch (e) {
+      console.error("[AuthProvider] signOut failed", e);
     }
-    // Clear cookie-based tokens and cc-auth marker
-    document.cookie = "cc-auth=0; Path=/; Max-Age=0; SameSite=Lax";
-    document.cookie = "sb-access-token=; Path=/; Max-Age=0; SameSite=Lax";
-    document.cookie = "sb-refresh-token=; Path=/; Max-Age=0; SameSite=Lax";
-    window.location.href = "/login";
+
+    // Clear local markers
+    try {
+      document.cookie = "cc-auth=0; Path=/; Max-Age=0; SameSite=Lax";
+      document.cookie = "sb-access-token=; Path=/; Max-Age=0; SameSite=Lax";
+      document.cookie = "sb-refresh-token=; Path=/; Max-Age=0; SameSite=Lax";
+    } catch (e) {}
+
+    // Clear state immediately
+    setSession(null);
+    setUser(null);
+    setProfile(null);
+    setRole(null);
+    setError(null);
+    setLoading(false);
+
+    // Redirect to home
+    try {
+      window.location.href = "/";
+    } catch (e) {}
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthed, role, userId, signOut }}>
+    <AuthContext.Provider value={{ session, user, profile, role, loading, error, signOut }}>
       {children}
     </AuthContext.Provider>
   );
