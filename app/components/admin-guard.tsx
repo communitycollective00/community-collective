@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../lib/supabase";
 import { isAdminRole } from "../../lib/roles";
 
+function getCookie(name: string) {
+  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
+  return match ? decodeURIComponent(match[1]) : undefined;
+}
+
 export function useAdminGuard(nextPath: string) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -18,7 +23,21 @@ export function useAdminGuard(nextPath: string) {
       try {
         const supabase = getSupabaseClient();
         const { data: sessionData } = await supabase.auth.getSession();
-        const user = sessionData.session?.user;
+        let user = sessionData.session?.user;
+
+        if (!user) {
+          const access = getCookie("sb-access-token");
+          const refresh = getCookie("sb-refresh-token");
+          if (access && refresh) {
+            const { data: setData, error: setErr } = await supabase.auth.setSession({
+              access_token: access,
+              refresh_token: refresh,
+            });
+            if (!setErr) {
+              user = setData.session?.user;
+            }
+          }
+        }
 
         if (!user) {
           router.push(`/login?next=${encodeURIComponent(nextPath)}`);
@@ -26,11 +45,13 @@ export function useAdminGuard(nextPath: string) {
         }
 
         const { data: profile, error: profileError } = await (supabase.from("profiles") as any)
-          .select("role")
+          .select("id,role")
           .eq("id", user.id)
           .maybeSingle();
 
         if (profileError) throw profileError;
+
+        console.log("[AdminGuard] auth.user.id:", user.id, "profile.id:", (profile as any)?.id, "profile.role:", (profile as any)?.role);
 
         const isAdminFromProfile = isAdminRole(profile?.role);
         if (!isAdminFromProfile) {

@@ -60,7 +60,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserId(user?.id ?? null);
         if (user) {
           try {
-            const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+            const { data: profile } = await supabase.from("profiles").select("id,role").eq("id", user.id).maybeSingle();
+            console.log("[AuthProvider] auth.user.id:", user.id, "profile.id:", (profile as any)?.id, "profile.role:", (profile as any)?.role);
             setRole((profile as any)?.role ?? null);
           } catch (err) {
             console.error("[AuthProvider] profile fetch failed", err);
@@ -82,7 +83,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUserId(user?.id ?? null);
       if (user) {
         try {
-          const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+          const { data: profile } = await supabase.from("profiles").select("id,role").eq("id", user.id).maybeSingle();
+          console.log("[AuthProvider] auth.user.id:", user.id, "profile.id:", (profile as any)?.id, "profile.role:", (profile as any)?.role);
           setRole((profile as any)?.role ?? null);
         } catch (err) {
           console.error("[AuthProvider] profile fetch failed", err);

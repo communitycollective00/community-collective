@@ -5,7 +5,8 @@ import { isAdminRole } from "../../lib/roles";
 import { useAuth } from "./auth-provider";
 
 export default function AuthNavbar() {
-  const { isAuthed, role, signOut } = useAuth();
+  const { isAuthed, role, userId, signOut } = useAuth();
+  console.log("[AuthNavbar] userId:", userId, "role:", role);
 
   return (
     <nav className="premium-nav">
