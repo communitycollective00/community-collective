@@ -36,7 +36,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     async function fetchProfileForUser(u: any) {
       if (!u) return;
-      console.log("[AuthProvider] auth user id:", u.id);
 
       // Try once, then retry one time before surfacing an error.
       let attempt = 0;
@@ -55,7 +54,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           const { data, error: fetchErr } = result as any;
           if (fetchErr) {
-            console.error(`[AuthProvider] profile fetch error (attempt ${attempt})`, fetchErr);
             lastErr = fetchErr;
             // try again once
             if (attempt < 2) {
@@ -67,8 +65,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setRole(null);
             return;
           }
-
-          console.log(`[AuthProvider] fetched profile row (attempt ${attempt}):`, data);
 
           if (!data) {
             // no profile found; allow one retry before reporting a not-found error
@@ -86,11 +82,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // success
           setProfile(data as Profile);
           setRole((data as Profile).role ?? null);
-          console.log("[AuthProvider] provider loaded profile:", (data as Profile).id, (data as Profile).role ?? null);
           setError(null);
           return;
         } catch (e: any) {
-          console.error(`[AuthProvider] profile fetch failed (attempt ${attempt})`, e);
           lastErr = e;
           if (attempt < 2) {
             await new Promise((r) => setTimeout(r, 400));
@@ -113,7 +107,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const u = s?.user ?? null;
         if (!mounted) return;
         // Immediately set session/user so consumers can react synchronously
-        console.log("[AuthProvider] provider initial session:", !!s, s?.user?.id ?? null);
         setSession(s);
         setUser(u);
         if (u) {
@@ -123,7 +116,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setRole(null);
         }
       } catch (e: any) {
-        console.error("[AuthProvider] getSession failed", e);
         setError(e?.message ?? String(e));
       } finally {
         if (mounted) setLoading(false);
@@ -133,14 +125,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     init();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-      console.log("[AuthProvider] onAuthStateChange event:", event);
       const u = newSession?.user ?? null;
       // Set session/user immediately on change so UI updates fast
-      console.log("[AuthProvider] auth state change session:", !!newSession, u?.id ?? null);
       setSession(newSession ?? null);
       setUser(u);
       if (event === "SIGNED_OUT") {
-        console.log("[AuthProvider] signed out");
         setProfile(null);
         setRole(null);
         setError(null);
@@ -151,7 +140,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
         // After successful sign in redirect user to dashboard to finalize flow
         try {
-          console.log("[AuthProvider] sign-in complete, redirecting to /dashboard");
           window.location.href = "/dashboard";
         } catch (e) {}
       }
@@ -175,12 +163,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const { error: signErr } = await supabase.auth.signOut();
       if (signErr) {
-        console.error("[AuthProvider] signOut error:", signErr);
       } else {
-        console.log("[AuthProvider] logout success");
       }
     } catch (e) {
-      console.error("[AuthProvider] signOut failed", e);
     }
 
     // Clear local markers

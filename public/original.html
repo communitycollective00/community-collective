@@ -1185,7 +1185,6 @@ renderAll();
       try {
         const msg = e.data || {};
         if (msg.type === 'hideInternalNav') {
-          console.log('[original.html] hiding internal nav/footer per parent request');
           const nav = document.getElementById('sitenav');
           if (nav) nav.style.display = 'none';
           const footer = document.querySelector('footer');
@@ -1198,7 +1197,6 @@ renderAll();
           if (pathwaysBtn) pathwaysBtn.onclick = () => go('opportunities');
         }
       } catch (err) {
-        console.error('[original.html] message handler error', err);
       }
     });
 </script>

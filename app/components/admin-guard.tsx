@@ -33,8 +33,6 @@ export function useAdminGuard(nextPath: string) {
       return;
     }
 
-    console.log("[AdminGuard] auth.user.id:", user.id, "profile role:", providerRole);
-
     const isAdminFromProfile = isAdminRole(providerRole);
     if (!isAdminFromProfile) {
       router.push(`/dashboard?admin_required=1`);

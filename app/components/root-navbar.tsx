@@ -10,8 +10,6 @@ export default function RootNavBar() {
   const router = useRouter();
   const isAuthed = Boolean(user);
 
-  console.log("[RootNavBar] loading:", loading, "session:", isAuthed, "role:", role);
-
   const handleLogout = async () => {
     await signOut();
     router.push("/");
