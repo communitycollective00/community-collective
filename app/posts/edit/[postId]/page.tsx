@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../../../lib/supabase";
-import AuthNavbar from "../../../components/auth-navbar";
 import { isProfessionalRole } from "../../../../lib/roles";
 
 type ProfileData = { role: string | null };
@@ -125,12 +124,11 @@ export default function EditPostPage() {
   };
 
   if (!postId) {
-    return <main className="premium-page"><AuthNavbar /><section className="premium-card"><p className="muted">Missing post ID.</p></section></main>;
+    return <main className="premium-page"><section className="premium-card"><p className="muted">Missing post ID.</p></section></main>;
   }
 
   return (
     <main className="premium-page">
-      <AuthNavbar />
       <section className="premium-card onboarding-card">
         <h1>Edit post</h1>
         <p className="muted">Update your professional post and keep your latest content accurate.</p>

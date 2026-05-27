@@ -4,8 +4,6 @@ import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
-import AuthNavbar from "../components/auth-navbar";
-
 type SocialState = {
   instagram: string;
   twitter: string;
@@ -132,7 +130,6 @@ export default function OnboardingPage() {
 
   return (
     <main className="premium-page">
-      <AuthNavbar />
       <section className="premium-card onboarding-card">
         <h1>Complete your profile</h1>
         <p className="muted">Set up your member profile so people can discover what you do.</p>

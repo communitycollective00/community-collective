@@ -1,5 +1,3 @@
-import AuthNavbar from "../components/auth-navbar";
-
 const voices = [
   { name: "Featured Voice", role: "Legal + Advocacy", summary: "Guidance on rights, paperwork, and how to move smart through high-pressure situations." },
   { name: "Featured Voice", role: "Business + Funding", summary: "Practical strategy for pricing, negotiations, and building sustainable income channels." },
@@ -8,8 +6,7 @@ const voices = [
 
 export default function VoicesPage() {
   return (
-    <main className="premium-page">
-      <AuthNavbar />
+    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card dashboard-card" style={{ marginTop: "2rem" }}>
         <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Community Collective</p>
         <h1 style={{ marginTop: 8 }}>Voices</h1>

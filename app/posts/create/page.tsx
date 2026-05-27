@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../../lib/supabase";
-import AuthNavbar from "../../components/auth-navbar";
 import { isProfessionalRole } from "../../../lib/roles";
 
 type ProfileData = { role: string | null };
@@ -88,7 +87,6 @@ export default function CreatePostPage() {
 
   return (
     <main className="premium-page">
-      <AuthNavbar />
       <section className="premium-card onboarding-card">
         <h1>Create a professional post</h1>
         <p className="muted">Publish a trusted update, link, video, or image as a verified professional.</p>

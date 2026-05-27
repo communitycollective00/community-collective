@@ -1,4 +1,3 @@
-import AuthNavbar from "../components/auth-navbar";
 import Link from "next/link";
 
 const opportunities = [
@@ -12,8 +11,7 @@ const opportunities = [
 
 export default function OpportunitiesPage() {
   return (
-    <main className="premium-page">
-      <AuthNavbar />
+    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card dashboard-card" style={{ marginTop: "2rem" }}>
         <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Verified Opportunities</p>
         <h1 style={{ marginTop: 8 }}>Opportunities</h1>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import AuthNavbar from "../../components/auth-navbar";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { fallbackAvatar } from "../../../lib/profile-fields";
 import { isProfessionalRole } from "../../../lib/roles";
@@ -71,7 +70,6 @@ export default function PublicProfilePage() {
 
   return (
     <main className="premium-page">
-      <AuthNavbar />
       <section className="premium-card">
         {!profile ? (
           <p>User not found.</p>

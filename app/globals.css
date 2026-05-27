@@ -185,6 +185,77 @@ select {
 .field-label { font-size: 0.9rem; color: #e4cf99; }
 .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-top: 0.75rem; }
 
+/* Admin Dashboard Styles */
+.stat-card {
+  padding: 1.5rem;
+  background: linear-gradient(180deg, rgba(18,12,6,0.5), rgba(8,6,4,0.3));
+  border: 1px solid rgba(200,157,53,0.15);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  border-color: rgba(200,157,53,0.3);
+  box-shadow: 0 8px 20px rgba(200,157,53,0.1);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: #d3c18e;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #f4cf70;
+  margin-bottom: 0.75rem;
+}
+
+.admin-section-card {
+  padding: 1.5rem;
+  background: linear-gradient(180deg, rgba(18,12,6,0.5), rgba(8,6,4,0.3));
+  border: 1px solid rgba(200,157,53,0.12);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.admin-section-card:hover {
+  border-color: rgba(200,157,53,0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(200,157,53,0.08);
+}
+
+.admin-section-card h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  color: #f6e9bd;
+}
+
+.admin-section-card p {
+  margin: 0;
+  color: #c9b87f;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.card {
+  background: linear-gradient(180deg, rgba(18,12,6,0.4), rgba(8,6,4,0.2));
+  border: 1px solid rgba(200,157,53,0.12);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.card h3 {
+  margin: 0 0 1rem 0;
+  color: #f6e9bd;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 @media (min-width: 900px) {
   .dashboard-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }

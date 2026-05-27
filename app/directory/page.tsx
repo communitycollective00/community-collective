@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import AuthNavbar from "../components/auth-navbar";
 import { getSupabaseClient } from "../../lib/supabase";
 import { isProfessionalRole } from "../../lib/roles";
 
@@ -58,7 +57,6 @@ export default function DirectoryPage() {
 
   return (
     <main className="premium-page">
-      <AuthNavbar />
       <section className="premium-card directory-card" style={{ marginTop: "2rem" }}>
         <p className="muted" style={{ letterSpacing: "0.08em", textTransform: "uppercase", fontSize: 12 }}>Professional Directory</p>
         <h1 style={{ marginTop: 8 }}>Directory</h1>

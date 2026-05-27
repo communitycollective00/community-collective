@@ -1,5 +1,6 @@
 import "./globals.css";
 import { AuthProvider } from "./components/auth-provider";
+import RootNavBar from "./components/root-navbar";
 
 export const metadata = {
   title: "Community Collective",
@@ -14,7 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <RootNavBar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

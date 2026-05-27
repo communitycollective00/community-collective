@@ -3,8 +3,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "../../lib/supabase";
-import AuthNavbar from "../components/auth-navbar";
-
 function friendlyLoginError(message: string) {
   const lower = message.toLowerCase();
   if (lower.includes("invalid login credentials") || lower.includes("invalid credentials") || lower.includes("invalid password") || lower.includes("invalid email")) {
@@ -76,8 +74,7 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="premium-page">
-      <AuthNavbar />
+    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card">
         <h1>Login</h1>
         <p>Use email + password, Google, or magic link backup.</p>

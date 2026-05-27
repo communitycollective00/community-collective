@@ -37,40 +37,70 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function fetchProfileForUser(u: any) {
       if (!u) return;
       console.log("[AuthProvider] auth user id:", u.id);
-      try {
-        const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
 
-        const result = await Promise.race([
-          fetchPromise,
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)),
-        ] as any);
+      // Try once, then retry one time before surfacing an error.
+      let attempt = 0;
+      let lastErr: any = null;
+      let lastData: any = null;
 
-        const { data, error: fetchErr } = result as any;
-        if (fetchErr) {
-          console.error("[AuthProvider] profile fetch error", fetchErr);
-          setError(fetchErr.message ?? String(fetchErr));
+      while (attempt < 2) {
+        attempt += 1;
+        try {
+          const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
+
+          const result = await Promise.race([
+            fetchPromise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)),
+          ] as any);
+
+          const { data, error: fetchErr } = result as any;
+          if (fetchErr) {
+            console.error(`[AuthProvider] profile fetch error (attempt ${attempt})`, fetchErr);
+            lastErr = fetchErr;
+            // try again once
+            if (attempt < 2) {
+              await new Promise((r) => setTimeout(r, 400));
+              continue;
+            }
+            setError(fetchErr.message ?? String(fetchErr));
+            setProfile(null);
+            setRole(null);
+            return;
+          }
+
+          console.log(`[AuthProvider] fetched profile row (attempt ${attempt}):`, data);
+
+          if (!data) {
+            // no profile found; allow one retry before reporting a not-found error
+            lastData = null;
+            if (attempt < 2) {
+              await new Promise((r) => setTimeout(r, 400));
+              continue;
+            }
+            setError("Profile not found for this user.");
+            setProfile(null);
+            setRole(null);
+            return;
+          }
+
+          // success
+          setProfile(data as Profile);
+          setRole((data as Profile).role ?? null);
+          console.log("[AuthProvider] provider loaded profile:", (data as Profile).id, (data as Profile).role ?? null);
+          setError(null);
+          return;
+        } catch (e: any) {
+          console.error(`[AuthProvider] profile fetch failed (attempt ${attempt})`, e);
+          lastErr = e;
+          if (attempt < 2) {
+            await new Promise((r) => setTimeout(r, 400));
+            continue;
+          }
+          setError(e?.message ?? String(e));
           setProfile(null);
           setRole(null);
           return;
         }
-
-        console.log("[AuthProvider] fetched profile row:", data);
-
-        if (!data) {
-          setError("Profile not found for this user.");
-          setProfile(null);
-          setRole(null);
-          return;
-        }
-
-        setProfile(data as Profile);
-        setRole((data as Profile).role ?? null);
-        setError(null);
-      } catch (e: any) {
-        console.error("[AuthProvider] profile fetch failed", e);
-        setError(e?.message ?? String(e));
-        setProfile(null);
-        setRole(null);
       }
     }
 
@@ -82,6 +112,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const s = data?.session ?? null;
         const u = s?.user ?? null;
         if (!mounted) return;
+        // Immediately set session/user so consumers can react synchronously
+        console.log("[AuthProvider] provider initial session:", !!s, s?.user?.id ?? null);
         setSession(s);
         setUser(u);
         if (u) {
@@ -103,6 +135,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
       console.log("[AuthProvider] onAuthStateChange event:", event);
       const u = newSession?.user ?? null;
+      // Set session/user immediately on change so UI updates fast
+      console.log("[AuthProvider] auth state change session:", !!newSession, u?.id ?? null);
       setSession(newSession ?? null);
       setUser(u);
       if (event === "SIGNED_OUT") {
@@ -115,6 +149,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(true);
         await fetchProfileForUser(u);
         setLoading(false);
+        // After successful sign in redirect user to dashboard to finalize flow
+        try {
+          console.log("[AuthProvider] sign-in complete, redirecting to /dashboard");
+          window.location.href = "/dashboard";
+        } catch (e) {}
       }
 
       // Keep cookie marker for middleware behavior (non-authoritative)

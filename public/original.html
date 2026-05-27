@@ -20,6 +20,7 @@ button,input,select,textarea{font-family:inherit}
 .pg-bg-overlay.active{opacity:1}
 nav{position:fixed;top:0;left:0;right:0;z-index:300;height:66px;display:flex;align-items:center;transition:all 0.3s;border-bottom:1px solid transparent}
 nav.stuck{background:rgba(8,8,8,0.97);border-color:var(--border)}
+#sitenav{display:none !important}
 .nav-w{width:100%;max-width:1440px;margin:0 auto;padding:0 48px;display:flex;align-items:center;justify-content:space-between;gap:24px}
 .logo{display:flex;align-items:center;gap:12px;cursor:pointer;flex-shrink:0}
 .logo-mark{width:40px;height:40px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);letter-spacing:0.04em}
@@ -121,8 +122,6 @@ section{padding:88px 0}
 .val-row:last-child{border-bottom:none;padding-bottom:0}
 .v-num{font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--gold);opacity:0.25;width:64px;flex-shrink:0;line-height:1}
 .s-circle{width:72px;height:72px;border-radius:50%;background:rgba(61,190,138,0.1);border:1px solid rgba(61,190,138,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px}
-#admin-login{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9000;display:none;align-items:center;justify-content:center}
-#admin-login.show{display:flex}
 .al-box{background:#0f0f0f;border:1px solid var(--gold);border-radius:6px;padding:52px;width:100%;max-width:420px;text-align:center}
 #admin-panel{position:fixed;inset:0;background:var(--bg);z-index:8000;display:none;overflow-y:auto}
 #admin-panel.show{display:block}
@@ -172,17 +171,6 @@ section{padding:64px 0}
 <body>
 <div class="pg-bg" id="global-bg"></div>
 <div class="pg-bg-overlay" id="global-bg-overlay"></div>
-
-<!-- ADMIN LOGIN -->
-<div id="admin-login">
-  <div class="al-box">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);letter-spacing:0.1em;margin-bottom:8px">ADMIN ACCESS</div>
-    <p style="color:var(--muted);font-size:13px;margin-bottom:32px">The Community Collective</p>
-    <div class="a-field"><input class="fi" type="password" id="admin-pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPw()"></div>
-    <button class="btn btn-gold" style="width:100%;margin-bottom:12px;padding:14px" onclick="checkPw()">Enter</button>
-    <button class="btn btn-ghost btn-sm" style="width:100%" onclick="document.getElementById('admin-login').classList.remove('show')">Cancel</button>
-  </div>
-</div>
 
 <!-- ADMIN PANEL -->
 <div id="admin-panel">
@@ -409,7 +397,7 @@ section{padding:64px 0}
 </div>
 
 <!-- MAIN NAV -->
-<nav id="sitenav">
+<nav id="sitenav" style="display:none">
   <div class="nav-w">
     <div class="logo" onclick="go('home')">
       <div class="logo-mark">TC</div>
@@ -421,7 +409,6 @@ section{padding:64px 0}
       <button class="nl" id="nl-opportunities" onclick="go('opportunities')">Opportunities</button>
       <button class="nl" id="nl-directory" onclick="go('directory')">Directory</button>
       <button class="nav-cta" onclick="go('submit')">Get Access</button>
-      <button class="nl" onclick="window.location.href='/login'">Login</button>
     </div>
   </div>
 </nav>
@@ -1097,10 +1084,6 @@ function openAdmin(){
   window.location.href = '/admin';
 }
 
-function checkPw(){
-  // Legacy password modal removed — direct to /admin so server-side role checks apply.
-  window.location.href = '/admin';
-}
 function closeAdmin(){document.getElementById('admin-panel').classList.remove('show');renderAll();}
 function aTab(id,btn){document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.at').forEach(b=>b.classList.remove('on'));document.getElementById('atab-'+id).classList.add('on');btn.classList.add('on');}
 function toggleForm(id){const f=document.getElementById(id);f.style.display=f.style.display==='none'?'block':'none';}
@@ -1213,11 +1196,6 @@ renderAll();
           // remap pathways button if present
           const pathwaysBtn = document.getElementById('nl-pathways');
           if (pathwaysBtn) pathwaysBtn.onclick = () => go('opportunities');
-        }
-    
-        if (msg.type === 'auth:update') {
-          console.log('[original.html] auth update from parent:', { user: msg.user?.id, profileId: msg.profile?.id, role: msg.role });
-          // no-op for now; parent React navbar will reflect auth state
         }
       } catch (err) {
         console.error('[original.html] message handler error', err);

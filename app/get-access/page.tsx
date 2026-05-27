@@ -2,7 +2,6 @@
 
 import { FormEvent, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
-import AuthNavbar from "../components/auth-navbar";
 
 type ApplicationForm = {
   full_name: string;
@@ -71,7 +70,6 @@ export default function GetAccessPage() {
   if (success) {
     return (
       <main className="premium-page">
-        <AuthNavbar />
         <section className="premium-card">
           <h1>Application Submitted</h1>
           <p className="muted" style={{ fontSize: "16px", lineHeight: "1.6", marginTop: "16px" }}>
@@ -87,7 +85,6 @@ export default function GetAccessPage() {
 
   return (
     <main className="premium-page">
-      <AuthNavbar />
       <section className="premium-card">
         <h1>Get Access</h1>
         <p className="muted">Join The Community Collective. Apply as a Public Member to browse and explore, or as a Professional/Organization to share knowledge.</p>

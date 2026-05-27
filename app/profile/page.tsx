@@ -3,7 +3,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
-import AuthNavbar from "../components/auth-navbar";
 import { useAuth } from "../components/auth-provider";
 
 export default function ProfilePage() {
@@ -134,9 +133,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <main className="premium-page">
-      <AuthNavbar />
-      <section className="premium-card">
+    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+      <section className="premium-card dashboard-card">
         <h1>Your Profile</h1>
         <form onSubmit={save} className="premium-form">
           <label className="field-label">Email</label>

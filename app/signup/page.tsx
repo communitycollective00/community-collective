@@ -3,7 +3,6 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "../../lib/supabase";
-import AuthNavbar from "../components/auth-navbar";
 import { useRouter } from "next/navigation";
 
 function friendlySignupError(code: string) {
@@ -135,7 +134,7 @@ export default function SignupPage() {
     setStatus(error ? "Could not send magic link right now. Please verify your email and try again." : "Magic link sent. Check your inbox.");
   };
 
-  return <main className="premium-page"><AuthNavbar /><section className="premium-card"><h1>Member Signup</h1><p className="muted">Create your Community Collective member account.</p><form onSubmit={signup} className="premium-form">
+  return <main className="premium-page"><section className="premium-card"><h1>Member Signup</h1><p className="muted">Create your Community Collective member account.</p><form onSubmit={signup} className="premium-form">
     <input placeholder="Full name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
     <input placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
     <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
