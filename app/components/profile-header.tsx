@@ -23,21 +23,14 @@ export function SearchHeader({
 
   return (
     <div style={{ marginBottom: "2rem" }}>
-      <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
+      <div className="page-search-row">
         <input
           type="text"
           placeholder={placeholder}
           value={query}
           onChange={handleChange}
-          style={{
-            flex: 1,
-            padding: "0.75rem 1rem",
-            background: "var(--s1)",
-            border: "1px solid var(--border)",
-            borderRadius: "4px",
-            color: "inherit",
-            fontSize: "1rem",
-          }}
+          className="page-input"
+          style={{ flex: 1 }}
         />
       </div>
 
@@ -47,12 +40,12 @@ export function SearchHeader({
             <button
               key={filter.value}
               onClick={filter.onClick}
-              className={filter.active ? "gold-btn" : ""}
+              className={filter.active ? "gold-btn" : "page-input"}
               style={{
                 padding: "0.5rem 1rem",
                 background: filter.active ? "var(--gold)" : "var(--s1)",
                 border: `1px solid ${filter.active ? "var(--gold)" : "var(--border)"}`,
-                borderRadius: "4px",
+                borderRadius: "12px",
                 color: filter.active ? "var(--s0)" : "inherit",
                 cursor: "pointer",
                 fontSize: "0.9rem",
@@ -96,113 +89,65 @@ export function ProfileHeader({
   const fallbackAvatar = `https://placehold.co/160x160/1a1408/f4cf70?text=${encodeURIComponent(displayName.split(" ")[0]?.[0] || "C")}`;
 
   return (
-    <div
-      style={{
-        background: "linear-gradient(135deg, var(--s1), var(--s2))",
-        borderRadius: "4px",
-        overflow: "hidden",
-        marginBottom: "2rem",
-        border: "1px solid var(--border)",
-      }}
-    >
+    <div className="page-panel" style={{ overflow: "hidden", marginBottom: "2rem", borderRadius: "24px" }}>
       {profile.banner_url && (
         <div
+          className="profile-banner"
           style={{
-            width: "100%",
-            height: "200px",
             backgroundImage: `url(${profile.banner_url})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         />
       )}
-
       <div style={{ padding: "2rem 1.5rem" }}>
-        <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
-          <img
-            src={profile.avatar_url || fallbackAvatar}
-            alt={displayName}
-            style={{
-              width: "120px",
-              height: "120px",
-              borderRadius: "4px",
-              objectFit: "cover",
-              border: "2px solid var(--gold)",
-              marginTop: profile.banner_url ? "-80px" : 0,
-              position: "relative",
-              zIndex: 1,
-            }}
-          />
-
-          <div style={{ flex: 1 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <h1 style={{ margin: "0 0 0.25rem 0", fontSize: "2rem" }}>
-                {displayName}
-              </h1>
-              {isProfessional && profile.is_approved && (
-                <span title="Verified Professional" style={{ fontSize: "1.5rem" }}>
-                  ✓
-                </span>
+        <div className="profile-header">
+          <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start", flexWrap: "wrap" }}>
+            <img
+              src={profile.avatar_url || fallbackAvatar}
+              alt={displayName}
+              className="profile-avatar"
+            />
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                <h1 style={{ margin: 0, fontSize: "2rem" }}>{displayName}</h1>
+                {isProfessional && profile.is_approved && <span title="Verified Professional">✓</span>}
+                {profile.is_featured && <span title="Featured">⭐</span>}
+              </div>
+              {profile.industry && (
+                <p className="muted" style={{ margin: "0.5rem 0 0" }}>
+                  {profile.industry}
+                  {profile.location && ` • ${profile.location}`}
+                </p>
               )}
-              {profile.is_featured && (
-                <span title="Featured" style={{ fontSize: "1.5rem" }}>
-                  ⭐
-                </span>
+              {profile.bio && (
+                <p style={{ margin: "1rem 0 0", lineHeight: 1.6, maxWidth: "720px" }}>{profile.bio}</p>
+              )}
+              {(profile.website || profile.instagram || profile.twitter || profile.linkedin) && (
+                <div className="profile-meta">
+                  {profile.website && (
+                    <a href={profile.website} target="_blank" rel="noopener noreferrer" className="profile-link">
+                      🌐 Website
+                    </a>
+                  )}
+                  {profile.instagram && (
+                    <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="profile-link">
+                      📸 Instagram
+                    </a>
+                  )}
+                  {profile.twitter && (
+                    <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer" className="profile-link">
+                      𝕏 Twitter
+                    </a>
+                  )}
+                  {profile.linkedin && (
+                    <a href={`https://linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noopener noreferrer" className="profile-link">
+                      💼 LinkedIn
+                    </a>
+                  )}
+                </div>
               )}
             </div>
-
-            {profile.industry && (
-              <p className="muted" style={{ margin: "0.25rem 0" }}>
-                {profile.industry}
-                {profile.location && ` • ${profile.location}`}
-              </p>
-            )}
-
-            {profile.bio && (
-              <p style={{ margin: "0.75rem 0", lineHeight: "1.5", maxWidth: "700px" }}>
-                {profile.bio}
-              </p>
-            )}
-
-            {(profile.website || profile.instagram || profile.twitter || profile.linkedin) && (
-              <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-                {profile.website && (
-                  <a href={profile.website} target="_blank" rel="noopener noreferrer" className="gold-link">
-                    🌐 Website
-                  </a>
-                )}
-                {profile.instagram && (
-                  <a
-                    href={`https://instagram.com/${profile.instagram}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="gold-link"
-                  >
-                    📸 Instagram
-                  </a>
-                )}
-                {profile.twitter && (
-                  <a
-                    href={`https://twitter.com/${profile.twitter}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="gold-link"
-                  >
-                    𝕏 Twitter
-                  </a>
-                )}
-                {profile.linkedin && (
-                  <a
-                    href={`https://linkedin.com/in/${profile.linkedin}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="gold-link"
-                  >
-                    💼 LinkedIn
-                  </a>
-                )}
-              </div>
-            )}
           </div>
         </div>
       </div>

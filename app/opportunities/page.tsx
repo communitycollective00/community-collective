@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState, useMemo } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import OpportunityCard from "../components/opportunity-card";
@@ -65,7 +64,7 @@ export default function OpportunitiesPage() {
 
   if (loading) {
     return (
-      <main className="premium-page" style={{ paddingTop: "92px", minHeight: "100vh" }}>
+      <main className="premium-page" style={{ paddingTop: "92px" }}>
         <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <LoadingState message="Loading opportunities..." />
         </section>
@@ -74,65 +73,34 @@ export default function OpportunitiesPage() {
   }
 
   return (
-    <main className="premium-page" style={{ paddingTop: "92px", minHeight: "100vh" }}>
+    <main className="premium-page" style={{ paddingTop: "92px" }}>
       <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ marginBottom: "2rem" }}>
-          <p
-            className="muted"
-            style={{
-              margin: 0,
-              textTransform: "uppercase",
-              letterSpacing: "0.18em",
-              fontSize: "0.8rem",
-              marginBottom: "0.5rem",
-            }}
-          >
-            Opportunities
-          </p>
-          <h1 style={{ margin: "0 0 1rem 0", fontSize: "2.2rem" }}>
-            Your next move is here
-          </h1>
-          <p className="muted" style={{ maxWidth: "700px", lineHeight: "1.6" }}>
+          <p className="homepage-kicker">Opportunities</p>
+          <h1 className="homepage-section-title">Your next move is here</h1>
+          <p className="homepage-section-text">
             Casting calls, auditions, internships, grants, apprenticeships, collaborations, brand partnerships, and job openings from real organizations.
           </p>
         </div>
 
-        <div style={{ marginBottom: "2rem" }}>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search opportunities by title, organization, location..."
-            style={{
-              width: "100%",
-              padding: "1rem",
-              background: "var(--s1)",
-              border: "1px solid var(--border)",
-              borderRadius: "4px",
-              color: "inherit",
-              fontSize: "1rem",
-              marginBottom: "1rem",
-            }}
-          />
-
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            style={{
-              padding: "0.5rem 1rem",
-              background: "var(--s1)",
-              border: "1px solid var(--border)",
-              borderRadius: "4px",
-              color: "inherit",
-              fontSize: "0.9rem",
-              cursor: "pointer",
-            }}
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat === "all" ? "All categories" : cat}
-              </option>
-            ))}
-          </select>
+        <div className="page-search">
+          <div className="page-search-row">
+            <input
+              className="page-input"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search opportunities by title, organization, location..."
+            />
+          </div>
+          <div className="page-search-row">
+            <select className="page-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+              {categories.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat === "all" ? "All categories" : cat}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {filtered.length === 0 ? (
@@ -142,7 +110,7 @@ export default function OpportunitiesPage() {
             icon="🎯"
           />
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
+          <div className="page-grid">
             {filtered.map((opp) => (
               <OpportunityCard
                 key={opp.id}

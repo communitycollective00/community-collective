@@ -86,11 +86,11 @@ export default function DashboardPage() {
   const isProfessional = isProfessionalRole(profile?.role ?? role);
 
   return (
-    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+    <main className="premium-page" style={{ paddingTop: "72px" }}>
       <section className="premium-card dashboard-card" style={{ maxWidth: 1200, margin: "2rem auto" }}>
         <div className="dashboard-hero">
           <h1 style={{ margin: 0 }}>Welcome back, {profile?.full_name || email || "member"}</h1>
-          <p className="muted" style={{ margin: "0.8rem 0 0" }}>
+          <p className="homepage-section-text" style={{ margin: "0.8rem 0 0" }}>
             {isProfessional
               ? "This is your premium hub for profile edits, posts, and community updates."
               : "Browse verified professionals, update your public details, and find the access you need."}
@@ -98,7 +98,7 @@ export default function DashboardPage() {
           <p className="muted" style={{ margin: "0.8rem 0 0", fontStyle: "italic" }}>
             Dashboard is your personal member control center. Admin command center access is separate and available at /admin for approved staff.
           </p>
-          <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.85rem" }}>
+          <div className="page-actions">
             {isProfessional ? <Link className="gold-btn" href="/posts/create">Create post</Link> : null}
             <Link className="gold-btn" href="/profile">Edit Profile</Link>
             <Link className="gold-btn" href="/directory">Browse Directory</Link>
@@ -110,7 +110,9 @@ export default function DashboardPage() {
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Your status</h3>
             <p className="muted">Signed in as {profile?.full_name || email || "member"}.</p>
-            <p className="muted">Role: {authLoading ? "loading..." : authError ? authError : profile ? profile.role ?? "unknown" : "Profile not found."}</p>
+            <p className="muted">
+              Role: {authLoading ? "loading..." : authError ? authError : profile ? profile.role ?? "unknown" : "Profile not found."}
+            </p>
           </article>
 
           <article className="submission-item">
@@ -141,7 +143,7 @@ export default function DashboardPage() {
           </article>
         </div>
 
-        {status ? <p className="muted">{status}</p> : null}
+        {status ? <p className="muted page-note">{status}</p> : null}
       </section>
     </main>
   );

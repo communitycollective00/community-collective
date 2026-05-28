@@ -47,13 +47,7 @@ export default function PostCard({
 
   return (
     <Link href={`/posts/${id}`} style={{ textDecoration: "none", color: "inherit" }}>
-      <article
-        className="submission-item"
-        style={{
-          cursor: "pointer",
-          transition: "all 0.2s ease",
-        }}
-      >
+      <article className="post-card">
         {image && post_type === "image" && (
           <img
             src={image}
@@ -62,54 +56,40 @@ export default function PostCard({
               width: "100%",
               height: "200px",
               objectFit: "cover",
-              borderRadius: "4px",
+              borderRadius: "16px",
               marginBottom: "1rem",
               border: "1px solid var(--border)",
             }}
           />
         )}
 
-        <h3 style={{ margin: "0 0 0.5rem 0", fontSize: "1.1rem" }}>{displayTitle}</h3>
+        <h3>{displayTitle}</h3>
 
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "0.75rem" }}>
-          <p className="muted" style={{ margin: 0, fontSize: "0.9rem" }}>
+        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", marginBottom: "0.75rem" }}>
+          <p className="muted" style={{ margin: 0, fontSize: "0.95rem" }}>
             {displayType}
           </p>
           {created_at && (
-            <p className="muted" style={{ margin: 0, fontSize: "0.9rem" }}>
+            <p className="muted" style={{ margin: 0, fontSize: "0.95rem" }}>
               {formatDate(created_at)}
             </p>
           )}
         </div>
 
         {body && (
-          <p className="muted" style={{ margin: "0.75rem 0 0", lineHeight: "1.5" }}>
+          <p className="muted" style={{ margin: "0 0 0.75rem 0", lineHeight: "1.6" }}>
             {body.slice(0, 150)}
             {body.length > 150 ? "..." : ""}
           </p>
         )}
 
         {media_url && post_type !== "image" && (
-          <p
-            className="muted"
-            style={{
-              margin: "0.75rem 0 0",
-              fontSize: "0.9rem",
-              textDecoration: "underline",
-            }}
-          >
+          <p className="muted" style={{ margin: "0 0 0.75rem 0", fontSize: "0.9rem", textDecoration: "underline" }}>
             📎 Media attached
           </p>
         )}
 
-        <p
-          className="muted"
-          style={{
-            margin: "0.75rem 0 0",
-            fontSize: "0.85rem",
-            fontStyle: "italic",
-          }}
-        >
+        <p className="muted" style={{ margin: 0, fontSize: "0.85rem", fontStyle: "italic" }}>
           by {displayAuthor}
         </p>
       </article>

@@ -40,22 +40,20 @@ export default function OpportunityCard({
     }
   };
 
-  const isExpired =
-    deadline && new Date(deadline) < new Date() ? true : false;
+  const isExpired = deadline && new Date(deadline) < new Date();
 
   const handleApply = (e: React.MouseEvent) => {
     e.preventDefault();
-    if (apply_link) {
-      if (apply_link.startsWith("mailto:")) {
-        window.location.href = apply_link;
-      } else {
-        window.open(apply_link, "_blank");
-      }
+    if (!apply_link) return;
+    if (apply_link.startsWith("mailto:")) {
+      window.location.href = apply_link;
+    } else {
+      window.open(apply_link, "_blank");
     }
   };
 
   return (
-    <article className="submission-item">
+    <article className="submission-item" style={{ position: "relative" }}>
       {featured && (
         <div
           style={{
@@ -69,25 +67,20 @@ export default function OpportunityCard({
           }}
         />
       )}
-
       <div style={{ paddingTop: featured ? "0.5rem" : 0 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
           <div style={{ flex: 1 }}>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>
-              {displayTitle}
-            </h3>
+            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>{displayTitle}</h3>
             <p className="muted" style={{ margin: "0 0 0.75rem 0", fontSize: "0.95rem" }}>
               {displayOrg}
               {category && ` • ${category}`}
             </p>
-
             {description && (
-              <p className="muted" style={{ margin: "0 0 0.75rem 0", lineHeight: "1.4" }}>
+              <p className="muted" style={{ margin: "0 0 0.75rem 0", lineHeight: "1.45" }}>
                 {description.slice(0, 120)}
                 {description.length > 120 ? "..." : ""}
               </p>
             )}
-
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
               {location && (
                 <p className="muted" style={{ margin: 0, fontSize: "0.9rem" }}>
@@ -95,26 +88,14 @@ export default function OpportunityCard({
                 </p>
               )}
               {deadline && (
-                <p
-                  className="muted"
-                  style={{
-                    margin: 0,
-                    fontSize: "0.9rem",
-                    color: isExpired ? "var(--red)" : "inherit",
-                  }}
-                >
+                <p className="muted" style={{ margin: 0, fontSize: "0.9rem", color: isExpired ? "var(--red)" : "inherit" }}>
                   {isExpired ? "❌ Expired" : `📅 ${formatDate(deadline)}`}
                 </p>
               )}
             </div>
           </div>
-
           {apply_link && !isExpired && (
-            <button
-              onClick={handleApply}
-              className="gold-btn"
-              style={{ fontSize: "0.9rem", padding: "0.5rem 1rem", whiteSpace: "nowrap" }}
-            >
+            <button onClick={handleApply} className="gold-btn" style={{ fontSize: "0.9rem", padding: "0.6rem 1rem", whiteSpace: "nowrap" }}>
               Apply
             </button>
           )}

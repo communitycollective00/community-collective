@@ -73,7 +73,6 @@ export default function PublicProfilePage() {
 
       setProfile(data);
 
-      // Load recent posts
       try {
         const { data: postsData } = await (getSupabaseClient().from("posts") as any)
           .select("id,title,body,post_type,media_url,image_url,link_url,created_at,author_id")
@@ -100,7 +99,7 @@ export default function PublicProfilePage() {
 
   if (loading) {
     return (
-      <main className="premium-page" style={{ paddingTop: "92px", minHeight: "100vh" }}>
+      <main className="premium-page" style={{ paddingTop: "92px" }}>
         <section className="premium-card" style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <LoadingState message="Loading profile..." />
         </section>
@@ -110,13 +109,9 @@ export default function PublicProfilePage() {
 
   if (error || !profile) {
     return (
-      <main className="premium-page" style={{ paddingTop: "92px", minHeight: "100vh" }}>
+      <main className="premium-page" style={{ paddingTop: "92px" }}>
         <section className="premium-card" style={{ maxWidth: "1000px", margin: "0 auto" }}>
-          <ErrorState
-            title="Profile not found"
-            message={error || "The profile you're looking for doesn't exist."}
-            onRetry={loadProfile}
-          />
+          <ErrorState title="Profile not found" message={error || "The profile you're looking for doesn't exist."} onRetry={loadProfile} />
           <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
             <Link href="/directory" className="gold-link">
               ← Back to directory
@@ -128,26 +123,22 @@ export default function PublicProfilePage() {
   }
 
   return (
-    <main className="premium-page" style={{ paddingTop: "92px", minHeight: "100vh" }}>
+    <main className="premium-page" style={{ paddingTop: "92px" }}>
       <section className="premium-card" style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <ProfileHeader profile={profile} />
 
         <div style={{ marginTop: "3rem" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap", marginBottom: "1.5rem" }}>
-            <h2 style={{ margin: 0, fontSize: "1.5rem" }}>Recent posts & media</h2>
+          <div className="page-search-row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+            <h2 className="homepage-section-title" style={{ margin: 0, fontSize: "1.5rem" }}>Recent posts & media</h2>
             <Link href="/directory" className="gold-link">
               ← All professionals
             </Link>
           </div>
 
           {posts.length === 0 ? (
-            <EmptyState
-              title="No posts yet"
-              message="This professional hasn't published any posts yet."
-              icon="📝"
-            />
+            <EmptyState title="No posts yet" message="This professional hasn't published any posts yet." icon="📝" />
           ) : (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
+            <div className="page-grid">
               {posts.map((post) => (
                 <PostCard
                   key={post.id}

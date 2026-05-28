@@ -33,7 +33,6 @@ export default function ProfilePage() {
     setUserId(user.id);
     setEmail(user.email ?? "");
 
-    // Provider already fetched basic profile; fetch any additional fields needed
     const loadProfile = async () => {
       const { data: profile, error: profileError } = await (getSupabaseClient().from("profiles") as any)
         .select(
@@ -69,7 +68,7 @@ export default function ProfilePage() {
 
   if (authLoading) {
     return (
-      <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+      <main className="premium-page" style={{ paddingTop: "72px" }}>
         <section className="premium-card">
           <h1>Loading profile…</h1>
           <p className="muted">We are restoring your premium workspace.</p>
@@ -108,22 +107,22 @@ export default function ProfilePage() {
     }
 
     const payload = filterProfilePayload({
-        id: userId,
-        full_name: fullName,
-        category: industry,
-        location: [city, stateRegion].filter(Boolean).join(", "),
-        username,
-        bio,
-        city,
-        state: stateRegion,
-        industry,
-        website,
-        instagram,
-        twitter,
-        linkedin,
-        avatar_url: avatarUrl,
-        updated_at: new Date().toISOString(),
-      });
+      id: userId,
+      full_name: fullName,
+      category: industry,
+      location: [city, stateRegion].filter(Boolean).join(", "),
+      username,
+      bio,
+      city,
+      state: stateRegion,
+      industry,
+      website,
+      instagram,
+      twitter,
+      linkedin,
+      avatar_url: avatarUrl,
+      updated_at: new Date().toISOString(),
+    });
 
     const response = await fetch("/api/profiles/save", {
       method: "POST",
@@ -150,13 +149,13 @@ export default function ProfilePage() {
     : "Finish your crafted profile so the platform can represent your expertise with the premium visibility it deserves.";
 
   return (
-    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
-      <section className="premium-card dashboard-card">
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <main className="premium-page" style={{ paddingTop: "72px" }}>
+      <section className="premium-card dashboard-card" style={{ maxWidth: "1100px", margin: "2rem auto" }}>
+        <div className="page-panel-inner">
           <div>
-            <p className="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.18em", fontSize: "0.8rem" }}>Member profile</p>
-            <h1 style={{ margin: "0.5rem 0 0", fontSize: "2.2rem" }}>{profileHeadline}</h1>
-            <p className="muted" style={{ marginTop: "0.75rem", maxWidth: "740px" }}>{profileSubtext}</p>
+            <p className="homepage-kicker">Member profile</p>
+            <h1 className="homepage-section-title" style={{ marginBottom: "0.5rem" }}>{profileHeadline}</h1>
+            <p className="homepage-section-text" style={{ marginBottom: 0 }}>{profileSubtext}</p>
           </div>
 
           {!hasProfileContent ? (
@@ -165,7 +164,7 @@ export default function ProfilePage() {
             </div>
           ) : null}
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div className="page-panel" style={{ padding: "1.75rem" }}>
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
               <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
               <div style={{ minWidth: 0 }}>
@@ -174,53 +173,64 @@ export default function ProfilePage() {
                 <p className="muted" style={{ margin: "0.25rem 0 0" }}>{industry || "Industry"} • {city || stateRegion ? `${city}${city && stateRegion ? ", " : ""}${stateRegion}` : "Location"}</p>
               </div>
             </div>
-
-            <form onSubmit={save} className="premium-form" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                <div>
-                  <label className="field-label">Email</label>
-                  <input disabled value={email} />
-                </div>
-                <div>
-                  <label className="field-label">Username</label>
-                  <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                <div>
-                  <label className="field-label">Full name</label>
-                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
-                </div>
-                <div>
-                  <label className="field-label">Industry / field</label>
-                  <input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="Industry" />
-                </div>
-              </div>
-
-              <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Short bio" rows={4} />
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
-                <input value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} placeholder="State" />
-              </div>
-
-              <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
-              <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
-              <input value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
-              <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
-
-              <div style={{ display: "grid", gap: "0.75rem" }}>
-                <label className="field-label">Avatar</label>
-                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
-                <small className="muted">Image upload uses Supabase storage when available. If you prefer not to upload an image, leave it blank.</small>
-              </div>
-
-              <button className="gold-btn" type="submit">Save profile</button>
-            </form>
           </div>
 
-          {status ? <p className="muted">{status}</p> : null}
+          <form onSubmit={save} className="premium-form form-grid">
+            <div className="form-row">
+              <div>
+                <label className="field-label">Email</label>
+                <input className="page-input" disabled value={email} />
+              </div>
+              <div>
+                <label className="field-label">Username</label>
+                <input
+                  className="page-input"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))}
+                  placeholder="Username"
+                />
+              </div>
+            </div>
+
+            <div className="form-row">
+              <div>
+                <label className="field-label">Full name</label>
+                <input className="page-input" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
+              </div>
+              <div>
+                <label className="field-label">Industry / field</label>
+                <input className="page-input" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="Industry" />
+              </div>
+            </div>
+
+            <textarea
+              className="page-input"
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              placeholder="Short bio"
+              rows={4}
+            />
+
+            <div className="form-row">
+              <input className="page-input" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
+              <input className="page-input" value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} placeholder="State" />
+            </div>
+
+            <input className="page-input" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
+            <input className="page-input" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
+            <input className="page-input" value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
+            <input className="page-input" value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
+
+            <div className="page-search">
+              <label className="field-label">Avatar</label>
+              <input className="page-input" type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
+              <p className="muted page-note">Image upload uses Supabase storage when available. If you prefer not to upload an image, leave it blank.</p>
+            </div>
+
+            <button className="gold-btn" type="submit">Save profile</button>
+          </form>
+
+          {status ? <p className="muted page-note">{status}</p> : null}
         </div>
       </section>
     </main>

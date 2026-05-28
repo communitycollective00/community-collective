@@ -38,15 +38,7 @@ export default function ProfileCard({
 
   return (
     <Link href={`/directory/${username || id}`}>
-      <article
-        className="submission-item"
-        style={{
-          cursor: "pointer",
-          transition: "all 0.3s ease",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
+      <article className="directory-item">
         {is_featured && (
           <div
             style={{
@@ -60,62 +52,41 @@ export default function ProfileCard({
             }}
           />
         )}
-
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
-          <img
-            src={avatar_url || fallbackAvatar}
-            alt={displayName}
-            style={{
-              width: "80px",
-              height: "80px",
-              borderRadius: "4px",
-              objectFit: "cover",
-              border: "1px solid var(--border)",
-            }}
-          />
-
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-              <h3 style={{ margin: 0, marginBottom: "0.25rem" }}>{displayName}</h3>
-              {is_approved && isProfessional && (
-                <span
-                  title="Verified Professional"
-                  style={{
-                    fontSize: "1.2rem",
-                    display: "inline-block",
-                  }}
-                >
-                  ✓
-                </span>
+        <div className="directory-item-content">
+          <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
+            <img
+              src={avatar_url || fallbackAvatar}
+              alt={displayName}
+              className="profile-avatar"
+              style={{ width: "80px", height: "80px" }}
+            />
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                <h3 style={{ margin: 0, marginBottom: "0.25rem" }}>{displayName}</h3>
+                {is_approved && isProfessional && (
+                  <span title="Verified Professional" style={{ fontSize: "1.2rem" }}>
+                    ✓
+                  </span>
+                )}
+              </div>
+              {industry && (
+                <p className="muted" style={{ margin: "0.25rem 0" }}>
+                  {industry}
+                  {location && ` • ${location}`}
+                </p>
+              )}
+              {bio && (
+                <p className="muted" style={{ margin: "0.5rem 0 0", lineHeight: "1.5" }}>
+                  {bio.slice(0, 100)}
+                  {bio.length > 100 ? "..." : ""}
+                </p>
+              )}
+              {is_featured && (
+                <p className="muted" style={{ margin: "0.75rem 0 0", fontSize: "0.85rem", color: "var(--gold)", fontWeight: 600 }}>
+                  ⭐ Featured
+                </p>
               )}
             </div>
-
-            {industry && (
-              <p className="muted" style={{ margin: "0.25rem 0" }}>
-                {industry}
-                {location && ` • ${location}`}
-              </p>
-            )}
-
-            {bio && (
-              <p className="muted" style={{ margin: "0.5rem 0 0", lineHeight: "1.4" }}>
-                {bio.slice(0, 100)}
-                {bio.length > 100 ? "..." : ""}
-              </p>
-            )}
-
-            {is_featured && (
-              <p
-                style={{
-                  margin: "0.5rem 0 0",
-                  fontSize: "0.85rem",
-                  color: "var(--gold)",
-                  fontWeight: "600",
-                }}
-              >
-                ⭐ Featured
-              </p>
-            )}
           </div>
         </div>
       </article>

@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import ProfileCard from "../components/profile-card";
-import { SearchHeader } from "../components/profile-header";
 import { LoadingState, EmptyState } from "../components/state-components";
 
 type DirectoryProfile = {
@@ -85,21 +84,6 @@ export default function DirectoryPage() {
     });
   }, [profiles, search, industry, location]);
 
-  const filters = [
-    {
-      label: `Industry (${industryOptions.length - 1})`,
-      value: industry,
-      options: industryOptions,
-      onChange: setIndustry,
-    },
-    {
-      label: `Location (${locationOptions.length - 1})`,
-      value: location,
-      options: locationOptions,
-      onChange: setLocation,
-    },
-  ];
-
   if (loading) {
     return (
       <main className="premium-page" style={{ paddingTop: "92px" }}>
@@ -111,70 +95,48 @@ export default function DirectoryPage() {
   }
 
   return (
-    <main className="premium-page" style={{ paddingTop: "92px", minHeight: "100vh" }}>
+    <main className="premium-page" style={{ paddingTop: "92px" }}>
       <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ marginBottom: "2rem" }}>
-          <p
-            className="muted"
-            style={{
-              margin: 0,
-              textTransform: "uppercase",
-              letterSpacing: "0.18em",
-              fontSize: "0.8rem",
-              marginBottom: "0.5rem",
-            }}
-          >
-            The Directory
-          </p>
-          <h1 style={{ margin: "0 0 1rem 0", fontSize: "2.2rem" }}>
-            Search trusted professionals
-          </h1>
-          <p className="muted" style={{ maxWidth: "700px", lineHeight: "1.6" }}>
-            Find verified creators, professionals, advisors, and service providers by name,
-            field, location, and expertise.
+          <p className="homepage-kicker">The Directory</p>
+          <h1 className="homepage-section-title">Search trusted professionals</h1>
+          <p className="homepage-section-text">
+            Find verified creators, professionals, advisors, and service providers by name, field, location, and expertise.
           </p>
         </div>
 
-        <div style={{ marginBottom: "2rem" }}>
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by name, field, location..."
-            style={{
-              width: "100%",
-              padding: "1rem",
-              background: "var(--s1)",
-              border: "1px solid var(--border)",
-              borderRadius: "4px",
-              color: "inherit",
-              fontSize: "1rem",
-              marginBottom: "1rem",
-            }}
-          />
-
-          <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-            {filters.map((filter) => (
-              <select
-                key={filter.value}
-                value={filter.value}
-                onChange={(e) => filter.onChange(e.target.value)}
-                style={{
-                  padding: "0.5rem 1rem",
-                  background: "var(--s1)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "4px",
-                  color: "inherit",
-                  fontSize: "0.9rem",
-                  cursor: "pointer",
-                }}
-              >
-                {filter.options.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt === "all" ? filter.label.split(" (")[0] : opt}
-                  </option>
-                ))}
-              </select>
-            ))}
+        <div className="page-search">
+          <div className="page-search-row">
+            <input
+              className="page-input"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by name, field, location..."
+            />
+          </div>
+          <div className="page-search-row">
+            <select
+              className="page-select"
+              value={industry}
+              onChange={(e) => setIndustry(e.target.value)}
+            >
+              {industryOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt === "all" ? "All industries" : opt}
+                </option>
+              ))}
+            </select>
+            <select
+              className="page-select"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            >
+              {locationOptions.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt === "all" ? "All locations" : opt}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -186,7 +148,7 @@ export default function DirectoryPage() {
             action={{ label: "Clear filters", href: "/directory" }}
           />
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
+          <div className="directory-grid">
             {filteredProfiles.map((profile) => (
               <ProfileCard
                 key={profile.id}

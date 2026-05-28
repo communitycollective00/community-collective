@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Community Collective</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#080808;--s1:#0D0D0D;--card:#141414;--border:#222;--gold:#C9A84C;--gold2:#E8C96A;--gdim:rgba(201,168,76,0.08);--text:#F0EDE6;--muted:#888;--dim:#444;--green:#3DBE8A;--blue:#4A9FD4;--red:#C94A4A;--purple:#9B6FD4}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{text-decoration:none;color:inherit}
+button,input,select,textarea{font-family:inherit;cursor:pointer}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#222;border-radius:2px}
+.pg{display:none}.pg.on{display:block}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:62px;display:flex;align-items:center;transition:all 0.3s;border-bottom:1px solid transparent}
+nav.stuck{background:rgba(8,8,8,0.97);border-color:var(--border)}
+.nav-w{width:100%;max-width:1440px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:11px;cursor:pointer}
+.logo-mark{width:34px;height:34px;border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--gold)}
+.logo-top{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--text);letter-spacing:0.1em}
+.logo-bot{font-size:8px;color:var(--gold);font-weight:700;letter-spacing:0.18em;text-transform:uppercase}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nl{background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:7px 11px}
+.nl:hover,.nl.on{color:var(--gold)}
+.nav-cta{background:var(--gold);color:#080808;border:none;border-radius:3px;padding:9px 18px;font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;margin-left:10px}
+.nav-cta:hover{background:var(--gold2)}
+
+/* UTILS */
+.w{max-width:1440px;margin:0 auto;padding:0 48px}
+section{padding:80px 0}
+.kicker{font-size:10px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,4vw,64px);line-height:0.95;letter-spacing:0.04em}
+.sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:560px}
+.btn{display:inline-block;border:none;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;padding:13px 28px;border-radius:3px;transition:all 0.15s}
+.btn-gold{background:var(--gold);color:#080808}.btn-gold:hover{background:var(--gold2)}
+.btn-ghost{background:none;color:var(--text);border:1px solid var(--border)}.btn-ghost:hover{border-color:var(--text)}
+.btn-green{background:var(--green);color:#080808}
+.btn-sm{padding:9px 18px;font-size:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:28px;transition:border-color 0.2s}
+.card:hover{border-color:#333}
+.tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;border-radius:2px}
+.tag-gold{background:var(--gdim);color:var(--gold);border:1px solid rgba(201,168,76,0.2)}
+.tag-green{background:rgba(61,190,138,0.08);color:var(--green);border:1px solid rgba(61,190,138,0.2)}
+.tag-blue{background:rgba(74,159,212,0.08);color:var(--blue);border:1px solid rgba(74,159,212,0.2)}
+.tag-dim{background:rgba(255,255,255,0.04);color:var(--dim);border:1px solid var(--border)}
+.sec-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:44px;flex-wrap:wrap;gap:16px}
+.fi{background:var(--s1);border:1px solid var(--border);border-radius:3px;padding:11px 14px;color:var(--text);font-size:14px;width:100%;outline:none;transition:border-color 0.15s}
+.fi:focus{border-color:var(--gold)}
+.fi::placeholder{color:var(--dim)}
+.fl{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block}
+.frow{display:flex;gap:8px;flex-wrap:wrap}
+.fb{background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:2px;padding:8px 18px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.15s}
+.fb.on,.fb:hover{background:var(--gold);color:#080808;border-color:var(--gold)}
+.member-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.2);border-radius:2px;padding:4px 10px;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)}
+.back{background:none;border:none;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:0;margin-bottom:32px;display:flex;align-items:center;gap:8px}
+.back:hover{color:var(--text)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 0 80px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0a0a0a 0%,#0d0b07 50%,#080808 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px);background-size:80px 80px}
+.hero-glow{position:absolute;top:0;right:0;width:60%;height:100%;background:radial-gradient(ellipse at 80% 30%,rgba(201,168,76,0.07) 0%,transparent 60%);pointer-events:none}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,10vw,130px);line-height:0.9;letter-spacing:0.01em;margin-bottom:28px}
+.hero-hl .gold{color:var(--gold)}
+.hs{border-left:2px solid var(--gold);padding-left:14px}
+.hs-n{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);line-height:1}
+.hs-l{font-size:10px;color:var(--muted);font-weight:600;letter-spacing:0.1em;text-transform:uppercase;margin-top:2px}
+
+/* TICKER */
+.ticker-wrap{background:var(--gold);overflow:hidden;height:34px;display:flex;align-items:center}
+.ticker-track{display:flex;white-space:nowrap;animation:tick 28s linear infinite}
+@keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:#080808;padding:0 24px}
+.tdot{color:rgba(0,0,0,0.3);margin:0 4px}
+
+/* SPOTLIGHTS */
+.spot-card{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:all 0.2s}
+.spot-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.spot-top{height:4px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.spot-body{padding:24px}
+
+/* DIRECTORY */
+.dir-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:22px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:11px}
+.dir-card:hover{border-color:#333;transform:translateY(-2px)}
+
+/* HAPPENINGS */
+.hap-item{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px 22px;display:flex;align-items:center;gap:18px;margin-bottom:12px;transition:border-color 0.2s}
+.hap-item:hover{border-color:#333}
+.hi-date{text-align:center;flex-shrink:0;width:48px}
+.hi-month{font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold)}
+.hi-day{font-family:'Bebas Neue',sans-serif;font-size:30px;line-height:1;color:var(--text)}
+.hi-bar{width:1px;height:38px;background:var(--border);flex-shrink:0}
+
+/* INSIDE ACCESS */
+.access-card{background:var(--card);border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:all 0.2s}
+.access-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.access-thumb{height:160px;background:var(--s1);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);position:relative}
+.play-btn{width:48px;height:48px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:16px;color:#080808}
+
+/* REAL GAME */
+.rg-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:28px;transition:all 0.2s}
+.rg-card:hover{border-color:var(--gold)}
+.rg-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);opacity:0.12;line-height:1;margin-bottom:8px}
+
+/* OPPORTUNITIES */
+.opp-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:4px;padding:22px;margin-bottom:14px;transition:all 0.2s}
+.opp-card:hover{border-color:var(--gold);transform:translateX(4px)}
+
+/* DONATE */
+.don-amount{background:var(--card);border:2px solid var(--border);border-radius:4px;padding:14px;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.04em;text-align:center;color:var(--text);transition:all 0.15s}
+.don-amount:hover,.don-amount.sel{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+.don-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+
+/* CONTACT */
+.cr{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--card);border:1px solid var(--border);border-radius:3px;margin-bottom:10px}
+.cr-ic{width:36px;height:36px;border-radius:3px;background:var(--s1);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.svc-row{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid var(--border)}
+.svc-row:last-child{border-bottom:none;padding-bottom:0}
+
+/* ABOUT */
+.val-row{display:flex;gap:20px;padding:22px 0;border-bottom:1px solid var(--border);align-items:flex-start}
+.val-row:last-child{border-bottom:none;padding-bottom:0}
+.v-num{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gold);opacity:0.25;width:56px;flex-shrink:0;line-height:1}
+
+/* SUBMIT SUCCESS */
+.s-circle{width:68px;height:68px;border-radius:50%;background:rgba(61,190,138,0.1);border:1px solid rgba(61,190,138,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;font-size:26px}
+
+/* ADMIN */
+#admin-login{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:9000;display:none;align-items:center;justify-content:center}
+#admin-login.show{display:flex}
+.al-box{background:#0f0f0f;border:1px solid var(--gold);border-radius:6px;padding:44px;width:100%;max-width:380px;text-align:center}
+#admin-panel{position:fixed;inset:0;background:var(--bg);z-index:8000;display:none;overflow-y:auto}
+#admin-panel.show{display:block}
+.admin-nav{background:#0a0a0a;border-bottom:1px solid var(--border);padding:0 28px;height:54px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.admin-tabs{display:flex;gap:3px;overflow-x:auto}
+.at{background:none;border:none;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:7px 13px;border-radius:3px;white-space:nowrap;transition:all 0.15s}
+.at.on{background:var(--gdim);color:var(--gold)}
+.admin-body{padding:28px}
+.admin-section{display:none}.admin-section.on{display:block}
+.a-card{background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.a-card h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px}
+.a-card p{font-size:12px;color:var(--muted)}
+.a-actions{display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap}
+.btn-approve{background:none;border:1px solid rgba(61,190,138,0.4);color:var(--green);border-radius:3px;padding:5px 12px;font-size:10px;font-weight:700}
+.btn-approve:hover{background:rgba(61,190,138,0.1)}
+.btn-del{background:none;border:1px solid rgba(201,74,74,0.3);color:var(--red);border-radius:3px;padding:5px 12px;font-size:10px;font-weight:700}
+.btn-del:hover{background:rgba(201,74,74,0.1)}
+.a-form{background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:24px;margin-bottom:18px}
+.a-form h3{font-size:15px;font-weight:800;color:var(--text);margin-bottom:18px}
+.a-grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.af{margin-bottom:14px}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:#0f0f0f;border:1px solid var(--border);border-radius:4px;margin-bottom:10px}
+.toggle{position:relative;width:46px;height:24px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.slider{position:absolute;inset:0;background:var(--border);border-radius:24px;transition:0.3s}
+.slider::before{content:'';position:absolute;width:16px;height:16px;left:4px;top:4px;background:#555;border-radius:50%;transition:0.3s}
+.toggle input:checked+.slider{background:var(--gold)}
+.toggle input:checked+.slider::before{transform:translateX(22px);background:#080808}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;border:1px solid var(--border);border-radius:4px;padding:11px 22px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+
+@media(max-width:900px){
+  .nav-links{display:none}
+  .w{padding:0 18px}
+  section{padding:56px 0}
+  .grid2,.grid3,.a-grid2{grid-template-columns:1fr}
+  .hero-hl{font-size:clamp(46px,12vw,78px)}
+  .don-grid{grid-template-columns:1fr 1fr}
+  .admin-body{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login">
+  <div class="al-box">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);letter-spacing:0.1em;margin-bottom:6px">ADMIN ACCESS</div>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:24px">The Community Collective</p>
+    <div class="af"><input class="fi" type="password" id="admin-pw" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPw()"></div>
+    <button class="btn btn-gold" style="width:100%;margin-bottom:10px" onclick="checkPw()">Enter Admin Panel</button>
+    <button class="btn btn-ghost btn-sm" style="width:100%" onclick="closeAdminLogin()">Cancel</button>
+    <p style="color:var(--dim);font-size:11px;margin-top:12px">Default: <strong style="color:var(--gold)">tcc2026</strong></p>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="admin-nav">
+    <div style="display:flex;align-items:center;gap:12px;min-width:0">
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--gold);letter-spacing:0.1em;flex-shrink:0">TCC Admin</span>
+      <div class="admin-tabs">
+        <button class="at on" onclick="aTab('submissions',this)">📥 Submissions</button>
+        <button class="at" onclick="aTab('members',this)">Directory</button>
+        <button class="at" onclick="aTab('spotlights',this)">Spotlights</button>
+        <button class="at" onclick="aTab('access',this)">Inside Access</button>
+        <button class="at" onclick="aTab('realgame',this)">Real Game</button>
+        <button class="at" onclick="aTab('opps',this)">Opportunities</button>
+        <button class="at" onclick="aTab('events',this)">Happenings</button>
+        <button class="at" onclick="aTab('pathways',this)">Pathways</button>
+        <button class="at" onclick="aTab('donate-cfg',this)">Donate</button>
+        <button class="at" onclick="aTab('sections',this)">Sections</button>
+        <button class="at" onclick="aTab('settings',this)">Settings</button>
+      </div>
+    </div>
+    <button class="btn btn-ghost btn-sm" style="flex-shrink:0;margin-left:10px" onclick="closeAdmin()">← Back to Site</button>
+  </div>
+  <div class="admin-body">
+
+    <!-- SUBMISSIONS -->
+    <div class="admin-section on" id="atab-submissions">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;margin-bottom:6px">Incoming Submissions</h2>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:22px">All form submissions from the public site. Approve to add to directory or post live.</p>
+      <div id="submissions-list"></div>
+    </div>
+
+    <!-- MEMBERS -->
+    <div class="admin-section" id="atab-members">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em">Directory Members</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-member-form')">+ Add Member</button>
+      </div>
+      <div class="a-form" id="add-member-form" style="display:none">
+        <h3>Add New Member</h3>
+        <div class="a-grid2"><div class="af"><label class="fl">Business Name</label><input class="fi" id="nm-name" placeholder="Business name"></div><div class="af"><label class="fl">Contact Person</label><input class="fi" id="nm-person"></div></div>
+        <div class="a-grid2"><div class="af"><label class="fl">Industry</label><select class="fi" id="nm-type"><option>Legal</option><option>Film & Media</option><option>Food & Catering</option><option>Finance</option><option>Retail</option><option>Health & Wellness</option><option>Tech</option><option>Corporate</option><option>Music & Entertainment</option></select></div><div class="af"><label class="fl">City</label><input class="fi" id="nm-city"></div></div>
+        <div class="af"><label class="fl">Tagline</label><input class="fi" id="nm-tagline"></div>
+        <div class="af"><label class="fl">Services (one per line)</label><textarea class="fi" id="nm-services" rows="4" style="resize:none" placeholder="Service 1&#10;Service 2&#10;Service 3"></textarea></div>
+        <div class="a-grid2"><div class="af"><label class="fl">Phone</label><input class="fi" id="nm-phone"></div><div class="af"><label class="fl">Email</label><input class="fi" id="nm-email"></div></div>
+        <div class="a-grid2"><div class="af"><label class="fl">Free Offer</label><input class="fi" id="nm-consult"></div><div class="af"><label class="fl">Emoji</label><input class="fi" id="nm-emoji" placeholder="🏢" style="font-size:20px;max-width:70px"></div></div>
+        <div class="af"><label class="fl">Tags (comma separated)</label><input class="fi" id="nm-tags"></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-gold" onclick="adminAddMember()">Add to Directory</button><button class="btn btn-ghost" onclick="toggleForm('add-member-form')">Cancel</button></div>
+      </div>
+      <div id="members-list"></div>
+    </div>
+
+    <!-- SPOTLIGHTS -->
+    <div class="admin-section" id="atab-spotlights">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em">Business Spotlights</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-spot-form')">+ Add Spotlight</button>
+      </div>
+      <div class="a-form" id="add-spot-form" style="display:none">
+        <h3>Add Spotlight</h3>
+        <div class="a-grid2"><div class="af"><label class="fl">Business Name</label><input class="fi" id="ns-name"></div><div class="af"><label class="fl">Person · City</label><input class="fi" id="ns-person"></div></div>
+        <div class="af"><label class="fl">Category</label><input class="fi" id="ns-cat" placeholder="Legal, Tech, Food..."></div>
+        <div class="af"><label class="fl">Description (2-3 sentences)</label><textarea class="fi" id="ns-desc" rows="4" style="resize:none"></textarea></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-gold" onclick="adminAddSpot()">Add Spotlight</button><button class="btn btn-ghost" onclick="toggleForm('add-spot-form')">Cancel</button></div>
+      </div>
+      <div id="spots-list"></div>
+    </div>
+
+    <!-- INSIDE ACCESS -->
+    <div class="admin-section" id="atab-access">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em">Inside Access</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-access-form')">+ Add Content</button>
+      </div>
+      <div class="a-form" id="add-access-form" style="display:none">
+        <h3>Add Inside Access Content</h3>
+        <div class="a-grid2"><div class="af"><label class="fl">Title</label><input class="fi" id="na-title"></div><div class="af"><label class="fl">Person / Guest</label><input class="fi" id="na-person"></div></div>
+        <div class="a-grid2"><div class="af"><label class="fl">Type</label><select class="fi" id="na-type"><option>Interview</option><option>Backstage</option><option>Real Conversation</option><option>Documentary</option><option>Podcast Clip</option></select></div><div class="af"><label class="fl">Duration</label><input class="fi" id="na-duration" placeholder="18 min"></div></div>
+        <div class="af"><label class="fl">Description</label><textarea class="fi" id="na-desc" rows="3" style="resize:none"></textarea></div>
+        <div class="af"><label class="fl">Video URL (YouTube embed, Vimeo, etc.)</label><input class="fi" id="na-video" placeholder="https://youtube.com/embed/..."></div>
+        <div class="af"><label class="fl">Emoji</label><input class="fi" id="na-emoji" placeholder="🎬" style="font-size:20px;max-width:70px"></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-gold" onclick="adminAddAccess()">Add Content</button><button class="btn btn-ghost" onclick="toggleForm('add-access-form')">Cancel</button></div>
+      </div>
+      <div id="access-list"></div>
+    </div>
+
+    <!-- REAL GAME -->
+    <div class="admin-section" id="atab-realgame">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em">Real Game Stories</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-rg-form')">+ Add Story</button>
+      </div>
+      <div class="a-form" id="add-rg-form" style="display:none">
+        <h3>Add Real Game Story</h3>
+        <div class="a-grid2"><div class="af"><label class="fl">Person's Name</label><input class="fi" id="nrg-name"></div><div class="af"><label class="fl">Industry / Role</label><input class="fi" id="nrg-industry" placeholder="Attorney, Director, Barber..."></div></div>
+        <div class="af"><label class="fl">City</label><input class="fi" id="nrg-city"></div>
+        <div class="af"><label class="fl">Key Lesson or Quote</label><textarea class="fi" id="nrg-lesson" rows="2" style="resize:none"></textarea></div>
+        <div class="af"><label class="fl">Full Story</label><textarea class="fi" id="nrg-story" rows="4" style="resize:none"></textarea></div>
+        <div class="af"><label class="fl">Emoji</label><input class="fi" id="nrg-emoji" placeholder="💡" style="font-size:20px;max-width:70px"></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-gold" onclick="adminAddRG()">Add Story</button><button class="btn btn-ghost" onclick="toggleForm('add-rg-form')">Cancel</button></div>
+      </div>
+      <div id="rg-list"></div>
+    </div>
+
+    <!-- OPPORTUNITIES -->
+    <div class="admin-section" id="atab-opps">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em">Opportunities Board</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-opp-form')">+ Add Opportunity</button>
+      </div>
+      <div class="a-form" id="add-opp-form" style="display:none">
+        <h3>Add Opportunity</h3>
+        <div class="a-grid2"><div class="af"><label class="fl">Title</label><input class="fi" id="no-title"></div><div class="af"><label class="fl">Type</label><select class="fi" id="no-type"><option>Casting Call</option><option>Job</option><option>Internship</option><option>Collaboration</option><option>Gig</option><option>Grant</option><option>Partnership</option></select></div></div>
+        <div class="a-grid2"><div class="af"><label class="fl">Posted By</label><input class="fi" id="no-by"></div><div class="af"><label class="fl">City / Location</label><input class="fi" id="no-city"></div></div>
+        <div class="af"><label class="fl">Description</label><textarea class="fi" id="no-desc" rows="4" style="resize:none"></textarea></div>
+        <div class="a-grid2"><div class="af"><label class="fl">How to Apply</label><input class="fi" id="no-contact"></div><div class="af"><label class="fl">Deadline (optional)</label><input class="fi" id="no-deadline"></div></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-gold" onclick="adminAddOpp()">Post Opportunity</button><button class="btn btn-ghost" onclick="toggleForm('add-opp-form')">Cancel</button></div>
+      </div>
+      <div id="opps-list"></div>
+    </div>
+
+    <!-- EVENTS -->
+    <div class="admin-section" id="atab-events">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em">What's Happening</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-event-form')">+ Add Event</button>
+      </div>
+      <div class="a-form" id="add-event-form" style="display:none">
+        <h3>Add Event or Announcement</h3>
+        <div class="a-grid2"><div class="af"><label class="fl">Month</label><input class="fi" id="ne-month" placeholder="Jun"></div><div class="af"><label class="fl">Day</label><input class="fi" id="ne-day" placeholder="15"></div></div>
+        <div class="a-grid2"><div class="af"><label class="fl">Type</label><select class="fi" id="ne-type"><option>Event</option><option>Workshop</option><option>Launch</option><option>Networking</option><option>Announcement</option><option>Opening</option></select></div><div class="af"><label class="fl">Badge</label><select class="fi" id="ne-badge"><option>Free</option><option>Members</option><option>Ticketed</option><option>Online</option></select></div></div>
+        <div class="af"><label class="fl">Title</label><input class="fi" id="ne-title"></div>
+        <div class="af"><label class="fl">Details (Time · Location)</label><input class="fi" id="ne-meta"></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-gold" onclick="adminAddEvent()">Post It</button><button class="btn btn-ghost" onclick="toggleForm('add-event-form')">Cancel</button></div>
+      </div>
+      <div id="events-list"></div>
+    </div>
+
+    <!-- PATHWAYS -->
+    <div class="admin-section" id="atab-pathways">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em">Pathways & Resources</h2>
+        <button class="btn btn-gold btn-sm" onclick="toggleForm('add-path-form')">+ Add Resource</button>
+      </div>
+      <div class="a-form" id="add-path-form" style="display:none">
+        <h3>Add Resource</h3>
+        <div class="a-grid2"><div class="af"><label class="fl">Title</label><input class="fi" id="np-title"></div><div class="af"><label class="fl">Type</label><select class="fi" id="np-type"><option>Legal</option><option>Funding</option><option>Housing</option><option>Business</option><option>Music</option><option>Education</option><option>Health</option></select></div></div>
+        <div class="a-grid2"><div class="af"><label class="fl">City / Scope</label><input class="fi" id="np-city" placeholder="National, Chicago..."></div><div class="af"><label class="fl">Status</label><select class="fi" id="np-status"><option>Open</option><option>Active</option><option>Seasonal</option></select></div></div>
+        <div class="af"><label class="fl">Description</label><textarea class="fi" id="np-desc" rows="3" style="resize:none"></textarea></div>
+        <div class="af"><label class="fl">Emoji</label><input class="fi" id="np-emoji" placeholder="💰" style="font-size:20px;max-width:70px"></div>
+        <div style="display:flex;gap:10px"><button class="btn btn-gold" onclick="adminAddPath()">Add Resource</button><button class="btn btn-ghost" onclick="toggleForm('add-path-form')">Cancel</button></div>
+      </div>
+      <div id="paths-list"></div>
+    </div>
+
+    <!-- DONATE CONFIG -->
+    <div class="admin-section" id="atab-donate-cfg">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;margin-bottom:6px">Donate Settings</h2>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:22px">Configure your donate section. Paste your Cash App, PayPal, or Stripe link.</p>
+      <div class="card" style="max-width:560px">
+        <div class="af"><label class="fl">Headline</label><input class="fi" id="don-headline" placeholder="Support the Collective"></div>
+        <div class="af"><label class="fl">Description</label><textarea class="fi" id="don-sub" rows="3" style="resize:none" placeholder="Every dollar goes directly into programs and people..."></textarea></div>
+        <div class="af"><label class="fl">Payment Link (Cash App, PayPal, Stripe, etc.)</label><input class="fi" id="don-link" placeholder="https://cash.app/$yourcashtag"></div>
+        <div class="af"><label class="fl">Button Text</label><input class="fi" id="don-btn-text" placeholder="Donate Now"></div>
+        <div class="af"><label class="fl">Tax Info (optional)</label><input class="fi" id="don-tax" placeholder="501(c)(3) · Tax-deductible"></div>
+        <button class="btn btn-gold btn-sm" onclick="saveDonate()">Save Settings</button>
+        <p id="don-msg" style="font-size:12px;margin-top:10px;color:var(--green)"></p>
+      </div>
+    </div>
+
+    <!-- SECTIONS -->
+    <div class="admin-section" id="atab-sections">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;margin-bottom:6px">Manage Sections</h2>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:22px">Toggle homepage sections on or off instantly.</p>
+      <div id="sections-list"></div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="admin-section" id="atab-settings">
+      <h2 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;margin-bottom:22px">Settings</h2>
+      <div class="card" style="max-width:480px;margin-bottom:18px">
+        <h3 style="font-size:14px;font-weight:800;margin-bottom:14px">Change Admin Password</h3>
+        <div class="af"><label class="fl">Current Password</label><input class="fi" type="password" id="pw-cur"></div>
+        <div class="af"><label class="fl">New Password</label><input class="fi" type="password" id="pw-new"></div>
+        <div class="af"><label class="fl">Confirm New Password</label><input class="fi" type="password" id="pw-cfm"></div>
+        <button class="btn btn-gold btn-sm" onclick="changePw()">Update Password</button>
+        <p id="pw-msg" style="font-size:12px;margin-top:8px;color:var(--green)"></p>
+      </div>
+      <div class="card" style="max-width:480px;margin-bottom:18px">
+        <h3 style="font-size:14px;font-weight:800;margin-bottom:14px">Contact Info</h3>
+        <div class="af"><label class="fl">Email</label><input class="fi" id="cfg-email"></div>
+        <div class="af"><label class="fl">Instagram</label><input class="fi" id="cfg-ig"></div>
+        <div class="af"><label class="fl">Twitter / X</label><input class="fi" id="cfg-tw"></div>
+        <button class="btn btn-gold btn-sm" onclick="saveConfig()">Save</button>
+        <p id="cfg-msg" style="font-size:12px;margin-top:8px;color:var(--green)"></p>
+      </div>
+      <div class="card" style="max-width:480px">
+        <h3 style="font-size:14px;font-weight:800;margin-bottom:8px;color:var(--red)">Reset All Data</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:14px">Reset all content to default sample data. Cannot be undone.</p>
+        <button class="btn btn-sm" style="background:var(--red);color:#fff;border:none" onclick="if(confirm('Reset everything?'))resetAll()">Reset to Defaults</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MAIN SITE NAV -->
+<nav id="sitenav">
+  <div class="nav-w">
+    <div class="logo" onclick="go('home')">
+      <div class="logo-mark">TC</div>
+      <div><div class="logo-top">The Community Collective</div><div class="logo-bot">Directory · Access · Knowledge</div></div>
+    </div>
+    <div class="nav-links">
+      <button class="nl on" id="nl-home" onclick="go('home')">Home</button>
+      <button class="nl" id="nl-directory" onclick="go('directory')">Directory</button>
+      <button class="nl" id="nl-access" onclick="go('access')">Inside Access</button>
+      <button class="nl" id="nl-realgame" onclick="go('realgame')">Real Game</button>
+      <button class="nl" id="nl-opps" onclick="go('opps')">Opportunities</button>
+      <button class="nl" id="nl-happenings" onclick="go('happenings')">What's Happening</button>
+      <button class="nl" id="nl-about" onclick="go('about')">About</button>
+    </div>
+    <button class="nav-cta" onclick="go('submit')">Join / Submit</button>
+  </div>
+</nav>
+
+<!-- ===== HOME ===== -->
+<div id="pg-home" class="pg on">
+  <div class="hero">
+    <div class="hero-bg"></div><div class="hero-grid"></div><div class="hero-glow"></div>
+    <div class="w" style="position:relative;z-index:2">
+      <div style="display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(201,168,76,0.25);padding:6px 14px;margin-bottom:22px;border-radius:2px">
+        <div class="pulse"></div>
+        <span style="font-size:10px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold)">Now Accepting Founding Members</span>
+      </div>
+      <h1 class="hero-hl">THE<br><span class="gold">COMMUNITY</span><br>COLLECTIVE</h1>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
+        <div>
+          <p class="sub" style="margin-bottom:26px">The directory, network, and knowledge hub for Black, Brown, and middle-class communities. From home-based businesses to Fortune 500 — find it, connect, and build.</p>
+          <div style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-gold" onclick="go('directory')">Browse the Directory</button>
+            <button class="btn btn-ghost" onclick="go('access')">Inside Access</button>
+            <button class="btn btn-ghost" onclick="go('submit')">List Your Business</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:36px;flex-wrap:wrap">
+          <div class="hs"><div class="hs-n" id="stat-members">75+</div><div class="hs-l">Members</div></div>
+          <div class="hs"><div class="hs-n">9</div><div class="hs-l">Industries</div></div>
+          <div class="hs"><div class="hs-n">6</div><div class="hs-l">Cities</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span class="ticker-item">Law Firms</span><span class="tdot">◆</span><span class="ticker-item">Film & Production</span><span class="tdot">◆</span><span class="ticker-item">Home-Based Businesses</span><span class="tdot">◆</span><span class="ticker-item">Financial Services</span><span class="tdot">◆</span><span class="ticker-item">Food & Catering</span><span class="tdot">◆</span><span class="ticker-item">Retail & Fashion</span><span class="tdot">◆</span><span class="ticker-item">Health & Wellness</span><span class="tdot">◆</span><span class="ticker-item">Tech & Media</span><span class="tdot">◆</span><span class="ticker-item">Corporate Partners</span><span class="tdot">◆</span><span class="ticker-item">Law Firms</span><span class="tdot">◆</span><span class="ticker-item">Film & Production</span><span class="tdot">◆</span><span class="ticker-item">Home-Based Businesses</span><span class="tdot">◆</span><span class="ticker-item">Financial Services</span><span class="tdot">◆</span><span class="ticker-item">Food & Catering</span><span class="tdot">◆</span><span class="ticker-item">Retail & Fashion</span><span class="tdot">◆</span><span class="ticker-item">Health & Wellness</span><span class="tdot">◆</span><span class="ticker-item">Tech & Media</span><span class="tdot">◆</span>
+    </div>
+  </div>
+
+  <!-- SPOTLIGHTS -->
+  <section id="sec-spotlights" style="background:var(--s1);border-bottom:1px solid var(--border)">
+    <div class="w">
+      <div class="sec-hd"><div><div class="kicker">Member Spotlights</div><h2 class="h2">Featured This Week</h2></div><button class="btn btn-ghost btn-sm" onclick="go('directory')">Full Directory</button></div>
+      <div class="grid3" id="home-spotlights"></div>
+    </div>
+  </section>
+
+  <!-- INSIDE ACCESS PREVIEW -->
+  <section id="sec-access-preview">
+    <div class="w">
+      <div class="sec-hd"><div><div class="kicker">Inside Access</div><h2 class="h2">Real Conversations.<br>Unexpected Moments.</h2></div><button class="btn btn-ghost btn-sm" onclick="go('access')">See All</button></div>
+      <div class="grid3" id="home-access"></div>
+    </div>
+  </section>
+
+  <!-- REAL GAME PREVIEW -->
+  <section id="sec-rg-preview" style="background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="w">
+      <div class="sec-hd"><div><div class="kicker">Real Game</div><h2 class="h2">From Welders to CEOs.<br>Barbers to Directors.</h2></div><button class="btn btn-ghost btn-sm" onclick="go('realgame')">See All Stories</button></div>
+      <div class="grid3" id="home-rg"></div>
+    </div>
+  </section>
+
+  <!-- OPPORTUNITIES PREVIEW -->
+  <section id="sec-opps-preview">
+    <div class="w">
+      <div class="sec-hd"><div><div class="kicker">Opportunities</div><h2 class="h2">Casting Calls. Jobs.<br>Collabs. Grants.</h2></div><button class="btn btn-ghost btn-sm" onclick="go('opps')">View All</button></div>
+      <div id="home-opps"></div>
+    </div>
+  </section>
+
+  <!-- HAPPENINGS PREVIEW -->
+  <section id="sec-hap-preview" style="background:var(--s1);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="w">
+      <div class="sec-hd"><div><div class="kicker">What's Happening</div><h2 class="h2">In the Collective</h2></div><button class="btn btn-ghost btn-sm" onclick="go('happenings')">See All</button></div>
+      <div id="home-happenings"></div>
+    </div>
+  </section>
+
+  <!-- DONATE -->
+  <section id="sec-donate" style="background:linear-gradient(135deg,#0a0900,#080808)">
+    <div class="w">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center">
+        <div>
+          <div class="kicker">Support the Movement</div>
+          <h2 class="h2" id="don-headline-display" style="margin-bottom:16px">Fund the<br>Collective</h2>
+          <p class="sub" id="don-sub-display">Every dollar goes directly into building the platform, supporting community members, and keeping The Collective free to join.</p>
+          <p style="color:var(--dim);font-size:12px;margin-top:16px" id="don-tax-display">501(c)(3) · Tax-deductible donations</p>
+        </div>
+        <div>
+          <div class="don-grid">
+            <button class="don-amount" onclick="selDon(this,'$10')">$10</button>
+            <button class="don-amount sel" onclick="selDon(this,'$25')">$25</button>
+            <button class="don-amount" onclick="selDon(this,'$50')">$50</button>
+            <button class="don-amount" onclick="selDon(this,'$100')">$100</button>
+          </div>
+          <input class="fi" id="don-custom" placeholder="Or enter custom amount" style="margin-bottom:14px">
+          <button class="btn btn-gold" id="don-btn-display" style="width:100%;padding:15px;font-size:12px" onclick="donate()">Donate $25 Now</button>
+          <p style="color:var(--dim);font-size:11px;text-align:center;margin-top:10px">Secure payment. No account needed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOIN CTA -->
+  <section id="sec-join-cta">
+    <div class="w">
+      <div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:56px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center;position:relative;overflow:hidden">
+        <div style="position:absolute;right:-20px;bottom:-30px;font-family:'Bebas Neue',sans-serif;font-size:150px;color:rgba(201,168,76,0.04);pointer-events:none">JOIN</div>
+        <div style="position:relative"><div class="kicker">Your Spot Is Waiting</div><h2 class="h2" style="margin-bottom:14px">List your business.<br>Share your story.</h2><p class="sub">From the block to the boardroom — The Community Collective is your platform. Free to join.</p></div>
+        <div style="display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+          <button class="btn btn-gold" onclick="go('submit')">Apply for Membership</button>
+          <button class="btn btn-ghost" onclick="go('submit')">Submit a Story</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== DIRECTORY ===== -->
+<div id="pg-directory" class="pg" style="padding:100px 0 80px">
+  <div id="dir-list">
+    <div class="w">
+      <div style="margin-bottom:40px"><div class="kicker">The Directory</div><h1 class="h2" style="margin-bottom:12px">Find Who You Need.</h1><p class="sub">Lawyers. Directors. Food businesses. Therapists. All verified. All community.</p></div>
+      <div style="position:relative;margin-bottom:26px"><span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--dim)">🔍</span><input class="fi" id="dir-search" placeholder="Search by name, service, or city..." style="padding-left:40px;height:46px" oninput="renderDir()"></div>
+      <div class="frow" style="margin-bottom:30px" id="dir-filters">
+        <button class="fb on" onclick="setDF('All',this)">All</button>
+        <button class="fb" onclick="setDF('Legal',this)">Legal</button>
+        <button class="fb" onclick="setDF('Film & Media',this)">Film & Media</button>
+        <button class="fb" onclick="setDF('Food & Catering',this)">Food & Catering</button>
+        <button class="fb" onclick="setDF('Finance',this)">Finance</button>
+        <button class="fb" onclick="setDF('Retail',this)">Retail</button>
+        <button class="fb" onclick="setDF('Health & Wellness',this)">Health & Wellness</button>
+        <button class="fb" onclick="setDF('Tech',this)">Tech</button>
+        <button class="fb" onclick="setDF('Music & Entertainment',this)">Music</button>
+      </div>
+      <div class="grid3" id="dir-grid"></div>
+      <p style="color:var(--dim);font-size:12px;margin-top:24px;text-align:center">Don't see your business? <button onclick="go('submit')" style="background:none;border:none;color:var(--gold);font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:underline">Apply for a listing →</button></p>
+    </div>
+  </div>
+  <div id="dir-detail" style="display:none"><div class="w" style="max-width:1100px"></div></div>
+</div>
+
+<!-- ===== INSIDE ACCESS ===== -->
+<div id="pg-access" class="pg" style="padding:100px 0 80px">
+  <div class="w">
+    <div style="margin-bottom:44px">
+      <div class="kicker">Inside Access</div>
+      <h1 class="h2" style="margin-bottom:12px">Real Conversations.<br>Backstage. Unfiltered.</h1>
+      <p class="sub">Interviews, documentaries, backstage moments, and real conversations from people inside the industries and spaces you want access to.</p>
+    </div>
+    <div class="frow" style="margin-bottom:32px" id="access-filters">
+      <button class="fb on" onclick="setAF('All',this)">All</button>
+      <button class="fb" onclick="setAF('Interview',this)">Interviews</button>
+      <button class="fb" onclick="setAF('Backstage',this)">Backstage</button>
+      <button class="fb" onclick="setAF('Real Conversation',this)">Conversations</button>
+      <button class="fb" onclick="setAF('Documentary',this)">Documentary</button>
+      <button class="fb" onclick="setAF('Podcast Clip',this)">Podcast</button>
+    </div>
+    <div class="grid3" id="access-grid"></div>
+  </div>
+</div>
+
+<!-- ===== REAL GAME ===== -->
+<div id="pg-realgame" class="pg" style="padding:100px 0 80px">
+  <div class="w">
+    <div style="margin-bottom:44px">
+      <div class="kicker">Real Game</div>
+      <h1 class="h2" style="margin-bottom:12px">Real Experience.<br>Real Lessons.</h1>
+      <p class="sub">From welders to CEOs, barbers to directors — people across industries share real lessons and insight you won't get from surface-level content.</p>
+    </div>
+    <div class="grid3" id="rg-grid"></div>
+    <div style="margin-top:52px;background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:40px;text-align:center">
+      <div class="kicker" style="margin-bottom:10px">Share Your Knowledge</div>
+      <h2 class="h2" style="font-size:clamp(24px,3vw,40px);margin-bottom:14px">Have a story that<br>could change someone's life?</h2>
+      <p style="color:var(--muted);font-size:15px;margin-bottom:24px">Submit your Real Game story. The best ones get featured.</p>
+      <button class="btn btn-gold" onclick="go('submit')">Submit Your Story</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== OPPORTUNITIES ===== -->
+<div id="pg-opps" class="pg" style="padding:100px 0 80px">
+  <div class="w">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:flex-start;margin-bottom:48px">
+      <div>
+        <div class="kicker">Opportunities Board</div>
+        <h1 class="h2" style="margin-bottom:12px">Casting Calls.<br>Jobs. Collabs.<br>Grants.</h1>
+        <p class="sub" style="margin-bottom:22px">Real opportunities posted by Collective members and community partners. Filter by type. Apply directly.</p>
+        <button class="btn btn-gold" onclick="go('submit')">Post an Opportunity</button>
+      </div>
+      <div class="card">
+        <div class="kicker" style="margin-bottom:12px">Post an Opportunity</div>
+        <p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:16px">Members can post casting calls, jobs, internships, collaborations, grants, and more. All reviewed before going live.</p>
+        <button class="btn btn-ghost btn-sm" onclick="go('submit')">Submit a Posting →</button>
+      </div>
+    </div>
+    <div class="frow" style="margin-bottom:32px" id="opp-filters">
+      <button class="fb on" onclick="setOF('All',this)">All</button>
+      <button class="fb" onclick="setOF('Casting Call',this)">Casting Call</button>
+      <button class="fb" onclick="setOF('Job',this)">Jobs</button>
+      <button class="fb" onclick="setOF('Internship',this)">Internships</button>
+      <button class="fb" onclick="setOF('Collaboration',this)">Collabs</button>
+      <button class="fb" onclick="setOF('Grant',this)">Grants</button>
+    </div>
+    <div id="opps-grid"></div>
+  </div>
+</div>
+
+<!-- ===== HAPPENINGS ===== -->
+<div id="pg-happenings" class="pg" style="padding:100px 0 80px">
+  <div class="w">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:flex-start;margin-bottom:48px">
+      <div><div class="kicker">What's Happening</div><h1 class="h2" style="margin-bottom:12px">Events. News.<br>Announcements.</h1><p class="sub" style="margin-bottom:22px">Member events, grand openings, workshops, community news.</p><button class="btn btn-gold" onclick="go('submit')">Submit Announcement</button></div>
+      <div class="card"><div class="kicker" style="margin-bottom:10px">Post Something</div><p style="color:var(--muted);font-size:13px;line-height:1.7;margin-bottom:14px">Members submit events, grand openings, launches, business milestones, job postings.</p><button class="btn btn-ghost btn-sm" onclick="go('submit')">Submit a Post →</button></div>
+    </div>
+    <div id="hap-full"></div>
+  </div>
+</div>
+
+<!-- ===== ABOUT ===== -->
+<div id="pg-about" class="pg">
+  <div style="background:var(--s1);border-bottom:1px solid var(--border);padding:120px 0 80px;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,0.04),transparent 60%);pointer-events:none"></div>
+    <div style="position:absolute;right:-20px;bottom:-40px;font-family:'Bebas Neue',sans-serif;font-size:200px;color:rgba(201,168,76,0.04);pointer-events:none">TCC</div>
+    <div class="w" style="position:relative;z-index:2">
+      <div class="kicker">Our Mission</div>
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,100px);line-height:0.92;letter-spacing:0.02em;margin-bottom:22px;max-width:900px">BUILT FOR<br><span style="color:var(--gold)">THE PEOPLE</span><br>BY THE PEOPLE</h1>
+      <p style="font-size:18px;color:var(--muted);line-height:1.75;max-width:640px">The Community Collective connects Black, Brown, and middle-class communities with the businesses, knowledge, and opportunities that serve them — in one trusted platform.</p>
+    </div>
+  </div>
+  <section style="background:var(--s1)"><div class="w"><div class="grid2"><div><div class="kicker" style="margin-bottom:12px">The Problem</div><p style="color:var(--text);font-size:15px;line-height:1.75">Black and Brown communities have always had brilliant lawyers, talented directors, hardworking entrepreneurs. What they haven't had is a centralized trusted platform to find each other and do business together.</p></div><div><div class="kicker" style="color:var(--green);margin-bottom:12px">What We Built</div><p style="color:var(--text);font-size:15px;line-height:1.75">A verified directory. Inside Access content. Real Game stories. An opportunities board. A pathways hub. A submission system. Serving everyone from a home cook to a major corporation.</p></div></div></div></section>
+  <section><div class="w"><div class="kicker" style="margin-bottom:28px">What We Stand For</div><div><div class="val-row"><div class="v-num">01</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">No community too small, no business too large</p><p style="color:var(--muted);font-size:14px;line-height:1.7">A grandmother's home catering business deserves the same platform as a law firm.</p></div></div><div class="val-row"><div class="v-num">02</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">Inside access for everyone</p><p style="color:var(--muted);font-size:14px;line-height:1.7">Real conversations and backstage moments from the people who are actually doing it.</p></div></div><div class="val-row"><div class="v-num">03</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">Information is power</p><p style="color:var(--muted);font-size:14px;line-height:1.7">Pathways, resources, and knowledge belong to the community.</p></div></div><div class="val-row" style="border-bottom:none"><div class="v-num">04</div><div><p style="font-weight:800;font-size:17px;color:var(--text);margin-bottom:6px">Direct connection, always</p><p style="color:var(--muted);font-size:14px;line-height:1.7">Phone numbers, emails, booking links — direct access, no algorithms.</p></div></div></div></div></section>
+</div>
+
+<!-- ===== SUBMIT ===== -->
+<div id="pg-submit" class="pg" style="padding:100px 0 80px">
+  <div class="w">
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:60px;align-items:flex-start">
+      <div>
+        <div class="kicker">Join the Collective</div>
+        <h1 class="h2" style="margin-bottom:18px">Your Platform.<br>Your Community.</h1>
+        <p class="sub" style="margin-bottom:28px">List your business, submit a story, post an opportunity, or reach out about partnership. All reviewed within 48 hours.</p>
+        <div>
+          <div id="so-1" class="card" style="margin-bottom:10px;cursor:pointer;border-color:var(--gold);background:var(--gdim)" onclick="selType(1)"><div style="display:flex;gap:12px;align-items:center"><div id="sc-1" style="width:20px;height:20px;border-radius:50%;background:var(--gold);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;color:#080808;font-size:11px;font-weight:800;flex-shrink:0">✓</div><div><p style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:1px">List My Business</p><p style="color:var(--muted);font-size:12px">Get in the directory</p></div></div></div>
+          <div id="so-2" class="card" style="margin-bottom:10px;cursor:pointer" onclick="selType(2)"><div style="display:flex;gap:12px;align-items:center"><div id="sc-2" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0"></div><div><p style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:1px">Submit a Story / Real Game</p><p style="color:var(--muted);font-size:12px">Share your knowledge</p></div></div></div>
+          <div id="so-3" class="card" style="margin-bottom:10px;cursor:pointer" onclick="selType(3)"><div style="display:flex;gap:12px;align-items:center"><div id="sc-3" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0"></div><div><p style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:1px">Post an Opportunity</p><p style="color:var(--muted);font-size:12px">Casting call, job, collab, grant</p></div></div></div>
+          <div id="so-4" class="card" style="margin-bottom:10px;cursor:pointer" onclick="selType(4)"><div style="display:flex;gap:12px;align-items:center"><div id="sc-4" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0"></div><div><p style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:1px">Post an Announcement</p><p style="color:var(--muted);font-size:12px">Events, grand openings, news</p></div></div></div>
+          <div id="so-5" class="card" style="cursor:pointer" onclick="selType(5)"><div style="display:flex;gap:12px;align-items:center"><div id="sc-5" style="width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border);flex-shrink:0"></div><div><p style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:1px">Partnership / Press</p><p style="color:var(--muted);font-size:12px">Corporate partners, media, collaboration</p></div></div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:36px" id="submit-form">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;margin-bottom:24px">Send Your Information</h3>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div><label class="fl">Full Name</label><input class="fi" id="sf-name" placeholder="Your full name"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div><label class="fl">Email</label><input class="fi" id="sf-email" type="email" placeholder="your@email.com"></div>
+            <div><label class="fl">Phone</label><input class="fi" id="sf-phone" type="tel" placeholder="(000) 000-0000"></div>
+          </div>
+          <div><label class="fl">Business / Organization</label><input class="fi" id="sf-biz" placeholder="Business name (if applicable)"></div>
+          <div><label class="fl">Industry</label><select class="fi" id="sf-cat"><option>Legal</option><option>Film & Media</option><option>Food & Catering</option><option>Finance</option><option>Retail</option><option>Health & Wellness</option><option>Tech</option><option>Corporate</option><option>Music & Entertainment</option><option>Other</option></select></div>
+          <div><label class="fl">City</label><input class="fi" id="sf-city"></div>
+          <div><label class="fl">Tell us about yourself, your business, or your submission</label><textarea class="fi" id="sf-msg" rows="5" style="resize:none" placeholder="Services, story, what you'd like to post..."></textarea></div>
+          <button class="btn btn-gold" style="width:100%;padding:14px;font-size:11px" onclick="submitForm()">Submit for Review →</button>
+          <p style="color:var(--dim);font-size:11px;text-align:center">Reviewed within 48 hours. Free to list.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:var(--s1);border-top:1px solid var(--border);padding:48px 0 24px">
+  <div class="w">
+    <div style="display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px">
+      <div>
+        <div class="logo" style="margin-bottom:12px;cursor:default"><div class="logo-mark">TC</div><div><div class="logo-top">The Community Collective</div><div class="logo-bot">Directory · Access · Knowledge</div></div></div>
+        <p style="color:var(--muted);font-size:13px;line-height:1.7;max-width:260px">The verified directory and knowledge hub for Black, Brown, and middle-class communities — from the block to the boardroom.</p>
+      </div>
+      <div><p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px">Platform</p>
+        <button onclick="go('directory')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">Directory</button>
+        <button onclick="go('access')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">Inside Access</button>
+        <button onclick="go('realgame')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">Real Game</button>
+        <button onclick="go('opps')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">Opportunities</button>
+        <button onclick="go('happenings')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">What's Happening</button>
+      </div>
+      <div><p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px">Company</p>
+        <button onclick="go('about')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">About</button>
+        <button onclick="go('submit')" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">Join / Submit</button>
+        <button onclick="document.getElementById('sec-donate').scrollIntoView({behavior:'smooth'})" style="display:block;background:none;border:none;color:var(--muted);font-size:13px;padding:3px 0;font-family:inherit;text-align:left">Donate</button>
+      </div>
+      <div><p style="color:var(--text);font-weight:800;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px">Connect</p>
+        <p style="color:var(--muted);font-size:13px;padding:3px 0" id="f-email">hello@thecommunitycollective.com</p>
+        <p style="color:var(--muted);font-size:13px;padding:3px 0" id="f-ig">Instagram</p>
+        <p style="color:var(--muted);font-size:13px;padding:3px 0" id="f-tw">Twitter / X</p>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <p style="color:var(--dim);font-size:11px;letter-spacing:0.06em">© 2026 The Community Collective · Qalyx Technologies</p>
+      <button onclick="openAdmin()" style="background:none;border:none;color:var(--dim);font-size:10px;cursor:pointer;letter-spacing:0.06em;font-family:inherit">Admin ◆</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== DEFAULT DATA =====
+const D={
+  members:[
+    {id:0,type:"Legal",name:"Odom Law Group",person:"Keisha Odom, Esq.",city:"Chicago",emoji:"⚖️",tagline:"Criminal defense, expungement & civil rights. Community rates available.",services:["Expungement & Record Clearing","Criminal Defense","Police Misconduct","Tenant Rights"],phone:"(312) 555-0190",email:"keisha@odomlaw.com",consult:"Free 20-min consultation",tags:["Criminal","Expungement","Civil Rights"]},
+    {id:1,type:"Legal",name:"Bellamy Business Law",person:"Marcus Bellamy, Esq.",city:"Atlanta",emoji:"📋",tagline:"Business formation, contracts & IP for entrepreneurs.",services:["LLC & Corp Formation","Contract Drafting","Trademark & Copyright","Music Contracts"],phone:"(404) 555-0244",email:"marcus@bellamylaw.com",consult:"Free 30-min strategy call",tags:["Business","Contracts","IP"]},
+    {id:2,type:"Film & Media",name:"Clarity Media Studio",person:"Jordan L.",city:"Chicago",emoji:"🎬",tagline:"Video production, podcast editing & content strategy for storytellers.",services:["Short-Form Video","Podcast Editing","Brand Content Strategy","Documentary Filming"],phone:"(312) 555-0422",email:"work@claritymedia.co",consult:"Free project consult",tags:["Media","Video","Podcast"]},
+    {id:3,type:"Food & Catering",name:"Grounded Roots Kitchen",person:"Tanya M.",city:"Chicago",emoji:"🌿",tagline:"Home-cooked soul food, catering & herbal wellness products.",services:["Full-service catering","Meal prep packages","Herbal wellness products","Event food services"],phone:"(312) 555-0505",email:"tanya@groundedroots.co",consult:"Free catering consult",tags:["Food","Catering","Wellness"]},
+    {id:4,type:"Finance",name:"NovaMind Financial",person:"Priya S.",city:"Houston",emoji:"💼",tagline:"Credit repair, wealth-building & homebuyer coaching for working families.",services:["Credit Analysis & Repair","Debt Management","First-Time Homebuyer Prep","Business Credit Building"],phone:"(713) 555-0317",email:"hello@novamind.co",consult:"Free discovery session",tags:["Finance","Credit","Planning"]},
+    {id:5,type:"Health & Wellness",name:"Elevate Therapy Group",person:"Dr. Aisha P.",city:"Detroit",emoji:"🧠",tagline:"Mental health therapy and life coaching for Black and Brown communities.",services:["Individual Therapy","Group Coaching","Corporate Wellness","Youth Counseling"],phone:"(313) 555-0612",email:"care@elevatetherapy.co",consult:"Free 15-min intake call",tags:["Mental Health","Therapy","Wellness"]},
+  ],
+  spotlights:[
+    {id:0,name:"Odom Law Group",person:"Keisha Odom, Esq. · Chicago",cat:"Legal",desc:"Keisha Odom has cleared over 300 records across Illinois, giving clients access to jobs, housing, and licenses they were locked out of. A founding member of the Collective."},
+    {id:1,name:"Clarity Media Studio",person:"Jordan L. · Chicago",cat:"Film & Media",desc:"Clarity Media has produced content for over 40 community brands and nonprofits. They specialize in authentic storytelling for Black and Brown entrepreneurs."},
+    {id:2,name:"Grounded Roots Kitchen",person:"Tanya M. · Chicago",cat:"Food & Catering",desc:"Started from her home kitchen in 2021, Tanya now caters events across Chicago. Her herbal wellness line has over 500 monthly customers."},
+  ],
+  access:[
+    {id:0,title:"From Prison to Patent",person:"Marcus Webb · Chicago",type:"Interview",duration:"18 min",desc:"How Marcus built a tech company from nothing after incarceration — and why your gaps aren't disqualifiers.",video:"",emoji:"🏗️"},
+    {id:1,title:"How I Signed to a Label at 19",person:"Aaliyah Cross · Atlanta",type:"Real Conversation",duration:"12 min",desc:"The real story behind getting a music deal without industry connections — what they don't tell you.",video:"",emoji:"🎵"},
+    {id:2,title:"Backstage: Community Resource Fair",person:"TCC Team · Chicago",type:"Backstage",duration:"6 min",desc:"What happens behind the scenes when we put together an event for 500+ community members.",video:"",emoji:"🎬"},
+  ],
+  realgame:[
+    {id:0,name:"Jerome T.",industry:"Trucking Business Owner",city:"Detroit",lesson:"Owner-operator before fleet is the smart play. Brokers are the key relationship early on.",story:"Jerome built a six-figure trucking business with zero background in logistics. His biggest lesson: most people skip the business entity setup and undercharge because of imposter syndrome.",emoji:"🚛"},
+    {id:1,name:"Keisha Odom, Esq.",industry:"Criminal Defense Attorney",city:"Chicago",lesson:"A cleared record opens housing, employment, and licensing doors. Don't wait to be eligible — most people already are.",story:"After 12 years in criminal defense, Keisha realized the expungement process was simpler than most attorneys made it seem — and that most eligible clients waited years too long.",emoji:"⚖️"},
+    {id:2,name:"Mama Rose",industry:"Farmer & Entrepreneur",city:"Alabama",lesson:"USDA has grants specifically for Black farmers. Local markets beat wholesale margins significantly.",story:"Mama Rose turned inherited family land into a functioning farm and seasonal business. The turning point was forming an LLC before selling and applying for socially disadvantaged farmer grants.",emoji:"🌱"},
+  ],
+  opportunities:[
+    {id:0,title:"Casting Call — Short Film Project",type:"Casting Call",posted_by:"Clarity Media Studio",city:"Chicago",desc:"Looking for 3 talent aged 18-35 for an upcoming short film about community leadership. No experience required — authenticity matters more.",contact:"work@claritymedia.co",deadline:"June 30, 2026"},
+    {id:1,title:"Legal Intern — Summer 2026",type:"Internship",posted_by:"Odom Law Group",city:"Chicago",desc:"Paid internship for law students or pre-law undergrads. Hands-on experience with expungement cases, client intake, and legal research.",contact:"keisha@odomlaw.com",deadline:"May 31, 2026"},
+    {id:2,title:"Brand Partnership — Wellness Products",type:"Collaboration",posted_by:"Grounded Roots Kitchen",city:"National / Remote",desc:"Looking for content creators and wellness influencers to collaborate on product launches. Revenue share available.",contact:"tanya@groundedroots.co",deadline:"Rolling"},
+  ],
+  happenings:[
+    {id:0,month:"May",day:"15",type:"Event",title:"Youth Forward End-of-Year Showcase",meta:"6:00 PM · South Shore Cultural Center, Chicago",badge:"Free"},
+    {id:1,month:"May",day:"21",type:"Workshop",title:"Know Your Rights: Tenant Edition",meta:"5:30 PM · Woodlawn Branch Library",badge:"Free"},
+    {id:2,month:"Jun",day:"01",type:"Launch",title:"Grounded Roots Kitchen — Summer Catering Now Open",meta:"Online & Chicago area",badge:"Members"},
+    {id:3,month:"Jun",day:"07",type:"Networking",title:"The Collective Business Mixer",meta:"7:00 PM · TCC Hub, Bronzeville",badge:"Members"},
+    {id:4,month:"Jun",day:"14",type:"Event",title:"Community Resource Fair — 40+ Vendors",meta:"12:00 PM · Garfield Park, Chicago",badge:"Free"},
+  ],
+  pathways:[
+    {id:0,type:"Legal",title:"USPTO Pro Bono Patent Program",city:"National",status:"Open",emoji:"⚖️",desc:"Free patent legal help for qualifying inventors."},
+    {id:1,type:"Funding",title:"SBA Microloan Program",city:"National",status:"Open",emoji:"💰",desc:"Loans up to $50K for small businesses and nonprofits."},
+    {id:2,type:"Business",title:"SCORE Free Business Mentorship",city:"National",status:"Open",emoji:"🤝",desc:"Free mentoring from experienced entrepreneurs."},
+    {id:3,type:"Housing",title:"HUD Voucher Portability",city:"National",status:"Active",emoji:"🏠",desc:"Move your Section 8 voucher to any participating area."},
+    {id:4,type:"Legal",title:"Clean Slate Initiative",city:"National",status:"Active",emoji:"📋",desc:"Automatic record clearing for eligible offenses."},
+    {id:5,type:"Funding",title:"USDA Disadvantaged Farmer Grant",city:"National",status:"Open",emoji:"🌱",desc:"Federal grants for Black and minority farmers."},
+  ],
+  sections:{spotlights:true,accesspreview:true,rgpreview:true,oppspreview:true,happreview:true,donate:true,joincta:true},
+  donate:{headline:"Fund the Collective",sub:"Every dollar goes directly into building the platform, supporting community members, and keeping The Collective free to join.",link:"#",btn:"Donate Now",tax:"501(c)(3) · Tax-deductible donations"},
+  config:{email:"hello@thecommunitycollective.com",ig:"@communitycollective",tw:"@thecollective"},
+  pw:"tcc2026"
+};
+
+// ===== STATE =====
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def}catch{return def}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+let MEMBERS=load('tcc_m',D.members);
+let SPOTS=load('tcc_s',D.spotlights);
+let ACCESS=load('tcc_a',D.access);
+let REALGAME=load('tcc_rg',D.realgame);
+let OPPS=load('tcc_o',D.opportunities);
+let EVENTS=load('tcc_e',D.happenings);
+let PATHS=load('tcc_p',D.pathways);
+let SECS=load('tcc_sec',D.sections);
+let DONATE=load('tcc_don',D.donate);
+let CFG=load('tcc_cfg',D.config);
+let PW=load('tcc_pw',D.pw);
+let SUBMISSIONS=load('tcc_sub',[]);
+
+const TC={Legal:"var(--gold)","Film & Media":"var(--blue)","Food & Catering":"var(--green)",Finance:"var(--blue)",Retail:"var(--text)","Health & Wellness":"var(--green)",Tech:"var(--blue)",Corporate:"var(--gold)","Music & Entertainment":"var(--purple)"};
+let dirFilter='All',accFilter='All',oppFilter='All';
+
+// ===== NAV =====
+window.addEventListener('scroll',()=>document.getElementById('sitenav').classList.toggle('stuck',window.scrollY>10));
+
+function go(id){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nl').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pg-'+id).classList.add('on');
+  const nb=document.getElementById('nl-'+id);if(nb)nb.classList.add('on');
+  const dl=document.getElementById('dir-list'),dd=document.getElementById('dir-detail');
+  if(dl&&dd){dl.style.display='block';dd.style.display='none';}
+  window.scrollTo(0,0);
+  applySecs();
+}
+
+function applySecs(){
+  const map={spotlights:'sec-spotlights',accesspreview:'sec-access-preview',rgpreview:'sec-rg-preview',oppspreview:'sec-opps-preview',happreview:'sec-hap-preview',donate:'sec-donate',joincta:'sec-join-cta'};
+  Object.keys(map).forEach(k=>{const el=document.getElementById(map[k]);if(el)el.style.display=SECS[k]?'':'none';});
+}
+
+function toast(msg,c='var(--green)'){const t=document.getElementById('toast');t.textContent=msg;t.style.color=c;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+// ===== HOME RENDERS =====
+function renderHomeSpots(){
+  const el=document.getElementById('home-spotlights');if(!el)return;
+  el.innerHTML=SPOTS.slice(0,3).map(s=>`
+    <div class="spot-card"><div class="spot-top"></div><div class="spot-body">
+      <div style="font-size:9px;font-weight:800;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px">${s.cat}</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.04em;color:var(--text);line-height:1;margin-bottom:4px">${s.name}</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px">${s.person}</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px">${s.desc}</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:12px;border-top:1px solid var(--border)"><div class="member-badge">Verified Member</div><span style="color:var(--gold);font-size:12px;font-weight:700">View →</span></div>
+    </div></div>`).join('');
+}
+
+function renderHomeAccess(){
+  const el=document.getElementById('home-access');if(!el)return;
+  el.innerHTML=ACCESS.slice(0,3).map(a=>`
+    <div class="access-card" onclick="go('access')">
+      <div class="access-thumb" style="font-size:52px">${a.emoji||'🎬'}<div class="play-btn" style="position:absolute">▶</div></div>
+      <div style="padding:18px">
+        <div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">${a.type} · ${a.duration}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;color:var(--text);line-height:1.1;margin-bottom:4px">${a.title}</div>
+        <div style="font-size:12px;color:var(--muted)">${a.person}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderHomeRG(){
+  const el=document.getElementById('home-rg');if(!el)return;
+  el.innerHTML=REALGAME.slice(0,3).map(r=>`
+    <div class="rg-card"><div class="rg-num">${r.emoji||'💡'}</div>
+      <div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">${r.industry} · ${r.city}</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.04em;color:var(--text);line-height:1.1;margin-bottom:10px">${r.name}</div>
+      <p style="color:var(--gold);font-size:13px;font-style:italic;line-height:1.6;margin-bottom:12px">"${r.lesson}"</p>
+      <p style="color:var(--muted);font-size:13px;line-height:1.55">${r.story.slice(0,120)}${r.story.length>120?'...':''}</p>
+    </div>`).join('');
+}
+
+function renderHomeOpps(){
+  const el=document.getElementById('home-opps');if(!el)return;
+  const oc={Casting_Call:"var(--purple)",Job:"var(--green)",Internship:"var(--blue)",Collaboration:"var(--gold)",Grant:"var(--green)"};
+  el.innerHTML=OPPS.slice(0,3).map(o=>{
+    const col=oc[o.type.replace(' ','_')]||'var(--gold)';
+    return`<div class="opp-card" style="border-left-color:${col}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div><div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:${col};margin-bottom:4px">${o.type}</div><div style="font-size:17px;font-weight:800;color:var(--text)">${o.title}</div></div>
+        <span style="font-size:10px;color:var(--muted);flex-shrink:0;margin-left:12px">${o.city}</span>
+      </div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.55;margin-bottom:12px">${o.desc.slice(0,120)}${o.desc.length>120?'...':''}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;color:var(--dim)">Posted by ${o.posted_by}</span>
+        ${o.deadline?`<span style="font-size:10px;color:var(--muted)">Deadline: ${o.deadline}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderHomeHap(){
+  const el=document.getElementById('home-happenings');if(!el)return;
+  el.innerHTML=EVENTS.slice(0,4).map(h=>hapCard(h)).join('');
+}
+
+function hapCard(h){
+  const bc=h.badge==="Free"?"var(--green)":"var(--gold)";
+  return`<div class="hap-item">
+    <div class="hi-date"><div class="hi-month">${h.month}</div><div class="hi-day">${h.day}</div></div>
+    <div class="hi-bar"></div>
+    <div style="flex:1"><div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:2px">${h.type}</div><div style="font-size:15px;font-weight:700;color:var(--text)">${h.title}</div><div style="font-size:12px;color:var(--muted);margin-top:2px">${h.meta}</div></div>
+    <span style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${bc};background:${bc}15;border:1px solid ${bc}25;padding:4px 10px;border-radius:2px;flex-shrink:0">${h.badge}</span>
+  </div>`;
+}
+
+// ===== DIRECTORY =====
+function renderDir(){
+  const q=(document.getElementById('dir-search')||{}).value||'';
+  let list=MEMBERS;
+  if(dirFilter!=='All')list=list.filter(m=>m.type===dirFilter);
+  if(q)list=list.filter(m=>(m.name+m.person+m.tagline+(m.tags||[]).join(' ')).toLowerCase().includes(q.toLowerCase()));
+  const col=m=>TC[m.type]||'var(--muted)';
+  document.getElementById('dir-grid').innerHTML=list.length?list.map(m=>`
+    <div class="dir-card" onclick="showMember(${m.id})">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="width:48px;height:48px;border-radius:3px;background:${col(m)}12;border:1px solid ${col(m)}20;display:flex;align-items:center;justify-content:center;font-size:22px">${m.emoji||'🏢'}</div>
+        <span style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${col(m)}">${m.type}</span>
+      </div>
+      <div><div style="font-size:16px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:2px">${m.name}</div><div style="font-size:12px;color:var(--muted)">${m.person} · ${m.city}</div></div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.5">${m.tagline}</p>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">${(m.tags||[]).map(t=>`<span class="tag tag-dim">${t}</span>`).join('')}</div>
+    </div>`).join(''):`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">No results found.</div>`;
+}
+
+function setDF(f,btn){dirFilter=f;document.querySelectorAll('#dir-filters .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderDir();}
+
+function showMember(id){
+  const m=MEMBERS.find(x=>x.id===id);if(!m)return;
+  const col=TC[m.type]||'var(--gold)';
+  document.getElementById('dir-list').style.display='none';
+  const dd=document.getElementById('dir-detail');dd.style.display='block';
+  dd.querySelector('div').innerHTML=`
+    <button class="back" onclick="document.getElementById('dir-list').style.display='block';document.getElementById('dir-detail').style.display='none'">← Back to Directory</button>
+    <div style="background:var(--s1);border:1px solid var(--border);border-radius:4px;padding:40px;margin-bottom:22px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2))"></div>
+      <div style="display:flex;align-items:flex-start;gap:22px;margin-bottom:18px">
+        <div style="width:76px;height:76px;border-radius:4px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0">${m.emoji||'🏢'}</div>
+        <div><div style="font-size:9px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:${col};margin-bottom:6px">${m.type}</div><h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,4vw,42px);letter-spacing:0.04em;color:var(--text);line-height:1;margin-bottom:5px">${m.name}</h1><p style="color:var(--muted);font-size:14px;margin-bottom:8px">${m.person} · ${m.city}</p><div class="member-badge">Verified Member</div></div>
+      </div>
+      <p style="color:var(--muted);font-size:15px;line-height:1.65;max-width:640px">${m.tagline}</p>
+    </div>
+    <div class="grid2" style="align-items:flex-start">
+      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Services Offered</p><div class="card" style="padding:22px">${(m.services||[]).map(s=>`<div class="svc-row"><span style="color:${col};flex-shrink:0;font-size:13px">◆</span><p style="color:var(--text);font-size:14px;line-height:1.5">${s}</p></div>`).join('')}</div></div>
+      <div><p style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:12px">Contact & Book</p>${m.consult?`<div style="background:${col}10;border:1px solid ${col}22;border-radius:3px;padding:11px 14px;margin-bottom:12px"><p style="color:${col};font-size:12px;font-weight:700">✓ ${m.consult}</p></div>`:''}
+      <div class="cr"><div class="cr-ic">📞</div><div><div style="font-size:9px;font-weight:800;letter-spacing:0.09em;text-transform:uppercase;color:var(--dim);margin-bottom:1px">Phone</div><a href="tel:${m.phone}" style="font-size:14px;font-weight:700;color:var(--text)">${m.phone}</a></div></div>
+      <div class="cr"><div class="cr-ic">✉️</div><div><div style="font-size:9px;font-weight:800;letter-spacing:0.09em;text-transform:uppercase;color:var(--dim);margin-bottom:1px">Email</div><a href="mailto:${m.email}" style="font-size:14px;font-weight:700;color:var(--text)">${m.email}</a></div></div>
+      <button class="btn btn-gold" style="width:100%;margin-top:4px;padding:13px;font-size:11px">Contact ${m.name}</button></div>
+    </div>`;
+  window.scrollTo(0,0);
+}
+
+// ===== INSIDE ACCESS =====
+function renderAccess(){
+  let list=ACCESS;
+  if(accFilter!=='All')list=list.filter(a=>a.type===accFilter);
+  document.getElementById('access-grid').innerHTML=list.length?list.map(a=>`
+    <div class="access-card" onclick="openAccess(${a.id})">
+      <div class="access-thumb" style="font-size:54px">${a.emoji||'🎬'}<div class="play-btn" style="position:absolute">▶</div></div>
+      <div style="padding:20px">
+        <div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:6px">${a.type} · ${a.duration}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.04em;color:var(--text);line-height:1.1;margin-bottom:6px">${a.title}</div>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:8px">${a.person}</p>
+        <p style="color:var(--muted);font-size:12px;line-height:1.55">${a.desc}</p>
+      </div>
+    </div>`).join(''):`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">No content yet.</div>`;
+}
+
+function setAF(f,btn){accFilter=f;document.querySelectorAll('#access-filters .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderAccess();}
+function openAccess(id){const a=ACCESS.find(x=>x.id===id);if(!a)return;if(a.video){window.open(a.video,'_blank');}else{toast('Video coming soon for: '+a.title,'var(--gold)');}}
+
+// ===== REAL GAME =====
+function renderRG(){
+  document.getElementById('rg-grid').innerHTML=REALGAME.length?REALGAME.map((r,i)=>`
+    <div class="rg-card">
+      <div style="font-size:44px;opacity:0.15;font-family:'Bebas Neue',sans-serif;line-height:1;margin-bottom:6px">${String(i+1).padStart(2,'0')}</div>
+      <div style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">${r.industry} · ${r.city}</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.04em;color:var(--text);line-height:1.1;margin-bottom:12px">${r.emoji||'💡'} ${r.name}</div>
+      <p style="color:var(--gold);font-size:13px;font-style:italic;line-height:1.65;margin-bottom:14px;border-left:2px solid var(--gold);padding-left:12px">"${r.lesson}"</p>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6">${r.story}</p>
+    </div>`).join(''):`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted)">No stories yet.</div>`;
+}
+
+// ===== OPPORTUNITIES =====
+function renderOpps(){
+  let list=OPPS;
+  if(oppFilter!=='All')list=list.filter(o=>o.type===oppFilter);
+  const oc={Casting_Call:"var(--purple)",Job:"var(--green)",Internship:"var(--blue)",Collaboration:"var(--gold)",Grant:"var(--green)",Gig:"var(--orange)",Partnership:"var(--gold)"};
+  document.getElementById('opps-grid').innerHTML=list.length?list.map(o=>{
+    const col=oc[o.type.replace(' ','_')]||'var(--gold)';
+    return`<div class="opp-card" style="border-left-color:${col}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div><span style="font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:${col}">${o.type}</span><h3 style="font-size:18px;font-weight:800;color:var(--text);margin-top:4px">${o.title}</h3></div>
+        <div style="text-align:right;flex-shrink:0;margin-left:16px"><div style="font-size:11px;color:var(--muted)">${o.city}</div>${o.deadline?`<div style="font-size:10px;color:var(--dim);margin-top:3px">Due: ${o.deadline}</div>`:''}</div>
+      </div>
+      <p style="color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:14px">${o.desc}</p>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;color:var(--dim)">Posted by ${o.posted_by}</span>
+        <a href="mailto:${o.contact}" style="color:var(--gold);font-size:12px;font-weight:700">Apply →</a>
+      </div>
+    </div>`;
+  }).join(''):`<div style="text-align:center;padding:60px;color:var(--muted)">No opportunities posted yet.</div>`;
+}
+
+function setOF(f,btn){oppFilter=f;document.querySelectorAll('#opp-filters .fb').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderOpps();}
+
+// ===== HAPPENINGS FULL =====
+function renderHapFull(){const el=document.getElementById('hap-full');if(!el)return;el.innerHTML=EVENTS.map(h=>hapCard(h)).join('');}
+
+// ===== DONATE =====
+let donAmt='$25';
+function selDon(btn,amt){
+  document.querySelectorAll('.don-amount').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');donAmt=amt;
+  document.getElementById('don-btn-display').textContent=`Donate ${amt} Now`;
+}
+function donate(){
+  const custom=document.getElementById('don-custom').value.trim();
+  const amt=custom||donAmt;
+  if(DONATE.link&&DONATE.link!=='#'){window.open(DONATE.link,'_blank');}
+  else{toast('Payment link not yet configured. Set it in Admin → Donate.','var(--gold)');}
+}
+function applyDonate(){
+  const h=document.getElementById('don-headline-display');
+  const s=document.getElementById('don-sub-display');
+  const t=document.getElementById('don-tax-display');
+  const b=document.getElementById('don-btn-display');
+  if(h)h.textContent=DONATE.headline;
+  if(s)s.textContent=DONATE.sub;
+  if(t)t.textContent=DONATE.tax;
+  if(b)b.textContent=DONATE.btn+' $25 Now';
+}
+
+// ===== SUBMIT FORM =====
+let selT=1;
+function selType(n){
+  selT=n;
+  for(let i=1;i<=5;i++){
+    const o=document.getElementById('so-'+i),c=document.getElementById('sc-'+i);
+    if(!o||!c)continue;
+    o.style.borderColor=i===n?'var(--gold)':'var(--border)';
+    o.style.background=i===n?'var(--gdim)':'var(--card)';
+    c.style.background=i===n?'var(--gold)':'';
+    c.style.borderColor=i===n?'var(--gold)':'var(--border)';
+    c.textContent=i===n?'✓':'';
+    c.style.color=i===n?'#080808':'';
+  }
+}
+function submitForm(){
+  const name=document.getElementById('sf-name').value.trim();
+  const email=document.getElementById('sf-email').value.trim();
+  if(!name||!email){toast('Name and email are required','var(--red)');return;}
+  const sub={id:Date.now(),full_name:name,email,phone:document.getElementById('sf-phone').value,business:document.getElementById('sf-biz').value,industry:document.getElementById('sf-cat').value,city:document.getElementById('sf-city').value,message:document.getElementById('sf-msg').value,type:['List Business','Submit Story','Post Opportunity','Post Announcement','Partnership'][selT-1],status:'pending',created:new Date().toLocaleDateString()};
+  SUBMISSIONS.push(sub);save('tcc_sub',SUBMISSIONS);
+  document.getElementById('submit-form').innerHTML=`<div style="text-align:center;padding:56px 20px"><div class="s-circle">✓</div><h3 style="font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:0.04em;color:var(--green);margin-bottom:10px">Submission Received</h3><p style="color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:24px">We review all submissions within 48 hours. If approved, your listing goes live and we'll notify you.</p><button class="btn btn-ghost" onclick="location.reload()">Submit Another</button></div>`;
+}
+
+// ===== CONFIG =====
+function applyConfig(){
+  const e=document.getElementById('f-email');const i=document.getElementById('f-ig');const t=document.getElementById('f-tw');
+  if(e)e.textContent=CFG.email;if(i)i.textContent=CFG.ig;if(t)t.textContent=CFG.tw;
+}
+
+// ===== ADMIN =====
+function openAdmin(){document.getElementById('admin-login').classList.add('show');setTimeout(()=>document.getElementById('admin-pw').focus(),100);}
+function closeAdminLogin(){document.getElementById('admin-login').classList.remove('show');}
+function checkPw(){
+  if(document.getElementById('admin-pw').value===PW){
+    document.getElementById('admin-login').classList.remove('show');
+    document.getElementById('admin-panel').classList.add('show');
+    renderAdminAll();
+  } else {
+    document.getElementById('admin-pw').style.borderColor='var(--red)';
+    setTimeout(()=>document.getElementById('admin-pw').style.borderColor='',1200);
+  }
+}
+function closeAdmin(){document.getElementById('admin-panel').classList.remove('show');renderAll();}
+function aTab(id,btn){document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('on'));document.querySelectorAll('.at').forEach(b=>b.classList.remove('on'));document.getElementById('atab-'+id).classList.add('on');btn.classList.add('on');}
+function toggleForm(id){const f=document.getElementById(id);f.style.display=f.style.display==='none'?'block':'none';}
+
+function renderAdminAll(){renderSubsList();renderMembersList();renderSpotsList();renderAccessList();renderRGList();renderOppsList();renderEventsList();renderPathsList();renderSectionsList();loadDonateConfig();loadConfig();}
+
+// Submissions
+function renderSubsList(){
+  const el=document.getElementById('submissions-list');
+  el.innerHTML=SUBMISSIONS.length?SUBMISSIONS.slice().reverse().map(s=>`
+    <div class="a-card"><div><h4>${s.full_name} — ${s.type}</h4><p>${s.email} · ${s.city} · ${s.industry} · ${s.created}</p><p style="margin-top:6px;color:var(--text);font-size:12px">${(s.message||'').slice(0,120)}</p></div>
+    <div class="a-actions"><span style="font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:${s.status==='approved'?'var(--green)':'var(--gold)'};border:1px solid ${s.status==='approved'?'rgba(61,190,138,0.3)':'rgba(201,168,76,0.3)'};padding:4px 10px;border-radius:2px">${s.status}</span><button class="btn-approve" onclick="approveSubmission(${s.id})">Approve</button><button class="btn-del" onclick="deleteSubmission(${s.id})">Delete</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No submissions yet. They appear here when people fill out the Join/Submit form.</p>`;
+}
+function approveSubmission(id){const s=SUBMISSIONS.find(x=>x.id===id);if(!s)return;s.status='approved';save('tcc_sub',SUBMISSIONS);renderSubsList();toast('Submission approved!');}
+function deleteSubmission(id){if(!confirm('Delete this submission?'))return;SUBMISSIONS=SUBMISSIONS.filter(s=>s.id!==id);save('tcc_sub',SUBMISSIONS);renderSubsList();}
+
+// Members
+function renderMembersList(){
+  const el=document.getElementById('members-list');
+  el.innerHTML=MEMBERS.length?MEMBERS.map(m=>`
+    <div class="a-card"><div><h4>${m.emoji||'🏢'} ${m.name}</h4><p>${m.type} · ${m.person} · ${m.city}</p></div>
+    <div class="a-actions"><button class="btn-del" onclick="delMember(${m.id})">Remove</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No members yet.</p>`;
+}
+function adminAddMember(){
+  const name=document.getElementById('nm-name').value.trim();if(!name){toast('Name required','var(--red)');return;}
+  const svcs=document.getElementById('nm-services').value.split('\n').filter(s=>s.trim());
+  const tags=document.getElementById('nm-tags').value.split(',').map(t=>t.trim()).filter(Boolean);
+  MEMBERS.push({id:Date.now(),type:document.getElementById('nm-type').value,name,person:document.getElementById('nm-person').value,city:document.getElementById('nm-city').value,emoji:document.getElementById('nm-emoji').value||'🏢',tagline:document.getElementById('nm-tagline').value,services:svcs,phone:document.getElementById('nm-phone').value,email:document.getElementById('nm-email').value,consult:document.getElementById('nm-consult').value,tags});
+  save('tcc_m',MEMBERS);toggleForm('add-member-form');renderMembersList();toast('Member added!');
+}
+function delMember(id){if(!confirm('Remove?'))return;MEMBERS=MEMBERS.filter(m=>m.id!==id);save('tcc_m',MEMBERS);renderMembersList();}
+
+// Spotlights
+function renderSpotsList(){
+  const el=document.getElementById('spots-list');
+  el.innerHTML=SPOTS.length?SPOTS.map(s=>`
+    <div class="a-card"><div><h4>${s.name}</h4><p>${s.cat} · ${s.person}</p></div>
+    <div class="a-actions"><button class="btn-del" onclick="delSpot(${s.id})">Remove</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No spotlights.</p>`;
+}
+function adminAddSpot(){
+  const name=document.getElementById('ns-name').value.trim();if(!name){toast('Name required','var(--red)');return;}
+  SPOTS.push({id:Date.now(),name,person:document.getElementById('ns-person').value,cat:document.getElementById('ns-cat').value,desc:document.getElementById('ns-desc').value});
+  save('tcc_s',SPOTS);toggleForm('add-spot-form');renderSpotsList();toast('Spotlight added!');
+}
+function delSpot(id){if(!confirm('Remove?'))return;SPOTS=SPOTS.filter(s=>s.id!==id);save('tcc_s',SPOTS);renderSpotsList();}
+
+// Inside Access
+function renderAccessList(){
+  const el=document.getElementById('access-list');
+  el.innerHTML=ACCESS.length?ACCESS.map(a=>`
+    <div class="a-card"><div><h4>${a.emoji||'🎬'} ${a.title}</h4><p>${a.type} · ${a.person} · ${a.duration}</p></div>
+    <div class="a-actions"><button class="btn-del" onclick="delAccess(${a.id})">Remove</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No content yet.</p>`;
+}
+function adminAddAccess(){
+  const title=document.getElementById('na-title').value.trim();if(!title){toast('Title required','var(--red)');return;}
+  ACCESS.push({id:Date.now(),title,person:document.getElementById('na-person').value,type:document.getElementById('na-type').value,duration:document.getElementById('na-duration').value,desc:document.getElementById('na-desc').value,video:document.getElementById('na-video').value,emoji:document.getElementById('na-emoji').value||'🎬'});
+  save('tcc_a',ACCESS);toggleForm('add-access-form');renderAccessList();toast('Content added!');
+}
+function delAccess(id){if(!confirm('Remove?'))return;ACCESS=ACCESS.filter(a=>a.id!==id);save('tcc_a',ACCESS);renderAccessList();}
+
+// Real Game
+function renderRGList(){
+  const el=document.getElementById('rg-list');
+  el.innerHTML=REALGAME.length?REALGAME.map(r=>`
+    <div class="a-card"><div><h4>${r.emoji||'💡'} ${r.name}</h4><p>${r.industry} · ${r.city}</p></div>
+    <div class="a-actions"><button class="btn-del" onclick="delRG(${r.id})">Remove</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No stories yet.</p>`;
+}
+function adminAddRG(){
+  const name=document.getElementById('nrg-name').value.trim();if(!name){toast('Name required','var(--red)');return;}
+  REALGAME.push({id:Date.now(),name,industry:document.getElementById('nrg-industry').value,city:document.getElementById('nrg-city').value,lesson:document.getElementById('nrg-lesson').value,story:document.getElementById('nrg-story').value,emoji:document.getElementById('nrg-emoji').value||'💡'});
+  save('tcc_rg',REALGAME);toggleForm('add-rg-form');renderRGList();toast('Story added!');
+}
+function delRG(id){if(!confirm('Remove?'))return;REALGAME=REALGAME.filter(r=>r.id!==id);save('tcc_rg',REALGAME);renderRGList();}
+
+// Opportunities
+function renderOppsList(){
+  const el=document.getElementById('opps-list');
+  el.innerHTML=OPPS.length?OPPS.map(o=>`
+    <div class="a-card"><div><h4>${o.title}</h4><p>${o.type} · ${o.posted_by} · ${o.city}</p></div>
+    <div class="a-actions"><button class="btn-del" onclick="delOpp(${o.id})">Remove</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No opportunities yet.</p>`;
+}
+function adminAddOpp(){
+  const title=document.getElementById('no-title').value.trim();if(!title){toast('Title required','var(--red)');return;}
+  OPPS.push({id:Date.now(),title,type:document.getElementById('no-type').value,posted_by:document.getElementById('no-by').value,city:document.getElementById('no-city').value,desc:document.getElementById('no-desc').value,contact:document.getElementById('no-contact').value,deadline:document.getElementById('no-deadline').value});
+  save('tcc_o',OPPS);toggleForm('add-opp-form');renderOppsList();toast('Opportunity posted!');
+}
+function delOpp(id){if(!confirm('Remove?'))return;OPPS=OPPS.filter(o=>o.id!==id);save('tcc_o',OPPS);renderOppsList();}
+
+// Events
+function renderEventsList(){
+  const el=document.getElementById('events-list');
+  el.innerHTML=EVENTS.length?EVENTS.map(h=>`
+    <div class="a-card"><div><h4>${h.month} ${h.day} — ${h.title}</h4><p>${h.type} · ${h.meta}</p></div>
+    <div class="a-actions"><button class="btn-del" onclick="delEvent(${h.id})">Remove</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No events yet.</p>`;
+}
+function adminAddEvent(){
+  const title=document.getElementById('ne-title').value.trim();if(!title){toast('Title required','var(--red)');return;}
+  EVENTS.push({id:Date.now(),month:document.getElementById('ne-month').value,day:document.getElementById('ne-day').value,type:document.getElementById('ne-type').value,title,meta:document.getElementById('ne-meta').value,badge:document.getElementById('ne-badge').value});
+  save('tcc_e',EVENTS);toggleForm('add-event-form');renderEventsList();toast('Event posted!');
+}
+function delEvent(id){if(!confirm('Remove?'))return;EVENTS=EVENTS.filter(e=>e.id!==id);save('tcc_e',EVENTS);renderEventsList();}
+
+// Pathways
+function renderPathsList(){
+  const el=document.getElementById('paths-list');
+  el.innerHTML=PATHS.length?PATHS.map(p=>`
+    <div class="a-card"><div><h4>${p.emoji||'📋'} ${p.title}</h4><p>${p.type} · ${p.city} · ${p.status}</p></div>
+    <div class="a-actions"><button class="btn-del" onclick="delPath(${p.id})">Remove</button></div></div>
+  `).join(''):`<p style="color:var(--muted)">No pathways yet.</p>`;
+}
+function adminAddPath(){
+  const title=document.getElementById('np-title').value.trim();if(!title){toast('Title required','var(--red)');return;}
+  PATHS.push({id:Date.now(),title,type:document.getElementById('np-type').value,city:document.getElementById('np-city').value,status:document.getElementById('np-status').value,desc:document.getElementById('np-desc').value,emoji:document.getElementById('np-emoji').value||'📋'});
+  save('tcc_p',PATHS);toggleForm('add-path-form');renderPathsList();toast('Resource added!');
+}
+function delPath(id){if(!confirm('Remove?'))return;PATHS=PATHS.filter(p=>p.id!==id);save('tcc_p',PATHS);renderPathsList();}
+
+// Sections
+function renderSectionsList(){
+  const secs=[
+    {key:'spotlights',label:'Member Spotlights',desc:'Featured businesses on homepage'},
+    {key:'accesspreview',label:'Inside Access Preview',desc:'Content preview on homepage'},
+    {key:'rgpreview',label:'Real Game Preview',desc:'Stories preview on homepage'},
+    {key:'oppspreview',label:'Opportunities Preview',desc:'Opportunities preview on homepage'},
+    {key:'happreview',label:"What's Happening Preview",desc:'Events preview on homepage'},
+    {key:'donate',label:'Donate Section',desc:'Donation section on homepage'},
+    {key:'joincta',label:'Join CTA Banner',desc:'Call-to-action to join or submit'},
+  ];
+  document.getElementById('sections-list').innerHTML=secs.map(s=>`
+    <div class="toggle-row"><div><p style="font-weight:700;font-size:14px;color:var(--text);margin-bottom:2px">${s.label}</p><p style="font-size:12px;color:var(--muted)">${s.desc}</p></div>
+      <label class="toggle"><input type="checkbox" ${SECS[s.key]?'checked':''} onchange="toggleSec('${s.key}',this.checked)"><span class="slider"></span></label>
+    </div>`).join('');
+}
+function toggleSec(key,val){SECS[key]=val;save('tcc_sec',SECS);applySecs();}
+
+// Donate Config
+function loadDonateConfig(){
+  ['don-headline','don-sub','don-link','don-btn-text','don-tax'].forEach(id=>{
+    const k=id.replace('don-','').replace('-','_').replace('text','btn').replace('btn_text','btn');
+    const el=document.getElementById(id);
+    if(el){
+      if(id==='don-headline')el.value=DONATE.headline||'';
+      else if(id==='don-sub')el.value=DONATE.sub||'';
+      else if(id==='don-link')el.value=DONATE.link||'';
+      else if(id==='don-btn-text')el.value=DONATE.btn||'';
+      else if(id==='don-tax')el.value=DONATE.tax||'';
+    }
+  });
+}
+function saveDonate(){
+  DONATE.headline=document.getElementById('don-headline').value;
+  DONATE.sub=document.getElementById('don-sub').value;
+  DONATE.link=document.getElementById('don-link').value;
+  DONATE.btn=document.getElementById('don-btn-text').value;
+  DONATE.tax=document.getElementById('don-tax').value;
+  save('tcc_don',DONATE);applyDonate();
+  document.getElementById('don-msg').textContent='Saved!';
+  setTimeout(()=>document.getElementById('don-msg').textContent='',2000);
+}
+
+// Settings
+function loadConfig(){
+  const e=document.getElementById('cfg-email');const i=document.getElementById('cfg-ig');const t=document.getElementById('cfg-tw');
+  if(e)e.value=CFG.email;if(i)i.value=CFG.ig;if(t)t.value=CFG.tw;
+}
+function saveConfig(){
+  CFG.email=document.getElementById('cfg-email').value;
+  CFG.ig=document.getElementById('cfg-ig').value;
+  CFG.tw=document.getElementById('cfg-tw').value;
+  save('tcc_cfg',CFG);applyConfig();
+  document.getElementById('cfg-msg').textContent='Saved!';
+  setTimeout(()=>document.getElementById('cfg-msg').textContent='',2000);
+}
+function changePw(){
+  const cur=document.getElementById('pw-cur').value;
+  const nw=document.getElementById('pw-new').value;
+  const cf=document.getElementById('pw-cfm').value;
+  const msg=document.getElementById('pw-msg');
+  if(cur!==PW){msg.style.color='var(--red)';msg.textContent='Incorrect current password';return;}
+  if(nw!==cf){msg.style.color='var(--red)';msg.textContent='Passwords do not match';return;}
+  if(nw.length<4){msg.style.color='var(--red)';msg.textContent='Must be at least 4 characters';return;}
+  PW=nw;save('tcc_pw',PW);msg.style.color='var(--green)';msg.textContent='Password updated!';
+  ['pw-cur','pw-new','pw-cfm'].forEach(id=>document.getElementById(id).value='');
+}
+function resetAll(){
+  MEMBERS=[...D.members];SPOTS=[...D.spotlights];ACCESS=[...D.access];REALGAME=[...D.realgame];
+  OPPS=[...D.opportunities];EVENTS=[...D.happenings];PATHS=[...D.pathways];
+  SECS={...D.sections};DONATE={...D.donate};CFG={...D.config};PW=D.pw;SUBMISSIONS=[];
+  ['tcc_m','tcc_s','tcc_a','tcc_rg','tcc_o','tcc_e','tcc_p','tcc_sec','tcc_don','tcc_cfg','tcc_pw','tcc_sub'].forEach(k=>save(k,null));
+  renderAdminAll();toast('Reset to defaults.');
+}
+
+// ===== INIT =====
+function renderAll(){
+  renderHomeSpots();renderHomeAccess();renderHomeRG();renderHomeOpps();renderHomeHap();
+  renderDir();renderAccess();renderRG();renderOpps();renderHapFull();
+  applySecs();applyConfig();applyDonate();
+}
+renderAll();
+</script>
+</body>
+
+</html>
