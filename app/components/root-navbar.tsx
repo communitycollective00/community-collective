@@ -26,11 +26,7 @@ export default function RootNavBar() {
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
 
-        {loading ? (
-          <Link href="/get-access" className="gold-link">
-            Get Access
-          </Link>
-        ) : isAuthed ? (
+        {isAuthed ? (
           <>
             {isAdminRole(role) && <Link href="/admin">Admin</Link>}
             <Link href="/dashboard">Dashboard</Link>
@@ -43,6 +39,13 @@ export default function RootNavBar() {
             >
               Logout
             </button>
+          </>
+        ) : loading ? (
+          <>
+            <Link href="/get-access" className="gold-link">
+              Get Access
+            </Link>
+            <Link href="/login">Login</Link>
           </>
         ) : (
           <>

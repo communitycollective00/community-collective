@@ -124,40 +124,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     init();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, newSession) => {
-      const u = newSession?.user ?? null;
-      // Set session/user immediately on change so UI updates fast
-      setSession(newSession ?? null);
-      setUser(u);
+    // Subscribe to auth state changes. Guard the subscription in case the
+    // client library returns an unexpected shape (avoid runtime destructuring
+    // errors that crash the provider).
+    let subscription: any = null;
+    try {
+      const resp = supabase.auth.onAuthStateChange(async (event, newSession) => {
+        const u = newSession?.user ?? null;
+        // Set session/user immediately on change so UI updates fast
+        setSession(newSession ?? null);
+        setUser(u);
 
-      if (event === "SIGNED_OUT") {
-        setProfile(null);
-        setRole(null);
-        setError(null);
-        setLoading(false);
-      } else if (event === "SIGNED_IN") {
-        setLoading(true);
-        await fetchProfileForUser(u);
-        setLoading(false);
+        if (event === "SIGNED_OUT") {
+          setProfile(null);
+          setRole(null);
+          setError(null);
+          setLoading(false);
+        } else if (event === "SIGNED_IN") {
+          setLoading(true);
+          await fetchProfileForUser(u);
+          setLoading(false);
+          try {
+            const currentPath = window.location.pathname;
+            const authPaths = ["/", "/login", "/signup", "/auth/callback", "/get-access"];
+            if (authPaths.includes(currentPath) || currentPath.startsWith("/auth/")) {
+              window.location.href = "/dashboard";
+            }
+          } catch (e) {}
+        }
+
+        // Keep cookie marker for middleware behavior (non-authoritative)
         try {
-          const currentPath = window.location.pathname;
-          const authPaths = ["/", "/login", "/signup", "/auth/callback", "/get-access"];
-          if (authPaths.includes(currentPath) || currentPath.startsWith("/auth/")) {
-            window.location.href = "/dashboard";
-          }
+          document.cookie = `cc-auth=${newSession ? "1" : "0"}; Path=/; Max-Age=${newSession ? 60 * 60 * 24 * 7 : 0}; SameSite=Lax`;
         } catch (e) {}
-      }
+      });
 
-      // Keep cookie marker for middleware behavior (non-authoritative)
-      try {
-        document.cookie = `cc-auth=${newSession ? "1" : "0"}; Path=/; Max-Age=${newSession ? 60 * 60 * 24 * 7 : 0}; SameSite=Lax`;
-      } catch (e) {}
-    });
+      subscription = resp?.data?.subscription;
+    } catch (e) {
+      console.error("Failed to subscribe to auth state changes", e);
+      subscription = null;
+    }
 
     return () => {
       mounted = false;
       try {
-        subscription.unsubscribe();
+        subscription?.unsubscribe?.();
       } catch {}
     };
   }, []);

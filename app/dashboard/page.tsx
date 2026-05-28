@@ -95,6 +95,9 @@ export default function DashboardPage() {
               ? "This is your premium hub for profile edits, posts, and community updates."
               : "Browse verified professionals, update your public details, and find the access you need."}
           </p>
+          <p className="muted" style={{ margin: "0.8rem 0 0", fontStyle: "italic" }}>
+            Dashboard is your personal member control center. Admin command center access is separate and available at /admin for approved staff.
+          </p>
           <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.85rem" }}>
             {isProfessional ? <Link className="gold-btn" href="/posts/create">Create post</Link> : null}
             <Link className="gold-btn" href="/profile">Edit Profile</Link>
