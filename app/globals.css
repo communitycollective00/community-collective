@@ -29,6 +29,8 @@ select {
 }
 
 .premium-page {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   /* Cinematic dark gold gradient */
   background-color: #070505;
@@ -114,6 +116,7 @@ select {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem 1rem 3rem;
+  width: 100%;
 }
 
 .homepage-footer {
@@ -196,11 +199,6 @@ select {
 }
 
 .footer-bottom {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: center;
   border-top: 1px solid rgba(200,157,53,0.12);
   padding-top: 1.5rem;
   color: #d3c18e;

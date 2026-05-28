@@ -66,7 +66,6 @@ export default function HomePage() {
 
           <div className="footer-bottom">
             <p>Explore the platform with confidence. Admin access is protected and available for approved staff only.</p>
-            <a href="/admin" className="gold-link" style={{ marginTop: "0.75rem", display: "inline-block" }}>Admin tools</a>
           </div>
         </footer>
       </div>
