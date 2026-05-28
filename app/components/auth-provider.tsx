@@ -129,18 +129,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Set session/user immediately on change so UI updates fast
       setSession(newSession ?? null);
       setUser(u);
+
       if (event === "SIGNED_OUT") {
         setProfile(null);
         setRole(null);
         setError(null);
         setLoading(false);
-      } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
+      } else if (event === "SIGNED_IN") {
         setLoading(true);
         await fetchProfileForUser(u);
         setLoading(false);
-        // After successful sign in redirect user to dashboard to finalize flow
         try {
-          window.location.href = "/dashboard";
+          const currentPath = window.location.pathname;
+          const authPaths = ["/", "/login", "/signup", "/auth/callback", "/get-access"];
+          if (authPaths.includes(currentPath) || currentPath.startsWith("/auth/")) {
+            window.location.href = "/dashboard";
+          }
         } catch (e) {}
       }
 
@@ -161,11 +165,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signOut = async () => {
     const supabase = getSupabaseClient();
     try {
-      const { error: signErr } = await supabase.auth.signOut();
-      if (signErr) {
-      } else {
-      }
+      await supabase.auth.signOut();
     } catch (e) {
+      // Ignore sign-out failures and continue clearing local state
     }
 
     // Clear local markers
@@ -182,11 +184,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setRole(null);
     setError(null);
     setLoading(false);
-
-    // Redirect to home
-    try {
-      window.location.href = "/";
-    } catch (e) {}
   };
 
   return (

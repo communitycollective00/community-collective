@@ -26,8 +26,11 @@ export default function RootNavBar() {
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
 
-        {/* Avoid showing Login briefly while auth is resolving */}
-        {!loading && isAuthed ? (
+        {loading ? (
+          <Link href="/get-access" className="gold-link">
+            Get Access
+          </Link>
+        ) : isAuthed ? (
           <>
             {isAdminRole(role) && <Link href="/admin">Admin</Link>}
             <Link href="/dashboard">Dashboard</Link>
@@ -35,21 +38,18 @@ export default function RootNavBar() {
             <button
               onClick={handleLogout}
               className="gold-btn"
-              style={{ cursor: "pointer", border: "none" }}
+              style={{ cursor: "pointer" }}
+              aria-label="Logout"
             >
               Logout
             </button>
           </>
         ) : (
           <>
-            {!loading ? (
-              <>
-                <Link href="/get-access" className="gold-link">
-                  Get Access
-                </Link>
-                <Link href="/login">Login</Link>
-              </>
-            ) : null}
+            <Link href="/get-access" className="gold-link">
+              Get Access
+            </Link>
+            <Link href="/login">Login</Link>
           </>
         )}
       </div>

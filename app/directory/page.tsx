@@ -76,7 +76,7 @@ export default function DirectoryPage() {
   }, [profiles, search, industry, category, location]);
 
   return (
-    <main className="premium-page">
+    <main className="premium-page" style={{ paddingTop: "92px" }}>
       <div className="premium-card directory-card">
         <section className="directory-hero">
           <div style={{ marginBottom: "1rem" }}>
@@ -128,6 +128,8 @@ function ProfileCard({ profile }: { profile: DirectoryProfile }) {
   const latestPost = profile.posts?.slice().sort((a, b) => Number(new Date(b.created_at || "")) - Number(new Date(a.created_at || "")))[0];
   const locationValue = profile.location || [profile.city, profile.state].filter(Boolean).join(", ");
 
+  const profileUrl = profile.username ? `/directory/${profile.username}` : null;
+
   return (
     <article className="directory-item">
       <div className="directory-item-content">
@@ -150,9 +152,15 @@ function ProfileCard({ profile }: { profile: DirectoryProfile }) {
           <strong style={{ color: "#c9a84c" }}>Latest:</strong> {latestPost ? (latestPost.title || latestPost.body?.slice(0, 75) || "Published media") : "No published content yet."}
         </p>
 
-        <Link className="gold-link" href={`/directory/${profile.username}`} style={{ marginTop: "1rem", display: "inline-flex" }}>
-          View profile
-        </Link>
+        {profileUrl ? (
+          <Link className="gold-link" href={profileUrl} style={{ marginTop: "1rem", display: "inline-flex" }}>
+            View profile
+          </Link>
+        ) : (
+          <div className="muted" style={{ marginTop: "1rem", fontSize: "0.9rem" }}>
+            Profile link available once username is set.
+          </div>
+        )}
       </div>
     </article>
   );

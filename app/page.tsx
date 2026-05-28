@@ -1,19 +1,28 @@
 "use client";
 
-import React from "react";
+import { useRef } from "react";
 
 export default function HomePage() {
-  // Keep the top padding so the sticky nav doesn't overlap the iframe content.
-  // The iframe height is the viewport minus the nav height (72px) so the
-  // original static page can scroll independently.
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const handleLoad = () => {
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: "hideInternalNav" },
+      window.location.origin
+    );
+  };
+
   return (
-    <main style={{ paddingTop: "72px" }}>
-      <iframe
-        src="/original.html"
-        title="Community Collective Original Homepage"
-        style={{ width: "100%", height: "calc(100vh - 72px)", border: 0, display: "block" }}
-        scrolling="auto"
-      />
+    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+      <div className="homepage-frame">
+        <iframe
+          ref={iframeRef}
+          src="/original.html"
+          title="Community Collective Homepage"
+          className="homepage-iframe"
+          onLoad={handleLoad}
+        />
+      </div>
     </main>
   );
 }

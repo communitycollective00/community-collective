@@ -67,6 +67,17 @@ export default function ProfilePage() {
     loadProfile();
   }, [user, authLoading]);
 
+  if (authLoading) {
+    return (
+      <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+        <section className="premium-card">
+          <h1>Loading profile…</h1>
+          <p className="muted">We are restoring your premium workspace.</p>
+        </section>
+      </main>
+    );
+  }
+
   const uploadAvatar = async (file: File) => {
     if (!userId) return;
     setStatus("Uploading avatar...");
@@ -132,15 +143,27 @@ export default function ProfilePage() {
     setStatus("Profile updated.");
   };
 
+  const hasProfileContent = Boolean(fullName || username || bio || industry || website || instagram || twitter || linkedin);
+  const profileHeadline = hasProfileContent ? "Manage your public profile" : "Complete your profile";
+  const profileSubtext = hasProfileContent
+    ? "Update how community members discover you in the directory, and keep your contact details, expertise, and social links current."
+    : "Finish your crafted profile so the platform can represent your expertise with the premium visibility it deserves.";
+
   return (
     <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card dashboard-card">
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <div>
             <p className="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.18em", fontSize: "0.8rem" }}>Member profile</p>
-            <h1 style={{ margin: "0.5rem 0 0", fontSize: "2.2rem" }}>Manage your public profile</h1>
-            <p className="muted" style={{ marginTop: "0.75rem", maxWidth: "740px" }}>Update how community members discover you in the directory, and keep your contact details, expertise, and social links current.</p>
+            <h1 style={{ margin: "0.5rem 0 0", fontSize: "2.2rem" }}>{profileHeadline}</h1>
+            <p className="muted" style={{ marginTop: "0.75rem", maxWidth: "740px" }}>{profileSubtext}</p>
           </div>
+
+          {!hasProfileContent ? (
+            <div className="status-success" style={{ maxWidth: "760px" }}>
+              Your profile is waiting for a few key details. Add your name, bio, location, and links to be more discoverable in the Directory.
+            </div>
+          ) : null}
 
           <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>

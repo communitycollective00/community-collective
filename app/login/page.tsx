@@ -76,8 +76,8 @@ export default function LoginPage() {
   return (
     <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card">
-        <h1>Login</h1>
-        <p>Use email + password, Google, or magic link backup.</p>
+        <h1 style={{ fontSize: "2.8rem", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>Welcome back.</h1>
+        <p style={{ color: "#d3c18e", marginBottom: "1.5rem", maxWidth: "640px" }}>Sign in securely to access your dashboard, profile, and premium directory tools.</p>
 
         <form onSubmit={login} className="premium-form">
           <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
@@ -86,10 +86,10 @@ export default function LoginPage() {
         </form>
 
         <div className="quick-links">
-          <button className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>
+          <button type="button" className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>
             {googleEnabled ? "Continue with Google" : "Google sign-in coming soon"}
           </button>
-          <button className="gold-btn" onClick={magicLink}>Send Magic Link (Backup)</button>
+          <button type="button" className="gold-btn" onClick={magicLink}>Send Magic Link (Backup)</button>
         </div>
 
         <p className="muted" style={{ marginTop: 12 }}>Don't have an account? <Link href="/signup" className="gold-link">Sign up</Link></p>

@@ -69,7 +69,7 @@ export default function PublicProfilePage() {
   }, [username]);
 
   return (
-    <main className="premium-page">
+    <main className="premium-page" style={{ paddingTop: "92px" }}>
       <section className="premium-card">
         {!profile ? (
           <p>User not found.</p>

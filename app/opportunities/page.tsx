@@ -19,7 +19,7 @@ const colorMap: { [key: string]: string } = {
 
 export default function OpportunitiesPage() {
   return (
-    <main style={{ background: "linear-gradient(180deg, #0b0702 0%, #040303 60%)", color: "#F0EDE6", minHeight: "100vh" }}>
+    <main className="premium-page" style={{ paddingTop: "92px" }}>
       <div style={{ maxWidth: 1440, margin: "0 auto", padding: "0 48px" }}>
         <div style={{ paddingTop: "120px", paddingBottom: "88px" }}>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "80px", alignItems: "flex-start", marginBottom: "52px" }}>
