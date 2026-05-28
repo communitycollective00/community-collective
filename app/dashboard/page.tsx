@@ -88,61 +88,57 @@ export default function DashboardPage() {
   return (
     <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card dashboard-card" style={{ maxWidth: 1200, margin: "2rem auto" }}>
-          <article className="submission-item">
-            <h1 style={{ marginTop: 0 }}>Welcome back</h1>
-            <p className="muted">Signed in as {profile?.full_name || email || "member"}.</p>
-            <p className="muted">Role: {authLoading ? "loading..." : authError ? authError : profile ? profile.role ?? "unknown" : "Profile not found for this user."}</p>
-          </article>
-
-          <article className="submission-item">
-            <h3 style={{ marginTop: 0 }}>{isProfessional ? "Professional dashboard" : "Member home"}</h3>
-            <p className="muted">{isProfessional ? "Manage your profile, posts, and opportunities in one trusted place." : "Browse verified professionals, discover opportunities, and apply to become a featured professional."}</p>
-          </article>
-
-          <article className="submission-item">
-            <h3 style={{ marginTop: 0 }}>Quick actions</h3>
-            <div className="quick-links">
-              {isProfessional ? <Link className="gold-link" href="/posts/create">Create post</Link> : null}
-              <Link className="gold-link" href="/profile">Edit Profile</Link>
-              <Link className="gold-link" href="/directory">Browse Directory</Link>
-              <Link className="gold-link" href="/opportunities">View Opportunities</Link>
-              <Link className="gold-link" href="/apply">Apply to be featured</Link>
-            </div>
-          </article>
-
-          <div className="dashboard-grid">
-            <article className="submission-item">
-              <h3 style={{ marginTop: 0 }}>Latest posts</h3>
-              {posts.length === 0 ? (
-                <p className="muted">No published posts yet.</p>
-              ) : (
-                <div className="submissions-list">
-                  {posts.map((post) => (
-                    <article key={post.id} className="submission-item" style={{ padding: "0.75rem" }}>
-                      <p style={{ margin: 0, fontWeight: 700 }}>{post.title || "Untitled post"}</p>
-                      <p className="muted">{post.post_type || "Update"}</p>
-                      <p className="muted" style={{ margin: 0 }}>{post.body?.slice(0, 100) || "Shared media content."}</p>
-                    </article>
-                  ))}
-                </div>
-              )}
-            </article>
-            <article className="submission-item">
-              <h3 style={{ marginTop: 0 }}>Opportunity essentials</h3>
-              <ul className="muted" style={{ paddingLeft: "1rem", margin: "0.25rem 0" }}>
-                <li>Jobs + internships</li>
-                <li>Mentorships + coaching</li>
-                <li>Events + learning</li>
-              </ul>
-              <Link className="gold-link" href="/opportunities">Open opportunities</Link>
-            </article>
-            <article className="submission-item">
-              <h3 style={{ marginTop: 0 }}>Trust signals</h3>
-              <p className="muted">Verified professionals can be surfaced, reviewed, and trusted. Public members browse without posting public profiles.</p>
-            </article>
+        <div className="dashboard-hero">
+          <h1 style={{ margin: 0 }}>Welcome back, {profile?.full_name || email || "member"}</h1>
+          <p className="muted" style={{ margin: "0.8rem 0 0" }}>
+            {isProfessional
+              ? "This is your premium hub for profile edits, posts, and community updates."
+              : "Browse verified professionals, update your public details, and find the access you need."}
+          </p>
+          <div style={{ marginTop: "1.5rem", display: "flex", flexWrap: "wrap", gap: "0.85rem" }}>
+            {isProfessional ? <Link className="gold-btn" href="/posts/create">Create post</Link> : null}
+            <Link className="gold-btn" href="/profile">Edit Profile</Link>
+            <Link className="gold-btn" href="/directory">Browse Directory</Link>
+            <Link className="gold-btn" href="/opportunities">View Opportunities</Link>
           </div>
+        </div>
 
-          {status ? <p className="muted">{status}</p> : null}
+        <div className="dashboard-grid">
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Your status</h3>
+            <p className="muted">Signed in as {profile?.full_name || email || "member"}.</p>
+            <p className="muted">Role: {authLoading ? "loading..." : authError ? authError : profile ? profile.role ?? "unknown" : "Profile not found."}</p>
+          </article>
+
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Recent posts</h3>
+            {posts.length === 0 ? (
+              <p className="muted">No published posts yet.</p>
+            ) : (
+              <div className="submissions-list">
+                {posts.map((post) => (
+                  <article key={post.id} className="post-card">
+                    <p style={{ margin: 0, fontWeight: 700 }}>{post.title || "Untitled post"}</p>
+                    <p className="muted" style={{ margin: "0.25rem 0" }}>{post.post_type || "Update"}</p>
+                    <p className="muted" style={{ margin: 0 }}>{post.body?.slice(0, 110) || "Shared media content."}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+          </article>
+
+          <article className="submission-item">
+            <h3 style={{ marginTop: 0 }}>Member essentials</h3>
+            <ul className="muted" style={{ paddingLeft: "1rem", margin: "0.25rem 0" }}>
+              <li>Public directory exposure</li>
+              <li>Verified creator posting</li>
+              <li>Opportunity discovery</li>
+            </ul>
+            <Link className="gold-link" href="/apply">Apply to be featured</Link>
+          </article>
+        </div>
+
+        {status ? <p className="muted">{status}</p> : null}
       </section>
     </main>
   );

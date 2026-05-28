@@ -7,6 +7,8 @@ import { isProfessionalRole } from "../../../../lib/roles";
 
 type ProfileData = { role: string | null };
 
+// TODO: Preserve the current URL-based media flow for posts. Upgrade to direct storage uploads later if the Supabase storage configuration is validated.
+
 type PostData = {
   id: string;
   title: string | null;

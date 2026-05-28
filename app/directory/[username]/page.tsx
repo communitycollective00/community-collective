@@ -75,36 +75,62 @@ export default function PublicProfilePage() {
           <p>User not found.</p>
         ) : (
           <>
-            <img src={profile.avatar_url || fallbackAvatar(profile.full_name || profile.username)} alt="Profile avatar" className="profile-avatar" />
-            <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-              <h1 style={{ margin: 0 }}>{profile.full_name || profile.username}</h1>
-              {isProfessionalRole(profile.role) ? <span className="verify-badge">Verified professional</span> : <span className="verify-badge">Member profile</span>}
-            </div>
-            <p className="muted">@{profile.username}</p>
-            <p>{profile.bio || profile.description || "No bio yet."}</p>
-            <p><strong>Expertise:</strong> {profile.category || profile.industry || "General"}</p>
-            <p><strong>Location:</strong> {profile.location || [profile.city, profile.state].filter(Boolean).join(", ") || "Unknown"}</p>
-            <p><strong>Website:</strong> {profile.website ? <a className="gold-link" href={profile.website} target="_blank">Visit</a> : "None"}</p>
-            <p className="muted" style={{ marginBottom: 8 }}>Contact access:</p>
-            <div className="quick-links">
-              {profile.email ? <a className="gold-btn" href={`mailto:${profile.email}`}>Email professional</a> : <button className="gold-btn" type="button" disabled>Contact unavailable</button>}
-              <Link className="gold-btn" href="/directory">Browse more profiles</Link>
-            </div>
-            <div style={{ marginTop: 24 }}>
-              <h2 style={{ margin: "0 0 0.75rem" }}>Recent media & updates</h2>
-              {posts.length === 0 ? (
-                <p className="muted">No public posts published yet.</p>
-              ) : (
-                <div className="submissions-list">
-                  {posts.map((post) => (
-                    <article className="submission-item" key={post.id}>
-                      <h3 style={{ margin: 0 }}>{post.title || "Untitled"}</h3>
-                      <p className="muted" style={{ margin: "0.25rem 0" }}>{post.post_type || "Content"}</p>
-                      <p style={{ margin: 0 }}>{post.body ? post.body.slice(0, 120) : post.link_url || post.media_url || "Media content"}</p>
-                    </article>
-                  ))}
+            <div className="profile-banner" />
+            <div className="profile-intro">
+              <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+                <img src={profile.avatar_url || fallbackAvatar(profile.full_name || profile.username)} alt="Profile avatar" className="profile-avatar" />
+                <div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                    <h1 style={{ margin: 0, fontSize: "2.4rem", lineHeight: 1 }}>{profile.full_name || profile.username}</h1>
+                    <span className="verify-badge">{isProfessionalRole(profile.role) ? "Verified professional" : "Member profile"}</span>
+                  </div>
+                  <p className="muted" style={{ margin: "0.5rem 0 0" }}>@{profile.username || "unknown"}</p>
                 </div>
-              )}
+              </div>
+
+              <div style={{ display: "grid", gap: "1rem" }}>
+                <p style={{ margin: 0, color: "#d8c88f", fontSize: "1rem", lineHeight: 1.7 }}>{profile.bio || profile.description || "No bio yet."}</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.85rem" }}>
+                  <span className="directory-badge">{profile.category || profile.industry || "General"}</span>
+                  <span className="directory-badge">{profile.location || [profile.city, profile.state].filter(Boolean).join(", ") || "Unknown location"}</span>
+                </div>
+              </div>
+
+              <div className="profile-socials" style={{ marginTop: "1rem" }}>
+                {profile.email ? <a className="profile-link" href={`mailto:${profile.email}`}>Email professional</a> : null}
+                {profile.website ? <a className="profile-link" href={profile.website} target="_blank" rel="noreferrer">Website</a> : null}
+                {profile.instagram ? <a className="profile-link" href={`https://instagram.com/${profile.instagram.replace(/^@/, "")}`} target="_blank" rel="noreferrer">Instagram</a> : null}
+                {profile.twitter ? <a className="profile-link" href={`https://twitter.com/${profile.twitter.replace(/^@/, "")}`} target="_blank" rel="noreferrer">Twitter</a> : null}
+                {profile.linkedin ? <a className="profile-link" href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> : null}
+                {profile.youtube ? <a className="profile-link" href={profile.youtube} target="_blank" rel="noreferrer">YouTube</a> : null}
+                {profile.tiktok ? <a className="profile-link" href={`https://tiktok.com/@${profile.tiktok.replace(/^@/, "")}`} target="_blank" rel="noreferrer">TikTok</a> : null}
+              </div>
+
+              <div style={{ marginTop: "1.75rem" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
+                  <h2 style={{ margin: 0, fontSize: "1.5rem", color: "#f4e8c1" }}>Recent media & updates</h2>
+                  <Link className="gold-link" href="/directory">Browse more profiles</Link>
+                </div>
+
+                {posts.length === 0 ? (
+                  <p className="muted" style={{ marginTop: "1rem" }}>No public posts published yet.</p>
+                ) : (
+                  <div className="submissions-list" style={{ marginTop: "1rem" }}>
+                    {posts.map((post) => (
+                      <article className="post-card" key={post.id}>
+                        <div style={{ display: "flex", justifyContent: "space-between", gap: "0.75rem", flexWrap: "wrap" }}>
+                          <div>
+                            <h3 style={{ margin: 0 }}>{post.title || "Untitled"}</h3>
+                            <p className="muted" style={{ margin: "0.3rem 0" }}>{post.post_type ? post.post_type.toUpperCase() : "Update"}</p>
+                          </div>
+                          {post.link_url ? <a className="profile-link" href={post.link_url} target="_blank" rel="noreferrer">Open link</a> : post.media_url ? <a className="profile-link" href={post.media_url} target="_blank" rel="noreferrer">View media</a> : null}
+                        </div>
+                        <p style={{ margin: "0.75rem 0 0", color: "#d3c18e", lineHeight: 1.75 }}>{post.body ? post.body.slice(0, 140) : "No description provided."}</p>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </>
         )}

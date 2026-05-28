@@ -135,26 +135,70 @@ export default function ProfilePage() {
   return (
     <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card dashboard-card">
-        <h1>Your Profile</h1>
-        <form onSubmit={save} className="premium-form">
-          <label className="field-label">Email</label>
-          <input disabled value={email} />
-          <label className="field-label">Full name</label>
-          <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
-          <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
-          <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Short bio" rows={4} />
-          <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
-          <input value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} placeholder="State" />
-          <input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="Industry" />
-          <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
-          <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
-          <input value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
-          <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
-          <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
-          <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
-          <button className="gold-btn" type="submit">Save</button>
-        </form>
-        {status && <p className="muted">{status}</p>}
+        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          <div>
+            <p className="muted" style={{ margin: 0, textTransform: "uppercase", letterSpacing: "0.18em", fontSize: "0.8rem" }}>Member profile</p>
+            <h1 style={{ margin: "0.5rem 0 0", fontSize: "2.2rem" }}>Manage your public profile</h1>
+            <p className="muted" style={{ marginTop: "0.75rem", maxWidth: "740px" }}>Update how community members discover you in the directory, and keep your contact details, expertise, and social links current.</p>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
+              <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
+              <div style={{ minWidth: 0 }}>
+                <p className="muted" style={{ margin: 0 }}>Profile preview</p>
+                <p style={{ margin: "0.5rem 0 0", fontSize: "1rem", color: "#f4e7c1" }}>{fullName || username || "Your name"}</p>
+                <p className="muted" style={{ margin: "0.25rem 0 0" }}>{industry || "Industry"} • {city || stateRegion ? `${city}${city && stateRegion ? ", " : ""}${stateRegion}` : "Location"}</p>
+              </div>
+            </div>
+
+            <form onSubmit={save} className="premium-form" style={{ display: "grid", gridTemplateColumns: "1fr", gap: "1rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <label className="field-label">Email</label>
+                  <input disabled value={email} />
+                </div>
+                <div>
+                  <label className="field-label">Username</label>
+                  <input value={username} onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))} placeholder="Username" />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div>
+                  <label className="field-label">Full name</label>
+                  <input value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full name" />
+                </div>
+                <div>
+                  <label className="field-label">Industry / field</label>
+                  <input value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="Industry" />
+                </div>
+              </div>
+
+              <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Short bio" rows={4} />
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
+                <input value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} placeholder="State" />
+              </div>
+
+              <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
+              <input value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
+              <input value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
+              <input value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
+
+              <div style={{ display: "grid", gap: "0.75rem" }}>
+                <label className="field-label">Avatar</label>
+                <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadAvatar(e.target.files[0])} />
+                <small className="muted">Image upload uses Supabase storage when available. If you prefer not to upload an image, leave it blank.</small>
+              </div>
+
+              <button className="gold-btn" type="submit">Save profile</button>
+            </form>
+          </div>
+
+          {status ? <p className="muted">{status}</p> : null}
+        </div>
       </section>
     </main>
   );

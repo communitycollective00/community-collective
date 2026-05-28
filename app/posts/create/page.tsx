@@ -7,6 +7,8 @@ import { isProfessionalRole } from "../../../lib/roles";
 
 type ProfileData = { role: string | null };
 
+// TODO: If Supabase Storage is fully configured, replace URL-only media fields with a secure upload flow.
+
 export default function CreatePostPage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
   const [title, setTitle] = useState("");
