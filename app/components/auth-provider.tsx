@@ -37,27 +37,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     async function fetchProfileForUser(u: any) {
       if (!u) return;
 
-      // Try once, then retry one time before surfacing an error.
+      // Try up to 3 times with exponential backoff for resilience
       let attempt = 0;
       let lastErr: any = null;
       let lastData: any = null;
 
-      while (attempt < 2) {
+      while (attempt < 3) {
         attempt += 1;
         try {
           const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
 
           const result = await Promise.race([
             fetchPromise,
-            new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 5000)),
+            new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 8000)),
           ] as any);
 
           const { data, error: fetchErr } = result as any;
           if (fetchErr) {
             lastErr = fetchErr;
-            // try again once
-            if (attempt < 2) {
-              await new Promise((r) => setTimeout(r, 400));
+            // try again if we have attempts left
+            if (attempt < 3) {
+              await new Promise((r) => setTimeout(r, 500 * attempt));
               continue;
             }
             setError(fetchErr.message ?? String(fetchErr));
@@ -67,10 +67,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
 
           if (!data) {
-            // no profile found; allow one retry before reporting a not-found error
+            // no profile found; allow one more retry before reporting a not-found error
             lastData = null;
-            if (attempt < 2) {
-              await new Promise((r) => setTimeout(r, 400));
+            if (attempt < 3) {
+              await new Promise((r) => setTimeout(r, 500 * attempt));
               continue;
             }
             setError("Profile not found for this user.");
@@ -86,8 +86,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         } catch (e: any) {
           lastErr = e;
-          if (attempt < 2) {
-            await new Promise((r) => setTimeout(r, 400));
+          if (attempt < 3) {
+            await new Promise((r) => setTimeout(r, 500 * attempt));
             continue;
           }
           setError(e?.message ?? String(e));
@@ -106,8 +106,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         function getCookie(name: string) {
           if (typeof document === "undefined") return undefined;
-          const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
-          return match ? decodeURIComponent(match[1]) : undefined;
+          try {
+            const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
+            return match ? decodeURIComponent(match[1]) : undefined;
+          } catch (e) {
+            console.error(`[getCookie] failed to parse cookie ${name}:`, e);
+            return undefined;
+          }
         }
 
         const { data } = await supabase.auth.getSession();
@@ -133,7 +138,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 u = s.user ?? null;
               }
             } catch (e) {
-              console.error("Failed to rehydrate session from cookies", e);
+              console.error("[init] Failed to rehydrate session from cookies", e);
             }
           }
         }
@@ -148,7 +153,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setRole(null);
         }
       } catch (e: any) {
-        setError(e?.message ?? String(e));
+        if (mounted) {
+          setError(e?.message ?? String(e));
+        }
       } finally {
         if (mounted) {
           setLoading(false);
@@ -228,6 +235,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     const supabase = getSupabaseClient();
+    
     // Clear app auth state immediately so UI shows logged-out right away
     try {
       setSession(null);
@@ -238,11 +246,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     } catch (e) {}
 
-    // Clear cookies related to auth / supabase
+    // Clear cookies related to auth / supabase synchronously
     try {
-      document.cookie = "cc-auth=0; Path=/; Max-Age=0; SameSite=Lax";
-      document.cookie = "sb-access-token=; Path=/; Max-Age=0; SameSite=Lax";
-      document.cookie = "sb-refresh-token=; Path=/; Max-Age=0; SameSite=Lax";
+      // Set to epoch date to ensure deletion across all scenarios
+      const deletionDate = new Date(0).toUTCString();
+      document.cookie = `cc-auth=; Path=/; Expires=${deletionDate}; SameSite=Lax`;
+      document.cookie = `sb-access-token=; Path=/; Expires=${deletionDate}; SameSite=Lax`;
+      document.cookie = `sb-refresh-token=; Path=/; Expires=${deletionDate}; SameSite=Lax`;
     } catch (e) {}
 
     // Remove any leftover auth/profile keys from localStorage/sessionStorage
@@ -264,8 +274,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {}
 
-    // Ask Supabase to sign out (global scope if supported). Awaiting is fine
-    // because we've already cleared local state so UI remains logged out.
+    // Ask Supabase to sign out (global scope if supported)
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore - some versions accept an options object

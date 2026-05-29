@@ -44,11 +44,9 @@ export default function LoginPage() {
         return;
       }
 
-      try {
-        router.push("/dashboard");
-      } catch (e) {
-        window.location.href = "/dashboard";
-      }
+      // Auth provider's SIGNED_IN handler will redirect to dashboard
+      // Do NOT redirect here to avoid race condition with session setup
+      setStatus("Signing in... You'll be redirected shortly.");
     } catch (err) {
       console.error("Login failed:", err);
       const message = err instanceof Error ? err.message : "An unknown error occurred while signing in.";

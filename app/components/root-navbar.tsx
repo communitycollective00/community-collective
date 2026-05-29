@@ -12,7 +12,6 @@ export default function RootNavBar() {
 
   const handleLogout = async () => {
     await signOut();
-    router.push("/");
   };
 
   return (

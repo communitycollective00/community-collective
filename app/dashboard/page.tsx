@@ -38,25 +38,22 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const load = async () => {
-
       try {
-
-
-
-
-
-
+        // Wait for auth state to fully initialize
         if (authLoading) return;
+
+        // Check if user is authenticated
         if (!user) {
           window.location.href = "/login";
           return;
         }
 
+        // User is authenticated, populate dashboard
         setEmail(user.email ?? "");
         setProfile((providerProfile as any) || null);
         setProfileLoading(false);
 
-        // fetch recent posts (still OK to fetch here)
+        // Fetch recent posts
         try {
           const supabase = (await import("../../lib/supabase")).getSupabaseClient();
           const { data: postsData } = await (supabase.from("posts") as any)
@@ -84,6 +81,25 @@ export default function DashboardPage() {
   }, [user, authLoading]);
 
   const isProfessional = isProfessionalRole(profile?.role ?? role);
+
+  // Show loading state while auth is initializing
+  if (authLoading) {
+    return (
+      <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+        <section className="premium-card">
+          <p className="muted">Loading your dashboard...</p>
+        </section>
+      </main>
+    );
+  }
+
+  // If auth is done loading but no user, redirect to login
+  if (!authLoading && !user) {
+    if (typeof window !== "undefined") {
+      window.location.href = "/login";
+    }
+    return null;
+  }
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
