@@ -121,6 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // If no in-memory session but server cookies exist (OAuth callback set them),
         // try to rehydrate the client session from the cookie tokens.
+          console.log(`[AUTH-PROVIDER] init: getSession() returned session=${s ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
         if (!s) {
           const accessToken = getCookie("sb-access-token");
           const refreshToken = getCookie("sb-refresh-token");
@@ -144,6 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         if (!mounted) return;
         // Immediately set session/user so consumers can react synchronously
+        console.log(`[AUTH-PROVIDER] init complete: setting session=${s ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
         setSession(s);
         setUser(u);
         if (u) {
@@ -158,6 +160,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } finally {
         if (mounted) {
+          // Only finalize loading after init completes.
+          // onAuthStateChange will manage loading state from here.
           setLoading(false);
           authResolved = true;
         }
@@ -173,6 +177,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const resp = supabase.auth.onAuthStateChange(async (event, newSession) => {
         const u = newSession?.user ?? null;
+        console.log(`[AUTH-PROVIDER] onAuthStateChange event: ${event}, session=${newSession ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
 
         if (event === "SIGNED_OUT") {
           if (!authResolved) return;
@@ -183,10 +188,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setRole(null);
           setError(null);
           setLoading(false);
-
-          try {
-            document.cookie = `cc-auth=0; Path=/; Max-Age=0; SameSite=Lax`;
-          } catch (e) {}
 
           return;
         }
@@ -202,8 +203,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (event === "SIGNED_IN") {
           setLoading(true);
+          console.log(`[AUTH-PROVIDER] SIGNED_IN event - fetching profile for user ${u?.id}`);
           await fetchProfileForUser(u);
           setLoading(false);
+          console.log(`[AUTH-PROVIDER] SIGNED_IN - profile fetch complete`);
           try {
             const currentPath = window.location.pathname;
             const authPaths = ["/", "/login", "/signup", "/auth/callback", "/get-access"];
@@ -211,15 +214,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               window.location.href = "/dashboard";
             }
           } catch (e) {}
+        } else {
+          // For other auth state change events, ensure loading is finalized
+          setLoading(false);
+          if (u) {
+            await fetchProfileForUser(u);
+          }
         }
-
-        // Keep cookie marker for middleware behavior (non-authoritative)
-        try {
-          document.cookie = `cc-auth=1; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`;
-        } catch (e) {}
       });
 
       subscription = resp?.data?.subscription;
+        console.log(`[AUTH-PROVIDER] onAuthStateChange subscription set up`);
     } catch (e) {
       console.error("Failed to subscribe to auth state changes", e);
       subscription = null;

@@ -3,16 +3,13 @@ import type { NextRequest } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const publicRoutes = [
-  "/get-access",
-  "/voices",
-  "/opportunities",
-  "/directory",
-  "/pathways",
+  "/",
   "/login",
   "/signup",
+  "/auth/callback",
 ];
 
-const protectedRoutes = ["/dashboard", "/profile", "/onboarding", "/admin", "/posts"];
+const protectedRoutes = ["/admin"];
 
 function matchesRoute(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);
@@ -28,13 +25,6 @@ export async function middleware(request: NextRequest) {
   const isProtected = protectedRoutes.some((route) => matchesRoute(pathname, route));
   if (!isProtected) {
     return NextResponse.next();
-  }
-
-  const isAuthed = request.cookies.get("cc-auth")?.value === "1";
-  if (!isAuthed) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("next", pathname);
-    return NextResponse.redirect(loginUrl);
   }
 
   if (matchesRoute(pathname, "/admin")) {

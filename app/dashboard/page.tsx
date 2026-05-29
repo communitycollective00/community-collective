@@ -37,6 +37,7 @@ export default function DashboardPage() {
   const { user, profile: providerProfile, role, loading: authLoading, error: authError } = useAuth();
 
   useEffect(() => {
+      console.log(`[DASHBOARD] useEffect: authLoading=${authLoading}, user=${user?.id ?? "NULL"}, profile=${profile?.id ?? "NULL"}`);
     const load = async () => {
       try {
         // Wait for auth state to fully initialize
@@ -44,9 +45,11 @@ export default function DashboardPage() {
 
         // Check if user is authenticated
         if (!user) {
+          console.log(`[DASHBOARD] user is NULL - redirecting to /login`);
           window.location.href = "/login";
           return;
         }
+        console.log(`[DASHBOARD] user authenticated: ${user.id}`);
 
         // User is authenticated, populate dashboard
         setEmail(user.email ?? "");
@@ -95,11 +98,13 @@ export default function DashboardPage() {
 
   // If auth is done loading but no user, redirect to login
   if (!authLoading && !user) {
+    console.log(`[DASHBOARD] render: authLoading=false && user=null - REDIRECT to /login`);
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }
     return null;
   }
+  console.log(`[DASHBOARD] render: authLoading=${authLoading}, user=${user?.id ?? "NULL"} - rendering dashboard`);
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>

@@ -41,17 +41,17 @@ export default function LoginPage() {
       if (error) {
         console.error("Login failed:", error);
         setStatus(friendlyLoginError(error.message));
+        setIsLoading(false);
         return;
       }
 
-      // Auth provider's SIGNED_IN handler will redirect to dashboard
-      // Do NOT redirect here to avoid race condition with session setup
-      setStatus("Signing in... You'll be redirected shortly.");
+      // Redirect to dashboard after successful auth
+        console.log(`[LOGIN] signInWithPassword SUCCESS - redirecting to /dashboard`);
+      router.replace('/dashboard');
     } catch (err) {
       console.error("Login failed:", err);
       const message = err instanceof Error ? err.message : "An unknown error occurred while signing in.";
       setStatus(message);
-    } finally {
       setIsLoading(false);
     }
   };
