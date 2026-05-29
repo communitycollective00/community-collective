@@ -55,7 +55,9 @@ export function getSupabaseClient() {
 
   client = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
-      persistSession: true,
+      // Do NOT persist session to localStorage in the browser.
+      // Rely on explicit `auth.getSession()` and `onAuthStateChange`.
+      persistSession: false,
       autoRefreshToken: true,
       detectSessionInUrl: true,
     },

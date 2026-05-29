@@ -175,26 +175,60 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     const supabase = getSupabaseClient();
+    // Clear app auth state immediately so UI shows logged-out right away
     try {
-      await supabase.auth.signOut();
-    } catch (e) {
-      // Ignore sign-out failures and continue clearing local state
-    }
+      setSession(null);
+      setUser(null);
+      setProfile(null);
+      setRole(null);
+      setError(null);
+      setLoading(false);
+    } catch (e) {}
 
-    // Clear local markers
+    // Clear cookies related to auth / supabase
     try {
       document.cookie = "cc-auth=0; Path=/; Max-Age=0; SameSite=Lax";
       document.cookie = "sb-access-token=; Path=/; Max-Age=0; SameSite=Lax";
       document.cookie = "sb-refresh-token=; Path=/; Max-Age=0; SameSite=Lax";
     } catch (e) {}
 
-    // Clear state immediately
-    setSession(null);
-    setUser(null);
-    setProfile(null);
-    setRole(null);
-    setError(null);
-    setLoading(false);
+    // Remove any leftover auth/profile keys from localStorage/sessionStorage
+    try {
+      const keyRe = /user|session|profile|role|admin|email|auth|sb-|supabase/i;
+      if (typeof localStorage !== "undefined") {
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (!key) continue;
+          if (keyRe.test(key)) localStorage.removeItem(key);
+        }
+      }
+      if (typeof sessionStorage !== "undefined") {
+        for (let i = sessionStorage.length - 1; i >= 0; i--) {
+          const key = sessionStorage.key(i);
+          if (!key) continue;
+          if (keyRe.test(key)) sessionStorage.removeItem(key);
+        }
+      }
+    } catch (e) {}
+
+    // Ask Supabase to sign out (global scope if supported). Awaiting is fine
+    // because we've already cleared local state so UI remains logged out.
+    try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - some versions accept an options object
+      await supabase.auth.signOut({ scope: "global" });
+    } catch (e) {
+      try {
+        await supabase.auth.signOut();
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    // Redirect to homepage
+    try {
+      window.location.href = "/";
+    } catch (e) {}
   };
 
   return (
