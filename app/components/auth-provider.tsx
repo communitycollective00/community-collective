@@ -98,6 +98,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    let authResolved = false;
+
     async function init() {
       setLoading(true);
       setError(null);
@@ -148,7 +150,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (e: any) {
         setError(e?.message ?? String(e));
       } finally {
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          authResolved = true;
+        }
       }
     }
 
@@ -161,16 +166,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const resp = supabase.auth.onAuthStateChange(async (event, newSession) => {
         const u = newSession?.user ?? null;
-        // Set session/user immediately on change so UI updates fast
-        setSession(newSession ?? null);
-        setUser(u);
 
         if (event === "SIGNED_OUT") {
+          if (!authResolved) return;
+
+          setSession(null);
+          setUser(null);
           setProfile(null);
           setRole(null);
           setError(null);
           setLoading(false);
-        } else if (event === "SIGNED_IN") {
+
+          try {
+            document.cookie = `cc-auth=0; Path=/; Max-Age=0; SameSite=Lax`;
+          } catch (e) {}
+
+          return;
+        }
+
+        if (!newSession) {
+          // Ignore transient auth events without a valid session.
+          return;
+        }
+
+        // Preserve valid session state and only clear on explicit sign-out.
+        setSession(newSession);
+        setUser(u);
+
+        if (event === "SIGNED_IN") {
           setLoading(true);
           await fetchProfileForUser(u);
           setLoading(false);
@@ -185,7 +208,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Keep cookie marker for middleware behavior (non-authoritative)
         try {
-          document.cookie = `cc-auth=${newSession ? "1" : "0"}; Path=/; Max-Age=${newSession ? 60 * 60 * 24 * 7 : 0}; SameSite=Lax`;
+          document.cookie = `cc-auth=1; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax`;
         } catch (e) {}
       });
 
