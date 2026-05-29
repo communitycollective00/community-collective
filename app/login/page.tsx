@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../lib/supabase";
 function friendlyLoginError(message: string) {
   const lower = message.toLowerCase();
@@ -13,6 +14,7 @@ function friendlyLoginError(message: string) {
 }
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
@@ -42,7 +44,11 @@ export default function LoginPage() {
         return;
       }
 
-      window.location.href = "/dashboard";
+      try {
+        router.push("/dashboard");
+      } catch (e) {
+        window.location.href = "/dashboard";
+      }
     } catch (err) {
       console.error("Login failed:", err);
       const message = err instanceof Error ? err.message : "An unknown error occurred while signing in.";

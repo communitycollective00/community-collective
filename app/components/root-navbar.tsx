@@ -40,7 +40,7 @@ export default function RootNavBar() {
               Logout
             </button>
           </>
-        ) : loading ? (
+        ) : !loading ? (
           <>
             <Link href="/get-access" className="gold-link">
               Get Access

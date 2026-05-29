@@ -81,7 +81,7 @@ export default function DashboardPage() {
         setStatus("Admin access required.");
       }
     } catch (e) {}
-  }, []);
+  }, [user, authLoading]);
 
   const isProfessional = isProfessionalRole(profile?.role ?? role);
 
@@ -110,9 +110,20 @@ export default function DashboardPage() {
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Your status</h3>
             <p className="muted">Signed in as {profile?.full_name || email || "member"}.</p>
-            <p className="muted">
-              Role: {authLoading ? "loading..." : authError ? authError : profile ? profile.role ?? "unknown" : "Profile not found."}
-            </p>
+            {authLoading ? (
+              <p className="muted">Loading your profile...</p>
+            ) : authError ? (
+              <div>
+                <p className="muted" style={{ color: "#d97706", marginBottom: "0.5rem" }}>⚠ {authError}</p>
+                {authError.toLowerCase().includes("profile not found") && (
+                  <p className="muted">Your account is ready! Complete your profile to unlock directory visibility and premium features.</p>
+                )}
+              </div>
+            ) : profile ? (
+              <p className="muted">Role: {profile.role ?? "community member"}</p>
+            ) : (
+              <p className="muted">Role: Setting up your profile...</p>
+            )}
           </article>
 
           <article className="submission-item">

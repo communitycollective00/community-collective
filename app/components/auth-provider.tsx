@@ -102,9 +102,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       setError(null);
       try {
+        function getCookie(name: string) {
+          if (typeof document === "undefined") return undefined;
+          const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
+          return match ? decodeURIComponent(match[1]) : undefined;
+        }
+
         const { data } = await supabase.auth.getSession();
-        const s = data?.session ?? null;
-        const u = s?.user ?? null;
+        let s = data?.session ?? null;
+        let u = s?.user ?? null;
+
+        // If no in-memory session but server cookies exist (OAuth callback set them),
+        // try to rehydrate the client session from the cookie tokens.
+        if (!s) {
+          const accessToken = getCookie("sb-access-token");
+          const refreshToken = getCookie("sb-refresh-token");
+          if (accessToken && refreshToken) {
+            try {
+              // supabase.auth.setSession will populate the client session from tokens
+              // when `persistSession: false` is used. This allows server-set cookies
+              // to be used to restore client-side auth state securely.
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore - types may vary across versions
+              const setResp = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+              const setSessionData = setResp?.data?.session ?? null;
+              if (setSessionData) {
+                s = setSessionData;
+                u = s.user ?? null;
+              }
+            } catch (e) {
+              console.error("Failed to rehydrate session from cookies", e);
+            }
+          }
+        }
         if (!mounted) return;
         // Immediately set session/user so consumers can react synchronously
         setSession(s);
