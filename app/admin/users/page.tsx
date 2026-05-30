@@ -52,11 +52,11 @@ export default function AdminUsersPage() {
 
       try {
         const supabase = getSupabaseClient();
-        const query = supabase.from("profiles").select("id,full_name,username,email,role,created_at", { count: "exact" });
+        const query = supabase.from("profiles").select("id,full_name,username,role,created_at", { count: "exact" });
 
         if (search.trim()) {
           const term = `%${search.trim()}%`;
-          query.or(`full_name.ilike.${term},username.ilike.${term},email.ilike.${term}`);
+          query.or(`full_name.ilike.${term},username.ilike.${term}`);
         }
 
         const from = (page - 1) * pageSize;
@@ -140,9 +140,9 @@ export default function AdminUsersPage() {
 
       // Refresh the current page after a successful update.
       const term = `%${search.trim()}%`;
-      const query = supabase.from("profiles").select("id,full_name,username,email,role,created_at", { count: "exact" });
+      const query = supabase.from("profiles").select("id,full_name,username,role,created_at", { count: "exact" });
       if (search.trim()) {
-        query.or(`full_name.ilike.${term},username.ilike.${term},email.ilike.${term}`);
+        query.or(`full_name.ilike.${term},username.ilike.${term}`);
       }
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
@@ -181,7 +181,7 @@ export default function AdminUsersPage() {
               <form onSubmit={handleSearchSubmit} style={{ flex: "1 1 300px", display: "flex", gap: "0.5rem" }}>
                 <input
                   type="search"
-                  placeholder="Search name, username, or email"
+                  placeholder="Search name or username"
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   style={{
@@ -256,7 +256,6 @@ export default function AdminUsersPage() {
                   <thead>
                     <tr style={{ borderBottom: "1px solid #4c3a18" }}>
                       <th style={{ textAlign: "left", padding: "0.75rem", color: "#d3c18e", fontSize: "0.85rem" }}>Name</th>
-                      <th style={{ textAlign: "left", padding: "0.75rem", color: "#d3c18e", fontSize: "0.85rem" }}>Email</th>
                       <th style={{ textAlign: "left", padding: "0.75rem", color: "#d3c18e", fontSize: "0.85rem" }}>Role</th>
                       <th style={{ textAlign: "left", padding: "0.75rem", color: "#d3c18e", fontSize: "0.85rem" }}>Joined</th>
                       <th style={{ textAlign: "left", padding: "0.75rem", color: "#d3c18e", fontSize: "0.85rem" }}>Actions</th>
@@ -284,7 +283,6 @@ export default function AdminUsersPage() {
                             </span>
                           ) : null}
                         </td>
-                        <td style={{ padding: "0.75rem", fontSize: "0.9rem" }}>{user.email || "—"}</td>
                         <td style={{ padding: "0.75rem", fontSize: "0.9rem", color: "#f4cf70", fontWeight: 600 }}>
                           {normalizeDisplayRole(user.role)}
                         </td>
