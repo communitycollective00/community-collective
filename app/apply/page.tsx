@@ -32,16 +32,27 @@ export default function ApplyPage() {
 
     try {
       const supabase = getSupabaseClient();
-      const { error } = await (supabase.from("applications") as any).insert({
-        full_name: form.professional_name,
-        email: userEmail,
+
+      const content = {
+        professional_name: form.professional_name,
         phone: form.phone || null,
-        city: form.city,
-        state: form.state,
-        application_type: "professional_organization",
-        industry: form.industry || form.category,
-        reason: form.featured_reason || form.description || "",
-        website_social: form.website || null,
+        category: form.category || null,
+        industry: form.industry || null,
+        city: form.city || null,
+        state: form.state || null,
+        location: form.location || null,
+        website: form.website || null,
+        credentials: form.credentials || null,
+        featured_reason: form.featured_reason || null,
+        description: form.description || null,
+        user_id: userId,
+        user_email: userEmail,
+      };
+
+      const { error } = await (supabase.from("submissions") as any).insert({
+        type: "professional_application",
+        title: form.professional_name,
+        content: JSON.stringify(content),
         status: "pending",
       });
 
