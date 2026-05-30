@@ -9,8 +9,15 @@ type ProfileData = {
   id: string | null;
   full_name: string | null;
   username: string | null;
-  email: string | null;
   role: string | null;
+};
+
+type DashboardProfile = {
+  full_name?: string | null;
+  name?: string | null;
+  username?: string | null;
+  display_name?: string | null;
+  role?: string | null;
 };
 
 type PostData = {
@@ -21,13 +28,17 @@ type PostData = {
   created_at: string | null;
 };
 
-function getProfileDisplayName(profile: ProfileData | null) {
+function getSafeDisplayName(profile: DashboardProfile | null) {
   if (!profile) return null;
-  const candidate = profile.full_name || (profile as any).name || profile.username || (profile as any).display_name;
-  if (!candidate) return null;
-  const text = String(candidate).trim();
-  if (!text || text.includes("@")) return null;
-  return text;
+
+  const candidates = [profile.full_name, profile.name, profile.username, profile.display_name];
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    const text = String(candidate).trim();
+    if (!text || text.includes("@")) continue;
+    return text;
+  }
+  return null;
 }
 
 export default function DashboardPage() {
@@ -75,8 +86,8 @@ export default function DashboardPage() {
     } catch (e) {}
   }, [user, authLoading]);
 
-  const isProfessional = isProfessionalRole(providerProfile?.role ?? role);
-  const displayName = getProfileDisplayName(providerProfile as ProfileData | null);
+  const isProfessional = isProfessionalRole((providerProfile as DashboardProfile)?.role ?? role);
+  const displayName = getSafeDisplayName(providerProfile as DashboardProfile | null);
 
   // Show loading state while auth is initializing
   if (authLoading) {
