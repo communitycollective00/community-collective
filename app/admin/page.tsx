@@ -20,14 +20,24 @@ const adminSections = [
     highlight: true,
   },
   {
-    title: "Opportunities",
-    description: "Create and manage member opportunities.",
-    href: "/admin/opportunities",
+    title: "Submissions",
+    description: "View all membership submissions and intake records.",
+    href: "/admin/submissions",
+  },
+  {
+    title: "Users",
+    description: "Manage user accounts, roles, and admin permissions.",
+    href: "/admin/users",
   },
   {
     title: "Directory Profiles",
     description: "Manage professional directory entries and profile visibility.",
     href: "/admin/directory",
+  },
+  {
+    title: "Opportunities",
+    description: "Create and manage member opportunities.",
+    href: "/admin/opportunities",
   },
   {
     title: "Events",
@@ -117,7 +127,7 @@ export default function AdminDashboardPage() {
     return (
       <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
         <section className="premium-card admin-card" style={{ maxWidth: 1200, margin: "2rem auto" }}>
-          <p className="muted">Checking admin access...</p>
+          <p className="muted">Loading admin...</p>
         </section>
       </main>
     );
@@ -127,7 +137,9 @@ export default function AdminDashboardPage() {
     return (
       <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
         <section className="premium-card admin-card" style={{ maxWidth: 1200, margin: "2rem auto" }}>
-          <p style={{ color: "#ff6b6b" }}>You do not have admin access.</p>
+          <h1>Access denied</h1>
+          <p className="muted">You do not have admin access to view this page.</p>
+          {error ? <p style={{ color: "#ff6b6b", marginTop: "1rem" }}>{error}</p> : null}
         </section>
       </main>
     );
