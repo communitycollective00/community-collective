@@ -13,12 +13,6 @@ type ProfileData = {
   role: string | null;
 };
 
-function getCookie(name: string) {
-  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
-  return match ? decodeURIComponent(match[1]) : undefined;
-}
-
-
 type PostData = {
   id: string;
   title: string | null;
@@ -27,23 +21,27 @@ type PostData = {
   created_at: string | null;
 };
 
+function getProfileDisplayName(profile: ProfileData | null) {
+  if (!profile) return null;
+  const candidate = profile.full_name || (profile as any).name || profile.username || (profile as any).display_name;
+  if (!candidate) return null;
+  const text = String(candidate).trim();
+  if (!text || text.includes("@")) return null;
+  return text;
+}
+
 export default function DashboardPage() {
-  const [email, setEmail] = useState("");
-  const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [profileLoading, setProfileLoading] = useState(true);
   const [posts, setPosts] = useState<PostData[]>([]);
   const [status, setStatus] = useState("");
 
   const { user, profile: providerProfile, role, loading: authLoading, error: authError } = useAuth();
 
   useEffect(() => {
-      console.log(`[DASHBOARD] useEffect: authLoading=${authLoading}, user=${user?.id ?? "NULL"}, profile=${profile?.id ?? "NULL"}`);
+    console.log(`[DASHBOARD] useEffect: authLoading=${authLoading}, user=${user?.id ?? "NULL"}`);
     const load = async () => {
       try {
-        // Wait for auth state to fully initialize
         if (authLoading) return;
 
-        // Check if user is authenticated
         if (!user) {
           console.log(`[DASHBOARD] user is NULL - redirecting to /login`);
           window.location.href = "/login";
@@ -51,12 +49,6 @@ export default function DashboardPage() {
         }
         console.log(`[DASHBOARD] user authenticated: ${user.id}`);
 
-        // User is authenticated, populate dashboard
-        setEmail(user.email ?? "");
-        setProfile((providerProfile as any) || null);
-        setProfileLoading(false);
-
-        // Fetch recent posts
         try {
           const supabase = (await import("../../lib/supabase")).getSupabaseClient();
           const { data: postsData } = await (supabase.from("posts") as any)
@@ -74,7 +66,7 @@ export default function DashboardPage() {
     };
 
     load();
-    // If redirected from admin guard, show a clear message.
+
     try {
       const params = new URLSearchParams(window.location.search);
       if (params.get("admin_required")) {
@@ -83,7 +75,8 @@ export default function DashboardPage() {
     } catch (e) {}
   }, [user, authLoading]);
 
-  const isProfessional = isProfessionalRole(profile?.role ?? role);
+  const isProfessional = isProfessionalRole(providerProfile?.role ?? role);
+  const displayName = getProfileDisplayName(providerProfile as ProfileData | null);
 
   // Show loading state while auth is initializing
   if (authLoading) {
@@ -110,7 +103,7 @@ export default function DashboardPage() {
     <main className="premium-page" style={{ paddingTop: "72px" }}>
       <section className="premium-card dashboard-card" style={{ maxWidth: 1200, margin: "2rem auto" }}>
         <div className="dashboard-hero">
-          <h1 style={{ margin: 0 }}>Welcome back, {profile?.full_name || email || "member"}</h1>
+          <h1 style={{ margin: 0 }}>{displayName ? `Welcome back, ${displayName}` : "Welcome back."}</h1>
           <p className="homepage-section-text" style={{ margin: "0.8rem 0 0" }}>
             {isProfessional
               ? "This is your premium hub for profile edits, posts, and community updates."
@@ -130,7 +123,7 @@ export default function DashboardPage() {
         <div className="dashboard-grid">
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Your status</h3>
-            <p className="muted">Signed in as {profile?.full_name || email || "member"}.</p>
+            <p className="muted">Signed in securely.</p>
             {authLoading ? (
               <p className="muted">Loading your profile...</p>
             ) : authError ? (
@@ -140,10 +133,13 @@ export default function DashboardPage() {
                   <p className="muted">Your account is ready! Complete your profile to unlock directory visibility and premium features.</p>
                 )}
               </div>
-            ) : profile ? (
-              <p className="muted">Role: {profile.role ?? "community member"}</p>
+            ) : providerProfile ? (
+              <p className="muted">Role: {providerProfile.role ?? "community member"}</p>
             ) : (
-              <p className="muted">Role: Setting up your profile...</p>
+              <div>
+                <p className="muted">Profile setup needed</p>
+                <Link className="gold-btn" href="/profile/edit">Edit Profile</Link>
+              </div>
             )}
           </article>
 
