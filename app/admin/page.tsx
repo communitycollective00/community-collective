@@ -61,7 +61,7 @@ const adminSections = [
   },
 ];
 
-export default function AdminDashboardPage() {
+export default function AdminPage() {
   const { loading, error, isAdmin, setError } = useAdminGuard("/admin");
   const [stats, setStats] = useState<AdminStats>({
     profiles: 0,
