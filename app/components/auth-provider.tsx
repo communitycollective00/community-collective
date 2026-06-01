@@ -146,12 +146,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
         if (!mounted) return;
-        // Immediately set session/user so consumers can react synchronously
+        // Immediately set session/user so consumers can react synchronously.
+        // Start profile fetch in background (do not await) to avoid blocking navigation.
         console.log(`[AUTH-PROVIDER] init complete: setting session=${s ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
         setSession(s);
         setUser(u);
         if (u) {
-          await fetchProfileForUser(u);
+          // fire-and-forget: fetch profile but don't block init
+          void fetchProfileForUser(u);
         } else {
           setProfile(null);
           setRole(null);
