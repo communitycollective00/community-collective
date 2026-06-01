@@ -28,7 +28,10 @@ export function useAdminGuard(nextPath: string) {
     setLoading(true);
     setError(null);
 
-    if (authLoading) {
+    // If auth is still initializing, only block when we don't yet have a user.
+    // If a user session is already present, proceed — role checks or cached role
+    // can determine admin access without waiting for profile retry/backoff.
+    if (authLoading && !user) {
       return;
     }
 
