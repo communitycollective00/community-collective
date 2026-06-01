@@ -62,6 +62,7 @@ export function useAdminGuard(nextPath: string) {
 
   const { user, profile, role: providerRole, loading: authLoading, error: authError } = useAuth();
   const isMountedRef = useRef(true);
+  const effectiveRole = providerRole ?? profile?.role ?? null;
 
   useEffect(() => {
     return () => {
@@ -77,6 +78,8 @@ export function useAdminGuard(nextPath: string) {
     if (authLoading) {
       return;
     }
+
+    console.log(`[ADMIN-GUARD] auth resolved for user=${user?.id ?? "unknown"}, authLoading=${authLoading}`);
 
     if (!user) {
       router.push(`/login?next=${encodeURIComponent(nextPath)}`);
@@ -96,7 +99,9 @@ export function useAdminGuard(nextPath: string) {
     }
 
     if (providerRole !== null) {
-      adminRoleCache.set(user.id, false);
+      const resolvedAdmin = isAdminRole(effectiveRole);
+      adminRoleCache.set(user.id, resolvedAdmin);
+      console.log(`[ADMIN-GUARD] admin role resolved from effectiveRole=${effectiveRole} for user=${user.id}`);
       if (active && isMountedRef.current) {
         setError("Admin access required.");
         setIsAdmin(false);
@@ -111,6 +116,7 @@ export function useAdminGuard(nextPath: string) {
 
     const cachedAdmin = adminRoleCache.get(user.id);
     if (cachedAdmin !== undefined) {
+      console.log(`[ADMIN-GUARD] admin role resolved from cache=${cachedAdmin} for user=${user.id}`);
       if (active && isMountedRef.current) {
         setIsAdmin(cachedAdmin);
         setError(cachedAdmin ? null : "Admin access required.");
@@ -139,6 +145,7 @@ export function useAdminGuard(nextPath: string) {
 
     getAdminRole(user.id)
       .then((freshAdmin) => {
+        console.log(`[ADMIN-GUARD] admin role resolved from fresh lookup=${freshAdmin} for user=${user.id}`);
         if (!active || !isMountedRef.current) return;
         setIsAdmin(freshAdmin);
         setError(freshAdmin ? null : "Admin access required.");

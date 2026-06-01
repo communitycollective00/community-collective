@@ -43,9 +43,12 @@ export default function SubmissionsAdminPage() {
         console.log(`[SUBMISSIONS] load() returning early: isAdmin is false`);
         return;
       }
+      const authResolvedTime = performance.now() - pageStartTimeRef.current;
+      console.log(`[SUBMISSIONS] auth/admin resolved at T=${authResolvedTime.toFixed(0)}ms, isAdmin=${isAdmin}`);
       setError(null);
       try {
         const queryStartTime = performance.now() - pageStartTimeRef.current;
+        console.log(`[SUBMISSIONS] submissions query started at T=${queryStartTime.toFixed(0)}ms`);
         console.log(`[SUBMISSIONS] Supabase query starting at T=${queryStartTime.toFixed(0)}ms`);
         
         const supabase = getSupabaseClient();
@@ -56,6 +59,7 @@ export default function SubmissionsAdminPage() {
 
         const queryEndTime = performance.now() - pageStartTimeRef.current;
         const queryDuration = queryEndTime - queryStartTime;
+        console.log(`[SUBMISSIONS] submissions query completed at T=${queryEndTime.toFixed(0)}ms (duration: ${queryDuration.toFixed(0)}ms)`);
         console.log(`[SUBMISSIONS] Query completed at T=${queryEndTime.toFixed(0)}ms (duration: ${queryDuration.toFixed(0)}ms), items=${data ? (data as any).length : 0}, error=${queryError ? queryError.message : "NULL"}`);
 
         if (queryError) throw queryError;
