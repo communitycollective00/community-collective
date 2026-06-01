@@ -24,23 +24,39 @@ export default function SubmissionsAdminPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log(`[SUBMISSIONS] useEffect: loading=${loading}, isAdmin=${isAdmin}`);
+
     async function load() {
-      if (!isAdmin) return;
+      console.log(`[SUBMISSIONS] load() called: isAdmin=${isAdmin}`);
+      if (!isAdmin) {
+        console.log(`[SUBMISSIONS] load() returning early: isAdmin is false`);
+        return;
+      }
       setError(null);
       try {
         const supabase = getSupabaseClient();
+        console.log(`[SUBMISSIONS] fetching submissions from database`);
         const { data, error: queryError } = await (supabase.from("submissions") as any)
           .select("id,title,type,content,status,created_at")
           .order("created_at", { ascending: false });
 
+        console.log(`[SUBMISSIONS] query result: data=${data ? `${(data as any).length} items` : "NULL"}, error=${queryError ? queryError.message : "NULL"}`);
+
         if (queryError) throw queryError;
+        console.log(`[SUBMISSIONS] setting items state to:`, data ?? []);
         setItems(data ?? []);
       } catch (loadError: any) {
+        console.error(`[SUBMISSIONS] load error:`, loadError);
         setError(loadError?.message ?? "Failed to load submissions.");
       }
     }
 
-    if (!loading && isAdmin) load();
+    if (!loading && isAdmin) {
+      console.log(`[SUBMISSIONS] conditions met: calling load()`);
+      load();
+    } else {
+      console.log(`[SUBMISSIONS] conditions not met: loading=${loading}, isAdmin=${isAdmin}`);
+    }
   }, [loading, isAdmin, setError]);
 
   async function updateStatus(id: string, status: SubmissionStatus) {
@@ -87,7 +103,9 @@ export default function SubmissionsAdminPage() {
 
         {!loading && !error && !isAdmin ? <p className="status-error">You do not have admin access.</p> : null}
 
-        {!loading && !error && isAdmin && items.length === 0 ? <p className="muted">No submissions yet.</p> : null}
+        {!loading && !error && isAdmin && items.length === 0 ? (
+          <p className="muted">No submissions yet. (items.length={items.length})</p>
+        ) : null}
 
         {isAdmin ? (
           <div className="submissions-list">
