@@ -38,7 +38,8 @@ export default function SubmissionsAdminPage() {
         console.log(`[SUBMISSIONS] fetching submissions from database`);
         const { data, error: queryError } = await (supabase.from("submissions") as any)
           .select("id,title,type,content,status,created_at")
-          .order("created_at", { ascending: false });
+          .order("created_at", { ascending: false })
+          .limit(50);
 
         console.log(`[SUBMISSIONS] query result: data=${data ? `${(data as any).length} items` : "NULL"}, error=${queryError ? queryError.message : "NULL"}`);
 
