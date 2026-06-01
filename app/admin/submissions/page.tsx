@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { useAdminGuard } from "../../components/admin-guard";
@@ -22,7 +22,7 @@ type SubmissionDetail = {
 };
 
 export default function SubmissionsAdminPage() {
-  const pageStartTime = typeof window !== "undefined" ? performance.now() : 0;
+  const pageStartTimeRef = useRef(typeof window !== "undefined" ? performance.now() : 0);
   const { loading, error, isAdmin, setError } = useAdminGuard("/admin/submissions");
   const [items, setItems] = useState<Submission[]>([]);
   const [savingId, setSavingId] = useState<string | null>(null);
@@ -32,11 +32,11 @@ export default function SubmissionsAdminPage() {
   const [timings, setTimings] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    const mountTime = performance.now() - pageStartTime;
+    const mountTime = performance.now() - pageStartTimeRef.current;
     console.log(`[SUBMISSIONS] Component mounted at T=${mountTime.toFixed(0)}ms, loading=${loading}, isAdmin=${isAdmin}`);
 
     async function load() {
-      const guardFinishTime = performance.now() - pageStartTime;
+      const guardFinishTime = performance.now() - pageStartTimeRef.current;
       console.log(`[SUBMISSIONS] load() called at T=${guardFinishTime.toFixed(0)}ms: isAdmin=${isAdmin}`);
       
       if (!isAdmin) {
@@ -45,7 +45,7 @@ export default function SubmissionsAdminPage() {
       }
       setError(null);
       try {
-        const queryStartTime = performance.now() - pageStartTime;
+        const queryStartTime = performance.now() - pageStartTimeRef.current;
         console.log(`[SUBMISSIONS] Supabase query starting at T=${queryStartTime.toFixed(0)}ms`);
         
         const supabase = getSupabaseClient();
@@ -54,7 +54,7 @@ export default function SubmissionsAdminPage() {
           .order("created_at", { ascending: false })
           .limit(50);
 
-        const queryEndTime = performance.now() - pageStartTime;
+        const queryEndTime = performance.now() - pageStartTimeRef.current;
         const queryDuration = queryEndTime - queryStartTime;
         console.log(`[SUBMISSIONS] Query completed at T=${queryEndTime.toFixed(0)}ms (duration: ${queryDuration.toFixed(0)}ms), items=${data ? (data as any).length : 0}, error=${queryError ? queryError.message : "NULL"}`);
 
@@ -74,12 +74,12 @@ export default function SubmissionsAdminPage() {
     }
 
     if (!loading && isAdmin) {
-      console.log(`[SUBMISSIONS] Conditions met at T=${(performance.now() - pageStartTime).toFixed(0)}ms: calling load()`);
+      console.log(`[SUBMISSIONS] Conditions met at T=${(performance.now() - pageStartTimeRef.current).toFixed(0)}ms: calling load()`);
       load();
     } else {
       console.log(`[SUBMISSIONS] Conditions not met: loading=${loading}, isAdmin=${isAdmin}`);
     }
-  }, [loading, isAdmin, setError, pageStartTime]);
+  }, [loading, isAdmin, setError]);
 
   async function updateStatus(id: string, status: SubmissionStatus) {
     if (!isAdmin) return;
@@ -141,9 +141,9 @@ export default function SubmissionsAdminPage() {
 
   // Log render timing
   useEffect(() => {
-    const renderTime = performance.now() - pageStartTime;
+    const renderTime = performance.now() - pageStartTimeRef.current;
     console.log(`[SUBMISSIONS] Page rendered at T=${renderTime.toFixed(0)}ms, items count=${items.length}, timings=`, timings);
-  }, [items, pageStartTime, timings]);
+  }, [items, timings]);
 
   return (
     <main className="premium-page">
