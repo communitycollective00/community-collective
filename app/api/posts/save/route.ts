@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
+import { isProfessionalRole, isAdminRole } from "../../../../lib/roles";
 
 type PostPayload = {
   id?: string;
@@ -37,6 +38,18 @@ export async function POST(request: Request) {
   const payload = (await request.json()) as PostPayload;
   const userId = userData.user.id;
 
+  // fetch user's profile role to enforce publishing permissions
+  const { data: profileRow, error: profileError } = await (supabase.from("profiles") as any)
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (profileError) {
+    return NextResponse.json({ error: "profile_lookup_failed" }, { status: 500 });
+  }
+
+  const userRole = profileRow?.role ?? null;
+
   const postData = {
     title: payload.title?.trim() || null,
     body: payload.body ?? null,
@@ -73,6 +86,11 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ ok: true });
+  }
+
+  // Only allow creation for approved professional/legacy-professional roles or admins
+  if (!isProfessionalRole(userRole) && !isAdminRole(userRole)) {
+    return NextResponse.json({ error: "insufficient_role" }, { status: 403 });
   }
 
   const createPayload = {
