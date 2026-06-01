@@ -22,36 +22,51 @@ type SubmissionDetail = {
 };
 
 export default function SubmissionsAdminPage() {
+  const pageStartTime = typeof window !== "undefined" ? performance.now() : 0;
   const { loading, error, isAdmin, setError } = useAdminGuard("/admin/submissions");
   const [items, setItems] = useState<Submission[]>([]);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [expandedDetail, setExpandedDetail] = useState<SubmissionDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
+  const [timings, setTimings] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    console.log(`[SUBMISSIONS] useEffect: loading=${loading}, isAdmin=${isAdmin}`);
+    const mountTime = performance.now() - pageStartTime;
+    console.log(`[SUBMISSIONS] Component mounted at T=${mountTime.toFixed(0)}ms, loading=${loading}, isAdmin=${isAdmin}`);
 
     async function load() {
-      console.log(`[SUBMISSIONS] load() called: isAdmin=${isAdmin}`);
+      const guardFinishTime = performance.now() - pageStartTime;
+      console.log(`[SUBMISSIONS] load() called at T=${guardFinishTime.toFixed(0)}ms: isAdmin=${isAdmin}`);
+      
       if (!isAdmin) {
         console.log(`[SUBMISSIONS] load() returning early: isAdmin is false`);
         return;
       }
       setError(null);
       try {
+        const queryStartTime = performance.now() - pageStartTime;
+        console.log(`[SUBMISSIONS] Supabase query starting at T=${queryStartTime.toFixed(0)}ms`);
+        
         const supabase = getSupabaseClient();
-        console.log(`[SUBMISSIONS] fetching submissions from database`);
         const { data, error: queryError } = await (supabase.from("submissions") as any)
           .select("id,title,type,status,created_at")
           .order("created_at", { ascending: false })
           .limit(50);
 
-        console.log(`[SUBMISSIONS] query result: data=${data ? `${(data as any).length} items` : "NULL"}, error=${queryError ? queryError.message : "NULL"}`);
+        const queryEndTime = performance.now() - pageStartTime;
+        const queryDuration = queryEndTime - queryStartTime;
+        console.log(`[SUBMISSIONS] Query completed at T=${queryEndTime.toFixed(0)}ms (duration: ${queryDuration.toFixed(0)}ms), items=${data ? (data as any).length : 0}, error=${queryError ? queryError.message : "NULL"}`);
 
         if (queryError) throw queryError;
-        console.log(`[SUBMISSIONS] setting items state to:`, data ?? []);
+        console.log(`[SUBMISSIONS] Setting items state`);
         setItems(data ?? []);
+        setTimings({
+          guardFinish: guardFinishTime,
+          queryStart: queryStartTime,
+          queryEnd: queryEndTime,
+          queryDuration: queryDuration,
+        });
       } catch (loadError: any) {
         console.error(`[SUBMISSIONS] load error:`, loadError);
         setError(loadError?.message ?? "Failed to load submissions.");
@@ -59,12 +74,12 @@ export default function SubmissionsAdminPage() {
     }
 
     if (!loading && isAdmin) {
-      console.log(`[SUBMISSIONS] conditions met: calling load()`);
+      console.log(`[SUBMISSIONS] Conditions met at T=${(performance.now() - pageStartTime).toFixed(0)}ms: calling load()`);
       load();
     } else {
-      console.log(`[SUBMISSIONS] conditions not met: loading=${loading}, isAdmin=${isAdmin}`);
+      console.log(`[SUBMISSIONS] Conditions not met: loading=${loading}, isAdmin=${isAdmin}`);
     }
-  }, [loading, isAdmin, setError]);
+  }, [loading, isAdmin, setError, pageStartTime]);
 
   async function updateStatus(id: string, status: SubmissionStatus) {
     if (!isAdmin) return;
@@ -123,6 +138,12 @@ export default function SubmissionsAdminPage() {
       return {};
     }
   }
+
+  // Log render timing
+  useEffect(() => {
+    const renderTime = performance.now() - pageStartTime;
+    console.log(`[SUBMISSIONS] Page rendered at T=${renderTime.toFixed(0)}ms, items count=${items.length}, timings=`, timings);
+  }, [items, pageStartTime, timings]);
 
   return (
     <main className="premium-page">
