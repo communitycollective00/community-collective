@@ -36,76 +36,91 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let mounted = true;
     const supabase = getSupabaseClient();
     let lastFetchedUserId: string | null = null; // Track which user's profile was last fetched to avoid duplicates
+    let profileFetchInProgressUserId: string | null = null;
+    let profileFetchPromise: Promise<void> | null = null;
 
     async function fetchProfileForUser(u: any) {
       if (!u) return;
-
-      setProfileLoading(true);
-      try {
-        // Try up to 2 times (1 retry) with backoff for resilience
-        let attempt = 0;
-        let lastErr: any = null;
-        let lastData: any = null;
-
-        while (attempt < 2) {
-          attempt += 1;
-          try {
-            const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
-
-            const result = await Promise.race([
-              fetchPromise,
-              new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 3000)),
-            ] as any);
-
-            const { data, error: fetchErr } = result as any;
-            if (fetchErr) {
-              lastErr = fetchErr;
-              // try again if we have attempts left
-              if (attempt < 2) {
-                await new Promise((r) => setTimeout(r, 300 * attempt));
-                continue;
-              }
-              setError(fetchErr.message ?? String(fetchErr));
-              setProfile(null);
-              setRole(null);
-              return;
-            }
-
-            if (!data) {
-              // no profile found; allow one more retry before reporting a not-found error
-              lastData = null;
-              if (attempt < 2) {
-                await new Promise((r) => setTimeout(r, 300 * attempt));
-                continue;
-              }
-              setError("Profile not found for this user.");
-              setProfile(null);
-              setRole(null);
-              return;
-            }
-
-            // success
-            lastFetchedUserId = u.id;
-            setProfile(data as Profile);
-            setRole((data as Profile).role ?? null);
-            console.log(`[AUTH-PROVIDER] profile fetched for user=${u.id}, role=${(data as Profile).role ?? "null"}`);
-            setError(null);
-            return;
-          } catch (e: any) {
-            lastErr = e;
-            if (attempt < 2) {
-              await new Promise((r) => setTimeout(r, 300 * attempt));
-              continue;
-            }
-            setError(e?.message ?? String(e));
-            setProfile(null);
-            setRole(null);
-            return;
-          }
-        }
-      } finally {
-        setProfileLoading(false);
+      if (u.id === lastFetchedUserId) {
+        return;
       }
+      if (profileFetchPromise && profileFetchInProgressUserId === u.id) {
+        return profileFetchPromise;
+      }
+
+      profileFetchInProgressUserId = u.id;
+      profileFetchPromise = (async () => {
+        setProfileLoading(true);
+        try {
+          // Try up to 2 times (1 retry) with backoff for resilience
+          let attempt = 0;
+          let lastErr: any = null;
+          let lastData: any = null;
+
+          while (attempt < 2) {
+            attempt += 1;
+            try {
+              const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
+
+              const result = await Promise.race([
+                fetchPromise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 3000)),
+              ] as any);
+
+              const { data, error: fetchErr } = result as any;
+              if (fetchErr) {
+                lastErr = fetchErr;
+                // try again if we have attempts left
+                if (attempt < 2) {
+                  await new Promise((r) => setTimeout(r, 300 * attempt));
+                  continue;
+                }
+                setError(fetchErr.message ?? String(fetchErr));
+                setProfile(null);
+                setRole(null);
+                return;
+              }
+
+              if (!data) {
+                // no profile found; allow one more retry before reporting a not-found error
+                lastData = null;
+                if (attempt < 2) {
+                  await new Promise((r) => setTimeout(r, 300 * attempt));
+                  continue;
+                }
+                setError("Profile not found for this user.");
+                setProfile(null);
+                setRole(null);
+                return;
+              }
+
+              // success
+              lastFetchedUserId = u.id;
+              setProfile(data as Profile);
+              setRole((data as Profile).role ?? null);
+              console.log(`[AUTH-PROVIDER] profile fetched for user=${u.id}, role=${(data as Profile).role ?? "null"}`);
+              setError(null);
+              return;
+            } catch (e: any) {
+              lastErr = e;
+              if (attempt < 2) {
+                await new Promise((r) => setTimeout(r, 300 * attempt));
+                continue;
+              }
+              setError(e?.message ?? String(e));
+              setProfile(null);
+              setRole(null);
+              return;
+            }
+          }
+        } finally {
+          profileFetchPromise = null;
+          profileFetchInProgressUserId = null;
+          setProfileLoading(false);
+        }
+      })();
+
+      return profileFetchPromise;
     }
 
     let authResolved = false;
@@ -215,16 +230,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (event === "SIGNED_IN") {
           setLoading(true);
-          console.log(`[AUTH-PROVIDER] SIGNED_IN event - user ${u?.id}, lastFetchedUserId=${lastFetchedUserId}`);
+          console.log(`[AUTH-PROVIDER] SIGNED_IN event - user ${u?.id}, lastFetchedUserId=${lastFetchedUserId}, profileLoading=${profileLoading}`);
           // Skip profile fetch if we already fetched for this exact user in init()
           if (u?.id === lastFetchedUserId) {
             console.log(`[AUTH-PROVIDER] SIGNED_IN - profile already fetched for user ${u?.id}, skipping duplicate fetch`);
             setLoading(false);
           } else {
-            console.log(`[AUTH-PROVIDER] SIGNED_IN event - fetching profile for user ${u?.id}`);
-            await fetchProfileForUser(u);
-            setLoading(false);
-            console.log(`[AUTH-PROVIDER] SIGNED_IN - profile fetch complete`);
+            if (profileFetchPromise && profileFetchInProgressUserId === u?.id) {
+              console.log(`[AUTH-PROVIDER] SIGNED_IN - profile fetch already in progress for user ${u?.id}`);
+              await profileFetchPromise;
+              setLoading(false);
+            } else {
+              console.log(`[AUTH-PROVIDER] SIGNED_IN event - fetching profile for user ${u?.id}`);
+              await fetchProfileForUser(u);
+              setLoading(false);
+              console.log(`[AUTH-PROVIDER] SIGNED_IN - profile fetch complete`);
+            }
           }
           try {
             const currentPath = window.location.pathname;

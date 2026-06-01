@@ -64,34 +64,6 @@ export function useAdminGuard(nextPath: string) {
       return;
     }
 
-    // If both providerRole and profile are absent but auth provider didn't report an error,
-    // wait a short grace period for the provider to populate profile/role (avoids duplicate fetches).
-    if (providerRole === null && profile === null && authError === null) {
-      // Wait up to 600ms for auth-provider to populate profile/role
-      const waitMs = 600;
-      let didWait = false;
-      const start = Date.now();
-      const waited = new Promise((res) => setTimeout(res, waitMs));
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      (async () => {
-        didWait = true;
-        await waited;
-        if (!active || !isMountedRef.current) return;
-        console.log(`[ADMIN-GUARD] waited ${Date.now() - start}ms for provider role/profile to appear`);
-        // If providerRole or profile resolved in that time, let effect re-run and handle it
-        if (providerRole !== null || profile !== null) return;
-        // otherwise proceed to fresh role check below
-        try {
-          const cachedAdminAfterWait = adminRoleCache.get(user.id);
-          if (cachedAdminAfterWait !== undefined) return;
-          // fall through to fetching fresh role
-          // trigger re-render to continue
-          // nothing to do here; the code below will run in this same effect
-        } catch (e) {}
-      })();
-      if (didWait) return;
-    }
-
     const cachedAdmin = adminRoleCache.get(user.id);
     if (cachedAdmin !== undefined) {
       console.log(`[ADMIN-GUARD] admin role resolved from cache=${cachedAdmin} for user=${user.id}`);
