@@ -19,6 +19,8 @@ export default function ProfilePage() {
   const [instagram, setInstagram] = useState("");
   const [twitter, setTwitter] = useState("");
   const [linkedin, setLinkedin] = useState("");
+  const [bannerUrl, setBannerUrl] = useState("");
+  const [description, setDescription] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [status, setStatus] = useState("");
 
@@ -36,7 +38,7 @@ export default function ProfilePage() {
     const loadProfile = async () => {
       const { data: profile, error: profileError } = await (getSupabaseClient().from("profiles") as any)
         .select(
-          "full_name,username,bio,city,state,industry,website,instagram,twitter,linkedin,avatar_url"
+          "full_name,username,bio,description,city,state,industry,website,instagram,twitter,linkedin,avatar_url,banner_url"
         )
         .eq("id", user.id)
         .maybeSingle();
@@ -53,6 +55,7 @@ export default function ProfilePage() {
       if (profile.full_name != null) setFullName(profile.full_name);
       if (profile.username != null) setUsername(profile.username);
       if (profile.bio != null) setBio(profile.bio);
+      if (profile.description != null) setDescription(profile.description);
       if (profile.city != null) setCity(profile.city);
       if (profile.state != null) setStateRegion(profile.state);
       if (profile.industry != null) setIndustry(profile.industry);
@@ -61,6 +64,7 @@ export default function ProfilePage() {
       if (profile.twitter != null) setTwitter(profile.twitter);
       if (profile.linkedin != null) setLinkedin(profile.linkedin);
       if (profile.avatar_url != null) setAvatarUrl(profile.avatar_url);
+      if (profile.banner_url != null) setBannerUrl(profile.banner_url);
     };
 
     loadProfile();
@@ -91,6 +95,20 @@ export default function ProfilePage() {
     setStatus("Avatar uploaded.");
   };
 
+  const uploadBanner = async (file: File) => {
+    if (!userId) return;
+    setStatus("Uploading banner...");
+    const path = `${userId}/${Date.now()}-${file.name}`;
+    const { error } = await getSupabaseClient().storage.from("media").upload(path, file, { upsert: true });
+    if (error) {
+      setStatus(error.message);
+      return;
+    }
+    const { data } = getSupabaseClient().storage.from("media").getPublicUrl(path);
+    setBannerUrl(data.publicUrl);
+    setStatus("Banner uploaded.");
+  };
+
   const save = async (e: FormEvent) => {
     e.preventDefault();
     if (!userId) {
@@ -113,6 +131,7 @@ export default function ProfilePage() {
       location: [city, stateRegion].filter(Boolean).join(", "),
       username,
       bio,
+      description,
       city,
       state: stateRegion,
       industry,
@@ -121,6 +140,7 @@ export default function ProfilePage() {
       twitter,
       linkedin,
       avatar_url: avatarUrl,
+      banner_url: bannerUrl,
       updated_at: new Date().toISOString(),
     });
 
@@ -142,7 +162,7 @@ export default function ProfilePage() {
     setStatus("Profile updated.");
   };
 
-  const hasProfileContent = Boolean(fullName || username || bio || industry || website || instagram || twitter || linkedin);
+  const hasProfileContent = Boolean(fullName || username || bio || description || industry || website || instagram || twitter || linkedin || bannerUrl);
   const profileHeadline = hasProfileContent ? "Manage your public profile" : "Complete your profile";
   const profileSubtext = hasProfileContent
     ? "Update how community members discover you in the directory, and keep your contact details, expertise, and social links current."
@@ -165,12 +185,25 @@ export default function ProfilePage() {
           ) : null}
 
           <div className="page-panel" style={{ padding: "1.75rem" }}>
+            {bannerUrl ? (
+              <div
+                style={{
+                  marginBottom: "1rem",
+                  minHeight: "180px",
+                  borderRadius: "18px",
+                  backgroundImage: `url(${bannerUrl})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+            ) : null}
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
               <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
               <div style={{ minWidth: 0 }}>
                 <p className="muted" style={{ margin: 0 }}>Profile preview</p>
                 <p style={{ margin: "0.5rem 0 0", fontSize: "1rem", color: "#f4e7c1" }}>{fullName || username || "Your name"}</p>
                 <p className="muted" style={{ margin: "0.25rem 0 0" }}>{industry || "Industry"} • {city || stateRegion ? `${city}${city && stateRegion ? ", " : ""}${stateRegion}` : "Location"}</p>
+                {description ? <p className="muted" style={{ margin: "0.75rem 0 0", lineHeight: 1.5 }}>{description}</p> : null}
               </div>
             </div>
           </div>
@@ -216,10 +249,23 @@ export default function ProfilePage() {
               <input className="page-input" value={stateRegion} onChange={(e) => setStateRegion(e.target.value)} placeholder="State" />
             </div>
 
+            <textarea
+              className="page-input"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Longer profile description"
+              rows={4}
+            />
             <input className="page-input" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
             <input className="page-input" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
             <input className="page-input" value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
             <input className="page-input" value={linkedin} onChange={(e) => setLinkedin(e.target.value)} placeholder="LinkedIn" />
+
+            <div className="page-search">
+              <label className="field-label">Banner image</label>
+              <input className="page-input" type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && uploadBanner(e.target.files[0])} />
+              <p className="muted page-note">Upload a large header image for your public profile.</p>
+            </div>
 
             <div className="page-search">
               <label className="field-label">Avatar</label>
