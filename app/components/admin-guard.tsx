@@ -6,9 +6,52 @@ import { isAdminRole } from "../../lib/roles";
 import { useAuth } from "./auth-provider";
 import { getSupabaseClient } from "../../lib/supabase";
 
-function getCookie(name: string) {
-  const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
-  return match ? decodeURIComponent(match[1]) : undefined;
+const adminRoleCache = new Map<string, boolean>();
+const adminRoleInFlight = new Map<string, Promise<boolean>>();
+
+async function fetchAdminRole(userId: string) {
+  const supabase = getSupabaseClient();
+  const { data, error: fetchError } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle();
+
+  if (fetchError) {
+    throw fetchError;
+  }
+
+  if (!data) {
+    return false;
+  }
+
+  return data.role === "admin";
+}
+
+function getAdminRole(userId: string) {
+  const cached = adminRoleCache.get(userId);
+  if (cached !== undefined) {
+    return Promise.resolve(cached);
+  }
+
+  const pending = adminRoleInFlight.get(userId);
+  if (pending) {
+    return pending;
+  }
+
+  const promise = fetchAdminRole(userId)
+    .then((isAdmin) => {
+      adminRoleCache.set(userId, isAdmin);
+      adminRoleInFlight.delete(userId);
+      return isAdmin;
+    })
+    .catch((error) => {
+      adminRoleInFlight.delete(userId);
+      throw error;
+    });
+
+  adminRoleInFlight.set(userId, promise);
+  return promise;
 }
 
 export function useAdminGuard(nextPath: string) {
@@ -18,97 +61,102 @@ export function useAdminGuard(nextPath: string) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const { user, profile, role: providerRole, loading: authLoading, error: authError } = useAuth();
-  const lastCheckedUserRef = useRef<string | null>(null);
-  const pendingRecheckRef = useRef(false);
+  const isMountedRef = useRef(true);
 
   useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
     setLoading(true);
     setError(null);
 
     if (authLoading) {
-      // still checking auth/session state; keep loading
       return;
     }
 
     if (!user) {
       router.push(`/login?next=${encodeURIComponent(nextPath)}`);
-      setLoading(false);
+      if (active && isMountedRef.current) {
+        setLoading(false);
+      }
       return;
     }
 
-    const isAdminFromProfile = isAdminRole(providerRole);
-    if (isAdminFromProfile) {
-      lastCheckedUserRef.current = user.id;
-      setIsAdmin(true);
-      setLoading(false);
+    if (isAdminRole(providerRole)) {
+      adminRoleCache.set(user.id, true);
+      if (active && isMountedRef.current) {
+        setIsAdmin(true);
+        setLoading(false);
+      }
       return;
     }
 
     if (providerRole !== null) {
-      // Cached provider role is available and user is not an admin.
-      setError("Admin access required.");
-      setIsAdmin(false);
-      setLoading(false);
+      adminRoleCache.set(user.id, false);
+      if (active && isMountedRef.current) {
+        setError("Admin access required.");
+        setIsAdmin(false);
+        setLoading(false);
+      }
       return;
     }
 
-    // If the auth provider is still resolving the profile for the current user,
-    // wait for that resolution rather than issuing a duplicate profile query.
     if (profile === null && authError === null) {
       return;
     }
 
-    if (lastCheckedUserRef.current === user.id) {
-      setLoading(false);
-      return;
-    }
-
-    if (pendingRecheckRef.current) {
-      return;
-    }
-
-    async function recheckAdminRole() {
-      pendingRecheckRef.current = true;
-      try {
-        const supabase = getSupabaseClient();
-        const { data, error: fetchError } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", user.id)
-          .maybeSingle();
-
-        if (fetchError) {
-          setError("Failed to verify admin access.");
-          setIsAdmin(false);
-          return;
-        }
-
-        if (!data) {
-          setError("Admin access required.");
-          setIsAdmin(false);
-          return;
-        }
-
-        const freshRoleIsAdmin = data.role === "admin";
-        if (freshRoleIsAdmin) {
-          setIsAdmin(true);
-          setError(null);
-        } else {
-          setError("Admin access required.");
-          setIsAdmin(false);
-        }
-        lastCheckedUserRef.current = user.id;
-      } catch (err: any) {
-        setError("Failed to verify admin access.");
-        setIsAdmin(false);
-      } finally {
-        pendingRecheckRef.current = false;
+    const cachedAdmin = adminRoleCache.get(user.id);
+    if (cachedAdmin !== undefined) {
+      if (active && isMountedRef.current) {
+        setIsAdmin(cachedAdmin);
+        setError(cachedAdmin ? null : "Admin access required.");
         setLoading(false);
       }
+      return;
     }
 
-    recheckAdminRole();
-  }, [nextPath, user, profile, providerRole, authLoading, authError]);
+    const pending = adminRoleInFlight.get(user.id);
+    if (pending) {
+      pending
+        .then((freshAdmin) => {
+          if (!active || !isMountedRef.current) return;
+          setIsAdmin(freshAdmin);
+          setError(freshAdmin ? null : "Admin access required.");
+          setLoading(false);
+        })
+        .catch(() => {
+          if (!active || !isMountedRef.current) return;
+          setError("Failed to verify admin access.");
+          setIsAdmin(false);
+          setLoading(false);
+        });
+      return;
+    }
+
+    getAdminRole(user.id)
+      .then((freshAdmin) => {
+        if (!active || !isMountedRef.current) return;
+        setIsAdmin(freshAdmin);
+        setError(freshAdmin ? null : "Admin access required.");
+      })
+      .catch(() => {
+        if (!active || !isMountedRef.current) return;
+        setError("Failed to verify admin access.");
+        setIsAdmin(false);
+      })
+      .finally(() => {
+        if (!active || !isMountedRef.current) return;
+        setLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [nextPath, user, profile, providerRole, authLoading, authError, router]);
 
   return { loading, error, isAdmin, setError };
 }
