@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../../../lib/supabase";
 import { isProfessionalRole } from "../../../../lib/roles";
+import { useAuth } from "../../../components/auth-provider";
 
 type ProfileData = { role: string | null };
 
@@ -33,22 +34,20 @@ export default function EditPostPage() {
   const [status, setStatus] = useState("");
   const [isAuthor, setIsAuthor] = useState(false);
   const router = useRouter();
+  const { user, profile: providerProfile, role, loading: authLoading } = useAuth();
 
   useEffect(() => {
     const load = async () => {
-      const { data } = await getSupabaseClient().auth.getSession();
-      const session = data.session;
-      if (!session) {
+      if (!user && !authLoading) {
         window.location.href = "/login";
         return;
       }
 
-      const user = session.user;
-      const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("role")
-        .eq("id", user.id)
-        .maybeSingle();
-      setProfile(profileData || null);
+      if (providerProfile) {
+        setProfile({ role: providerProfile.role });
+      } else if (!authLoading) {
+        setProfile({ role });
+      }
 
       if (!postId) return;
       const { data: postData } = await (getSupabaseClient().from("posts") as any)
@@ -60,7 +59,7 @@ export default function EditPostPage() {
         setStatus("Post not found.");
         return;
       }
-      if (postData.author_id !== user.id) {
+      if (postData.author_id !== user?.id) {
         setStatus("You are not authorized to edit this post.");
         return;
       }
@@ -75,7 +74,7 @@ export default function EditPostPage() {
     };
 
     load();
-  }, [postId]);
+  }, [postId, user, providerProfile, role, authLoading]);
 
   const canEdit = isProfessionalRole(profile?.role) && isAuthor;
 

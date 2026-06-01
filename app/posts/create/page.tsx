@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { isProfessionalRole } from "../../../lib/roles";
+import { useAuth } from "../../components/auth-provider";
 
 type ProfileData = { role: string | null };
 
@@ -18,27 +19,15 @@ export default function CreatePostPage() {
   const [linkUrl, setLinkUrl] = useState("");
   const [status, setStatus] = useState("");
   const router = useRouter();
+  const { user, profile: providerProfile, role, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    const load = async () => {
-      const { data } = await getSupabaseClient().auth.getSession();
-      const session = data.session;
-      if (!session) {
-        window.location.href = "/login";
-        return;
-      }
-
-      const user = session.user;
-      const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("role")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      setProfile(profileData || null);
-    };
-
-    load();
-  }, []);
+    if (providerProfile) {
+      setProfile({ role: providerProfile.role });
+    } else if (!authLoading) {
+      setProfile({ role });
+    }
+  }, [providerProfile, role, authLoading]);
 
   const canPublish = isProfessionalRole(profile?.role) || profile?.role === "admin";
 
