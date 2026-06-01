@@ -85,19 +85,9 @@ export function useAdminGuard(nextPath: string) {
       }
     }
 
-    // brief grace wait: if `providerRole` is still unset, wait up to 500ms
-    // for `AuthProvider` to populate it; only then fall back to DB recheck.
-    (async () => {
-      if (!isAdminFromProfile && providerRole == null) {
-        await new Promise((r) => setTimeout(r, 500));
-        if (isAdminRole(providerRole)) {
-          setIsAdmin(true);
-          setLoading(false);
-          return;
-        }
-      }
-      recheckAdminRole();
-    })();
+    // Immediately recheck without delay to unblock submissions page.
+    // Removing the grace wait eliminates 500ms+ artificial latency.
+    recheckAdminRole();
   }, [nextPath, user, providerRole, authLoading]);
 
   return { loading, error, isAdmin, setError };
