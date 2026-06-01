@@ -75,7 +75,7 @@ export default function PublicProfilePage() {
 
       try {
         const { data: postsData } = await (getSupabaseClient().from("posts") as any)
-          .select("id,title,body,post_type,media_url,image_url,link_url,created_at,author_id")
+          .select("id,title,body,media_url,image_url,link_url,created_at,author_id")
           .eq("author_id", data.id)
           .order("created_at", { ascending: false })
           .limit(10);

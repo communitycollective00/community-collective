@@ -98,7 +98,7 @@ export default function AdminPage() {
             .order("created_at", { ascending: false })
             .limit(5),
           (supabase.from("posts") as any)
-            .select("id,title,post_type,created_at")
+            .select("id,title,created_at")
             .order("created_at", { ascending: false })
             .limit(5),
         ]);

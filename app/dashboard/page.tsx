@@ -63,7 +63,7 @@ export default function DashboardPage() {
         try {
           const supabase = (await import("../../lib/supabase")).getSupabaseClient();
           const { data: postsData } = await (supabase.from("posts") as any)
-            .select("id,title,body,post_type,created_at")
+            .select("id,title,body,created_at")
             .eq("author_id", user.id)
             .order("created_at", { ascending: false })
             .limit(5);

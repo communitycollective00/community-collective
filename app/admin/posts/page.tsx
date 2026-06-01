@@ -18,7 +18,7 @@ export default function AdminPostsPage() {
         const supabase = getSupabaseClient();
         const { data, error: fetchErr } = await supabase
           .from("posts")
-          .select("id,title,post_type,author_id,is_published,created_at")
+          .select("id,title,author_id,is_published,created_at")
           .order("created_at", { ascending: false })
           .limit(100);
 

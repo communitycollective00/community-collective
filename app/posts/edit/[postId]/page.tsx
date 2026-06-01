@@ -52,7 +52,7 @@ export default function EditPostPage() {
 
       if (!postId) return;
       const { data: postData } = await (getSupabaseClient().from("posts") as any)
-        .select("id,title,body,post_type,media_url,link_url,image_url,author_id")
+        .select("id,title,body,media_url,link_url,image_url,author_id")
         .eq("id", postId)
         .maybeSingle();
 
