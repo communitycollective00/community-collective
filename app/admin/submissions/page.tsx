@@ -13,15 +13,21 @@ type Submission = {
   id: string;
   title: string | null;
   type: string | null;
-  content: any;
   status: SubmissionStatus | null;
   created_at: string;
+};
+
+type SubmissionDetail = {
+  content: any;
 };
 
 export default function SubmissionsAdminPage() {
   const { loading, error, isAdmin, setError } = useAdminGuard("/admin/submissions");
   const [items, setItems] = useState<Submission[]>([]);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [expandedDetail, setExpandedDetail] = useState<SubmissionDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
 
   useEffect(() => {
     console.log(`[SUBMISSIONS] useEffect: loading=${loading}, isAdmin=${isAdmin}`);
@@ -37,7 +43,7 @@ export default function SubmissionsAdminPage() {
         const supabase = getSupabaseClient();
         console.log(`[SUBMISSIONS] fetching submissions from database`);
         const { data, error: queryError } = await (supabase.from("submissions") as any)
-          .select("id,title,type,content,status,created_at")
+          .select("id,title,type,status,created_at")
           .order("created_at", { ascending: false })
           .limit(50);
 
@@ -81,6 +87,32 @@ export default function SubmissionsAdminPage() {
     }
   }
 
+  async function loadSubmissionDetails(id: string) {
+    if (expandedId === id && expandedDetail) {
+      setExpandedId(id);
+      return;
+    }
+
+    setDetailLoading(true);
+    setError(null);
+    try {
+      const supabase = getSupabaseClient();
+      const { data, error: detailError } = await (supabase.from("submissions") as any)
+        .select("content")
+        .eq("id", id)
+        .maybeSingle();
+
+      if (detailError) throw detailError;
+      setExpandedId(id);
+      setExpandedDetail(data ?? null);
+    } catch (detailError: any) {
+      console.error("[SUBMISSIONS] detail load error:", detailError);
+      setError(detailError?.message ?? "Failed to load submission details.");
+    } finally {
+      setDetailLoading(false);
+    }
+  }
+
   function parseSubmissionContent(content: unknown) {
     if (!content) return {};
     if (typeof content === "object") return content;
@@ -111,24 +143,51 @@ export default function SubmissionsAdminPage() {
         {isAdmin ? (
           <div className="submissions-list">
             {items.map((item) => {
-              const details = parseSubmissionContent(item.content);
+              const isExpanded = expandedId === item.id;
+              const details = isExpanded ? parseSubmissionContent(expandedDetail?.content) : null;
+
               return (
                 <article key={item.id} className="submission-item">
                   <div className="submission-grid">
-                    <p><strong>Full Name:</strong> {details.professional_name ?? item.title ?? "-"}</p>
-                    <p><strong>Email Address:</strong> {details.user_email ?? details.email ?? "-"}</p>
-                    <p><strong>Phone Number:</strong> {details.phone ?? "-"}</p>
-                    <p><strong>City:</strong> {details.city ?? "-"}</p>
-                    <p><strong>State:</strong> {details.state ?? "-"}</p>
-                    <p><strong>Member Type:</strong> {details.category ?? item.type ?? "-"}</p>
-                    <p><strong>Profession:</strong> {details.industry ?? details.credentials ?? "-"}</p>
-                    <p><strong>Organization / Business:</strong> {details.location ?? details.organization ?? "-"}</p>
+                    <p><strong>Title:</strong> {item.title || "Untitled submission"}</p>
+                    <p><strong>Type:</strong> {item.type || "N/A"}</p>
+                    <p><strong>Status:</strong> {item.status || "pending"}</p>
                     <p><strong>Submitted:</strong> {new Date(item.created_at).toLocaleString()}</p>
                   </div>
-                  <p><strong>Website / Social Media:</strong> {details.website ?? "-"}</p>
-                  <p><strong>Why should the Community know about you?</strong> {details.featured_reason ?? details.description ?? "-"}</p>
 
-                  <label className="status-control">
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "1rem" }}>
+                    <button
+                      type="button"
+                      className="gold-btn"
+                      onClick={() => {
+                        if (isExpanded) {
+                          setExpandedId(null);
+                        } else {
+                          loadSubmissionDetails(item.id);
+                        }
+                      }}
+                    >
+                      {isExpanded ? "Hide details" : "View details"}
+                    </button>
+                    {detailLoading && isExpanded ? <span className="muted">Loading details...</span> : null}
+                  </div>
+
+                  {isExpanded ? (
+                    <div style={{ marginTop: "1rem", padding: "1rem", backgroundColor: "rgba(31, 26, 15, 0.9)", borderRadius: "10px" }}>
+                      <p><strong>Full Name:</strong> {details?.professional_name ?? item.title ?? "-"}</p>
+                      <p><strong>Email Address:</strong> {details?.user_email ?? details?.email ?? "-"}</p>
+                      <p><strong>Phone Number:</strong> {details?.phone ?? "-"}</p>
+                      <p><strong>City:</strong> {details?.city ?? "-"}</p>
+                      <p><strong>State:</strong> {details?.state ?? "-"}</p>
+                      <p><strong>Member Type:</strong> {details?.category ?? item.type ?? "-"}</p>
+                      <p><strong>Profession:</strong> {details?.industry ?? details?.credentials ?? "-"}</p>
+                      <p><strong>Organization / Business:</strong> {details?.location ?? details?.organization ?? "-"}</p>
+                      <p><strong>Website / Social Media:</strong> {details?.website ?? "-"}</p>
+                      <p><strong>Why should the Community know about you?</strong> {details?.featured_reason ?? details?.description ?? "-"}</p>
+                    </div>
+                  ) : null}
+
+                  <label className="status-control" style={{ marginTop: "1rem" }}>
                     <strong>Status:</strong>
                     <select
                       value={item.status ?? "pending"}

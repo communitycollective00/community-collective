@@ -63,30 +63,19 @@ const adminSections = [
 
 export default function AdminPage() {
   const { loading, error, isAdmin, setError } = useAdminGuard("/admin");
-  const [stats, setStats] = useState<AdminStats>({
-    profiles: 0,
-    pendingApps: 0,
-    featuredProfs: 0,
-    totalPosts: 0,
-  });
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [recentApps, setRecentApps] = useState<any[]>([]);
   const [recentProfiles, setRecentProfiles] = useState<any[]>([]);
   const [recentPosts, setRecentPosts] = useState<any[]>([]);
 
   useEffect(() => {
-    async function load() {
+    async function loadRecent() {
       if (!isAdmin) return;
       setError(null);
 
       try {
         const supabase = getSupabaseClient();
-
-        const [{ count: profileCount }, { count: pendingCount }, { count: featuredCount }, { count: postCount }] = await Promise.all([
-          (supabase.from("profiles") as any).select("id", { count: "exact", head: true }),
-          (supabase.from("applications") as any).select("id", { count: "exact", head: true }).eq("status", "pending"),
-          (supabase.from("profiles") as any).select("id", { count: "exact", head: true }).eq("is_featured", true),
-          (supabase.from("posts") as any).select("id", { count: "exact", head: true }),
-        ]);
 
         const [{ data: apps }, { data: profiles }, { data: posts }] = await Promise.all([
           (supabase.from("applications") as any)
@@ -103,25 +92,52 @@ export default function AdminPage() {
             .limit(5),
         ]);
 
+        setRecentApps(apps || []);
+        setRecentProfiles(profiles || []);
+        setRecentPosts(posts || []);
+      } catch (err: any) {
+        console.error("[Admin] recent data load error:", err);
+        setError(err?.message ?? "Failed to load admin recent data.");
+      }
+    }
+
+    if (!loading && isAdmin) {
+      loadRecent();
+    }
+  }, [loading, isAdmin, setError]);
+
+  useEffect(() => {
+    async function loadStats() {
+      if (!isAdmin) return;
+      setStatsLoading(true);
+
+      try {
+        const supabase = getSupabaseClient();
+
+        const [{ count: profileCount }, { count: pendingCount }, { count: featuredCount }, { count: postCount }] = await Promise.all([
+          (supabase.from("profiles") as any).select("id", { count: "estimated", head: true }),
+          (supabase.from("applications") as any).select("id", { count: "estimated", head: true }).eq("status", "pending"),
+          (supabase.from("profiles") as any).select("id", { count: "estimated", head: true }).eq("is_featured", true),
+          (supabase.from("posts") as any).select("id", { count: "estimated", head: true }),
+        ]);
+
         setStats({
           profiles: profileCount || 0,
           pendingApps: pendingCount || 0,
           featuredProfs: featuredCount || 0,
           totalPosts: postCount || 0,
         });
-        setRecentApps(apps || []);
-        setRecentProfiles(profiles || []);
-        setRecentPosts(posts || []);
       } catch (err: any) {
-        console.error("[Admin] data load error:", err);
-        setError(err?.message ?? "Failed to load admin data.");
+        console.error("[Admin] stats load error:", err);
+      } finally {
+        setStatsLoading(false);
       }
     }
 
     if (!loading && isAdmin) {
-      load();
+      loadStats();
     }
-  }, [loading, isAdmin, setError]);
+  }, [loading, isAdmin]);
 
   if (loading) {
     return (
@@ -175,10 +191,10 @@ export default function AdminPage() {
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.5rem", marginBottom: "3rem" }}>
-          <StatCard label="Directory Profiles" value={stats.profiles} href="/admin/directory" action="Manage Profiles" />
-          <StatCard label="Pending Applications" value={stats.pendingApps} href="/admin/applications" action="Review" accent={stats.pendingApps > 0} />
-          <StatCard label="Featured Professionals" value={stats.featuredProfs} href="/admin/professionals" action="Curate" />
-          <StatCard label="Posts / Media" value={stats.totalPosts} href="/admin/posts" action="Review" />
+          <StatCard label="Directory Profiles" value={statsLoading ? "..." : stats?.profiles ?? 0} href="/admin/directory" action="Manage Profiles" />
+          <StatCard label="Pending Applications" value={statsLoading ? "..." : stats?.pendingApps ?? 0} href="/admin/applications" action="Review" accent={(stats?.pendingApps ?? 0) > 0} />
+          <StatCard label="Featured Professionals" value={statsLoading ? "..." : stats?.featuredProfs ?? 0} href="/admin/professionals" action="Curate" />
+          <StatCard label="Posts / Media" value={statsLoading ? "..." : stats?.totalPosts ?? 0} href="/admin/posts" action="Review" />
         </div>
 
         <div style={{ marginBottom: "3rem" }}>
@@ -192,13 +208,13 @@ export default function AdminPage() {
                 href={section.href}
                 count={
                   section.title === "Applications"
-                    ? stats.pendingApps
+                    ? stats?.pendingApps
                     : section.title === "Directory Profiles"
-                      ? stats.profiles
+                      ? stats?.profiles
                       : section.title === "Posts / Media"
-                        ? stats.totalPosts
+                        ? stats?.totalPosts
                         : section.title === "Featured Professionals"
-                          ? stats.featuredProfs
+                          ? stats?.featuredProfs
                           : undefined
                 }
               />
@@ -229,7 +245,7 @@ export default function AdminPage() {
             renderItem={(post) => (
               <div key={post.id} style={{ borderBottom: "1px solid #4c3a18", paddingBottom: "0.75rem", marginBottom: "0.75rem" }}>
                 <strong>{post.title || "Untitled"}</strong>
-                <div className="muted" style={{ fontSize: "0.85rem" }}>{post.post_type}</div>
+                <div className="muted" style={{ fontSize: "0.85rem" }}>Post</div>
                 <div className="muted" style={{ fontSize: "0.8rem", marginTop: "0.25rem" }}>
                   {post.created_at ? new Date(post.created_at).toLocaleDateString() : "Unknown date"}
                 </div>
@@ -273,7 +289,7 @@ function StatCard({
   accent = false,
 }: {
   label: string;
-  value: number;
+  value: number | string;
   href: string;
   action: string;
   accent?: boolean;
