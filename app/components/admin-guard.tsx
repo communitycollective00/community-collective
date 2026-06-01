@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isAdminRole } from "../../lib/roles";
 import { useAuth } from "./auth-provider";
@@ -17,14 +17,16 @@ export function useAdminGuard(nextPath: string) {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-  const { user, role: providerRole, loading: authLoading, error: authError } = useAuth();
+  const { user, profile, role: providerRole, loading: authLoading, error: authError } = useAuth();
+  const lastCheckedUserRef = useRef<string | null>(null);
+  const pendingRecheckRef = useRef(false);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
 
     if (authLoading) {
-      // still checking; keep loading state
+      // still checking auth/session state; keep loading
       return;
     }
 
@@ -34,18 +36,39 @@ export function useAdminGuard(nextPath: string) {
       return;
     }
 
-    // Check if providerRole indicates admin from cached auth context
     const isAdminFromProfile = isAdminRole(providerRole);
     if (isAdminFromProfile) {
-      // Role is already confirmed as admin from provider
+      lastCheckedUserRef.current = user.id;
       setIsAdmin(true);
       setLoading(false);
       return;
     }
 
-    // If not admin in provider role, re-fetch profile directly from Supabase
-    // to check if role is admin (handles stale/cached state)
+    if (providerRole !== null) {
+      // Cached provider role is available and user is not an admin.
+      setError("Admin access required.");
+      setIsAdmin(false);
+      setLoading(false);
+      return;
+    }
+
+    // If the auth provider is still resolving the profile for the current user,
+    // wait for that resolution rather than issuing a duplicate profile query.
+    if (profile === null && authError === null) {
+      return;
+    }
+
+    if (lastCheckedUserRef.current === user.id) {
+      setLoading(false);
+      return;
+    }
+
+    if (pendingRecheckRef.current) {
+      return;
+    }
+
     async function recheckAdminRole() {
+      pendingRecheckRef.current = true;
       try {
         const supabase = getSupabaseClient();
         const { data, error: fetchError } = await supabase
@@ -57,18 +80,15 @@ export function useAdminGuard(nextPath: string) {
         if (fetchError) {
           setError("Failed to verify admin access.");
           setIsAdmin(false);
-          setLoading(false);
           return;
         }
 
         if (!data) {
           setError("Admin access required.");
           setIsAdmin(false);
-          setLoading(false);
           return;
         }
 
-        // Check if the fresh role from database is admin
         const freshRoleIsAdmin = data.role === "admin";
         if (freshRoleIsAdmin) {
           setIsAdmin(true);
@@ -77,18 +97,18 @@ export function useAdminGuard(nextPath: string) {
           setError("Admin access required.");
           setIsAdmin(false);
         }
-        setLoading(false);
+        lastCheckedUserRef.current = user.id;
       } catch (err: any) {
         setError("Failed to verify admin access.");
         setIsAdmin(false);
+      } finally {
+        pendingRecheckRef.current = false;
         setLoading(false);
       }
     }
 
-    // Immediately recheck without delay to unblock submissions page.
-    // Removing the grace wait eliminates 500ms+ artificial latency.
     recheckAdminRole();
-  }, [nextPath, user, providerRole, authLoading]);
+  }, [nextPath, user, profile, providerRole, authLoading, authError]);
 
   return { loading, error, isAdmin, setError };
 }
