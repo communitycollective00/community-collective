@@ -35,15 +35,60 @@ export default function AdminApplicationsPage() {
     if (!loading && isAdmin) load();
   }, [loading, isAdmin, filter, setError]);
 
-  async function updateStatus(appId: string, newStatus: string) {
+  async function approveApplication(appId: string) {
+    setUpdating(true);
+    try {
+      const { data: sessionData } = await getSupabaseClient().auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+
+      if (!accessToken) {
+        setError("Authentication required. Please log in again.");
+        setUpdating(false);
+        return;
+      }
+
+      const response = await fetch("/api/applications/approve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ applicationId: appId }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || result.error || "Failed to approve application.");
+      }
+
+      setError(null);
+
+      // Reload applications
+      const supabase = getSupabaseClient();
+      const { data } = await supabase
+        .from("applications")
+        .select("*")
+        .order("created_at", { ascending: false });
+      setApplications(data || []);
+    } catch (err: any) {
+      setError(err?.message ?? "Failed to approve application.");
+    } finally {
+      setUpdating(false);
+    }
+  }
+
+  async function rejectApplication(appId: string) {
     setUpdating(true);
     try {
       const supabase = getSupabaseClient();
       const { error: updateErr } = await (supabase.from("applications") as any)
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
+        .update({ status: "rejected", updated_at: new Date().toISOString() })
         .eq("id", appId);
 
       if (updateErr) throw updateErr;
+
+      setError(null);
 
       // Reload applications
       const { data } = await supabase
@@ -52,7 +97,7 @@ export default function AdminApplicationsPage() {
         .order("created_at", { ascending: false });
       setApplications(data || []);
     } catch (err: any) {
-      setError(err?.message ?? "Failed to update application.");
+      setError(err?.message ?? "Failed to reject application.");
     } finally {
       setUpdating(false);
     }
@@ -147,7 +192,7 @@ export default function AdminApplicationsPage() {
                             {app.status.toUpperCase()}
                           </div>
                           <button
-                            onClick={() => updateStatus(app.id, "approved")}
+                            onClick={() => approveApplication(app.id)}
                             disabled={updating}
                             style={{
                               padding: "0.5rem 1rem",
@@ -163,7 +208,7 @@ export default function AdminApplicationsPage() {
                             ✓ Approve
                           </button>
                           <button
-                            onClick={() => updateStatus(app.id, "rejected")}
+                            onClick={() => rejectApplication(app.id)}
                             disabled={updating}
                             style={{
                               padding: "0.5rem 1rem",
