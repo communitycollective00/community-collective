@@ -113,9 +113,11 @@ export async function POST(request: Request) {
       console.log(`[applications/approve] Auth account created for ${applicantEmail}`);
     }
 
-    // Generate username from email (take part before @)
+    // Generate unique username from email prefix + user id
     const emailPrefix = applicantEmail.split("@")[0];
-    const username = emailPrefix?.replace(/[^a-z0-9._]/gi, "") || createUsernamePlaceholder(userId);
+    const sanitized = emailPrefix?.replace(/[^a-z0-9._]/gi, "") || "user";
+    const userIdPrefix = userId.replace(/-/g, "").slice(0, 8);
+    const username = `${sanitized}_${userIdPrefix}`;
 
     // Provision or update profile
     try {
