@@ -1,80 +1,22 @@
 "use client";
 
 import Link from "next/link";
-
-const realKnowledgeItems = [
-  {
-    icon: "⚖️",
-    title: "Legal Game",
-    copy: "Know your rights, protect your future, and navigate systems with confidence.",
-  },
-  {
-    icon: "💰",
-    title: "Business & Funding",
-    copy: "Real-world financial moves and business strategies for building lasting community wealth.",
-  },
-  {
-    icon: "🎬",
-    title: "Media & Storytelling",
-    copy: "Behind-the-scenes stories, production rooms, and the culture moments that matter.",
-  },
-];
-
-const opportunityItems = [
-  {
-    icon: "🎬",
-    title: "Casting Calls",
-    copy: "Curated open calls from verified productions and media teams.",
-  },
-  {
-    icon: "💼",
-    title: "Internships & Grants",
-    copy: "Practical pathways for people building business, culture, and community impact.",
-  },
-  {
-    icon: "🛠️",
-    title: "Collaborations",
-    copy: "Partnerships, brand opportunities, and paid projects from trusted organizations.",
-  },
-];
-
-const spotlightItems = [
-  {
-    title: "Odom Law Group",
-    tag: "Keisha Odom, Esq. · Chicago",
-    copy: "Clearing records, restoring access, and creating pathways for stability.",
-  },
-  {
-    title: "Clarity Media Studio",
-    tag: "Jordan L. · Chicago",
-    copy: "Authentic storytelling for community brands and culture-driven projects.",
-  },
-  {
-    title: "Blackstreet Barber Co.",
-    tag: "Marcus T. · Detroit",
-    copy: "Freestyle workshops, career connections, and tools for local entrepreneurship.",
-  },
-];
-
-const happeningsItems = [
-  {
-    icon: "📍",
-    title: "Community Mixer",
-    copy: "Monthly meetup for members, partners, and professionals to connect in person.",
-  },
-  {
-    icon: "⚖️",
-    title: "Legal Game Workshop",
-    copy: "Free rights and expungement coaching sessions for members and neighbors.",
-  },
-  {
-    icon: "🎬",
-    title: "Media Story Night",
-    copy: "A documentary showcase and networking circle for creators and storytellers.",
-  },
-];
+import { homepageContent } from "./homepage-content";
 
 export default function HomePage() {
+  const {
+    hero,
+    featureCards,
+    categoryCards,
+    voiceCards,
+    knowledgeCards,
+    opportunityCards,
+    accessCards,
+    spotlightCards,
+    eventCards,
+    sectionBackgrounds,
+  } = homepageContent;
+
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px" }}>
       <div className="homepage-content">
@@ -87,29 +29,37 @@ export default function HomePage() {
           <div className="homepage-hero-copy">
             <div className="homepage-hero-ribbon">
               <span className="homepage-hero-ribbon-pulse" />
-              <p>Now Accepting Founding Members — National</p>
+              <p>{hero.bannerText}</p>
             </div>
             <h1 className="homepage-hero-title">
-              REAL <span className="homepage-highlight">PEOPLE.</span>
-              <br />
-              REAL <span className="homepage-highlight homepage-highlight--green">KNOWLEDGE.</span>
-              <br />
-              REAL <span className="homepage-highlight">ACCESS.</span>
+              {hero.headline.map((segment, index) => (
+                <span key={index}>
+                  <span
+                    className={`homepage-highlight${segment.highlight ? ` homepage-highlight--${segment.highlight}` : ""}`}
+                  >
+                    {segment.text}
+                  </span>
+                  {index < hero.headline.length - 1 && <br />}
+                </span>
+              ))}
             </h1>
-            <p className="homepage-hero-text">
-              A trusted ecosystem where top lawyers post free legal game, professionals from every walk of life share real knowledge, and communities finally get access to the rooms, people, and opportunities that were always there — just never for them.
-            </p>
+            <p className="homepage-hero-text">{hero.description}</p>
             <div className="homepage-hero-actions">
-              <Link href="/directory" className="gold-btn">
-                Explore Directory
-              </Link>
-              <Link href="/get-access" className="gold-link">
-                Get Access
-              </Link>
+              {hero.actions.map((action) =>
+                action.variant === "button" ? (
+                  <Link key={action.label} href={action.href} className="gold-btn">
+                    {action.label}
+                  </Link>
+                ) : (
+                  <Link key={action.label} href={action.href} className="gold-link">
+                    {action.label}
+                  </Link>
+                )
+              )}
             </div>
             <div className="homepage-hero-pill">
-              <span className="homepage-hero-pill-number">Free</span>
-              <span className="homepage-hero-pill-label">To Join</span>
+              <span className="homepage-hero-pill-number">{hero.pill.label}</span>
+              <span className="homepage-hero-pill-label">{hero.pill.labelSecondary}</span>
             </div>
           </div>
         </section>
@@ -148,63 +98,35 @@ export default function HomePage() {
                 This is a trust-based access network powered by real people and real media. Not content-first. Not social-first. <strong>Access-first.</strong> Everything else — media, opportunities, profiles — is evidence of that access.
               </p>
               <div className="homepage-feature-list">
-                <div className="homepage-feature-card">
-                  <span>◆</span>
-                  <div>
-                    <p className="homepage-feature-title">Professionals Teach</p>
-                    <p className="homepage-feature-copy">Selected, verified professionals post real knowledge daily. Legal rights, financial game, health, trades — the stuff people need before it's too late.</p>
+                {featureCards.map((card) => (
+                  <div key={card.title} className="homepage-feature-card">
+                    <span>{card.icon}</span>
+                    <div>
+                      <p className="homepage-feature-title">{card.title}</p>
+                      <p className="homepage-feature-copy">{card.copy}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="homepage-feature-card">
-                  <span>◆</span>
-                  <div>
-                    <p className="homepage-feature-title">Culture Gets Documented</p>
-                    <p className="homepage-feature-copy">Backstage moments, raw conversations, overlooked voices — documented with intention. A long-term media archive with real cultural value.</p>
-                  </div>
-                </div>
-                <div className="homepage-feature-card">
-                  <span>◆</span>
-                  <div>
-                    <p className="homepage-feature-title">Communities Get Access</p>
-                    <p className="homepage-feature-copy">Real resources. Real opportunities. Real connections. The rooms they were never invited into — now open.</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
             <div className="homepage-category-grid">
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">⚖️</div>
-                <div>
-                  <p className="homepage-category-title">Legal</p>
-                  <p className="homepage-category-copy">Criminal defense, expungement, civil rights, business law</p>
+              {categoryCards.map((category) => (
+                <div key={category.title} className="homepage-category-card">
+                  <div className="homepage-category-card-icon">{category.icon}</div>
+                  <div>
+                    <p className="homepage-category-title">{category.title}</p>
+                    <p className="homepage-category-copy">{category.copy}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">🎬</div>
-                <div>
-                  <p className="homepage-category-title">Media & Film</p>
-                  <p className="homepage-category-copy">Production, content creation, storytelling, documentation</p>
-                </div>
-              </div>
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">💰</div>
-                <div>
-                  <p className="homepage-category-title">Finance & Business</p>
-                  <p className="homepage-category-copy">Credit, wealth building, business formation, investment</p>
-                </div>
-              </div>
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">🔧</div>
-                <div>
-                  <p className="homepage-category-title">Trades & Skills</p>
-                  <p className="homepage-category-copy">Welders, electricians, truckers, barbers — real knowledge from real work</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="homepage-section homepage-section--dark">
+        <section
+          className="homepage-section homepage-section--dark"
+          style={sectionBackgrounds.featuredVoices ? { background: sectionBackgrounds.featuredVoices } : undefined}
+        >
           <div className="homepage-section-header">
             <div>
               <p className="homepage-kicker">Featured Voices</p>
@@ -215,21 +137,14 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="homepage-voice-grid">
-            <div className="homepage-voice-card">
-              <div className="homepage-voice-avatar">⚖️</div>
-              <h3>Legal Strategy</h3>
-              <p className="homepage-feature-copy">Verified counsel, rights guides, expungement coaching, and real legal game for the people.</p>
-            </div>
-            <div className="homepage-voice-card">
-              <div className="homepage-voice-avatar">🎬</div>
-              <h3>Media & Storytelling</h3>
-              <p className="homepage-feature-copy">Documentaries, backstage access, and culture-shaping media built with community trust.</p>
-            </div>
-            <div className="homepage-voice-card">
-              <div className="homepage-voice-avatar">💼</div>
-              <h3>Finance & Opportunities</h3>
-              <p className="homepage-feature-copy">Funding pathways, business know-how, and the opportunity rooms that move communities forward.</p>
-            </div>
+            {voiceCards.map((voice) => (
+              <div key={`${voice.role}-${voice.title}`} className="homepage-voice-card">
+                <img src={voice.image} alt={`${voice.title} ${voice.role}`} className="homepage-card-image" />
+                <div className="homepage-voice-avatar">🔊</div>
+                <h3>{voice.role}</h3>
+                <p className="homepage-feature-copy">{voice.summary}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -246,7 +161,7 @@ export default function HomePage() {
             </div>
           </div>
           <div className="homepage-grid-3">
-            {realKnowledgeItems.map((item) => (
+            {knowledgeCards.map((item) => (
               <div key={item.title} className="homepage-feature-card">
                 <span>{item.icon}</span>
                 <div>
@@ -258,7 +173,10 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="homepage-section homepage-section--dark">
+        <section
+          className="homepage-section homepage-section--dark"
+          style={sectionBackgrounds.opportunities ? { background: sectionBackgrounds.opportunities } : undefined}
+        >
           <div className="homepage-section-header">
             <div>
               <p className="homepage-kicker">Opportunities</p>
@@ -269,7 +187,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="homepage-grid-3">
-            {opportunityItems.map((item) => (
+            {opportunityCards.map((item) => (
               <div key={item.title} className="homepage-feature-card">
                 <span>{item.icon}</span>
                 <div>
@@ -291,35 +209,21 @@ export default function HomePage() {
               </p>
             </div>
             <div className="homepage-access-grid">
-              <div className="homepage-access-card">
-                <div className="homepage-access-thumb">🎬</div>
-                <div className="homepage-access-body">
-                  <p className="homepage-kicker">Verified Media</p>
-                  <h3>Production rooms and story access</h3>
-                  <p className="homepage-feature-copy">Join verified storytelling rooms where creators, professionals, and stewards collaborate on projects.</p>
+              {accessCards.map((item) => (
+                <div key={item.title} className="homepage-access-card">
+                  <div className="homepage-access-thumb">{item.icon}</div>
+                  <div className="homepage-access-body">
+                    <p className="homepage-kicker">{item.kicker}</p>
+                    <h3>{item.title}</h3>
+                    <p className="homepage-feature-copy">{item.copy}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="homepage-access-card">
-                <div className="homepage-access-thumb">🛡️</div>
-                <div className="homepage-access-body">
-                  <p className="homepage-kicker">Trusted Support</p>
-                  <h3>Legal and financial guidance</h3>
-                  <p className="homepage-feature-copy">A trusted network of advisors, attorneys, and stewards delivering practical community-first guidance.</p>
-                </div>
-              </div>
-              <div className="homepage-access-card">
-                <div className="homepage-access-thumb">🚪</div>
-                <div className="homepage-access-body">
-                  <p className="homepage-kicker">Opportunity Rooms</p>
-                  <h3>Curated entry to the right spaces</h3>
-                  <p className="homepage-feature-copy">Priority access to rooms, collaborations, and opportunities designed for people already building forward.</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="homepage-section homepage-section--dark">
+        <section className="homepage-section" style={sectionBackgrounds.spotlight ? { background: sectionBackgrounds.spotlight } : undefined}>
           <div className="homepage-section-header">
             <div>
               <p className="homepage-kicker">Member Spotlights</p>
@@ -330,7 +234,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="homepage-grid-3">
-            {spotlightItems.map((item) => (
+            {spotlightCards.map((item) => (
               <div key={item.title} className="homepage-spotlight-card">
                 <p className="homepage-feature-title">{item.title}</p>
                 <p className="homepage-feature-copy">{item.tag}</p>
@@ -340,7 +244,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="homepage-section">
+        <section className="homepage-section" style={sectionBackgrounds.events ? { background: sectionBackgrounds.events } : undefined}>
           <div className="homepage-section-header">
             <div>
               <p className="homepage-kicker">What's Happening</p>
@@ -351,8 +255,8 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="homepage-grid-3">
-            {happeningsItems.map((item) => (
-              <div key={item.title} className="homepage-event-card">
+            {eventCards.map((item) => (
+              <div key={`${item.title}-${item.icon}-${item.copy}`} className="homepage-event-card">
                 <div className="homepage-event-icon">{item.icon}</div>
                 <p className="homepage-feature-title">{item.title}</p>
                 <p className="homepage-feature-copy">{item.copy}</p>
@@ -361,7 +265,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="homepage-section homepage-support-section homepage-section--dark">
+        <section className="homepage-section homepage-support-section homepage-section--dark" style={sectionBackgrounds.support ? { background: sectionBackgrounds.support } : undefined}>
           <div className="homepage-support-panel">
             <div>
               <p className="homepage-kicker">Support The Collective</p>
