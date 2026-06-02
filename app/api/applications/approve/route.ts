@@ -132,8 +132,13 @@ export async function POST(request: Request) {
       console.log(`[applications/approve] Profile provisioned for ${applicantEmail} with role ${roleToAssign}`);
     } catch (profileError) {
       console.error("[applications/approve] Profile provisioning failed", profileError);
+      console.error("PROFILE PROVISION ERROR:", profileError);
       return NextResponse.json(
-        { error: "profile_provisioning_failed", message: "Failed to provision member profile." },
+        {
+          error: "profile_provisioning_failed",
+          message: "Failed to provision member profile.",
+          details: String(profileError)
+        },
         { status: 500 }
       );
     }
