@@ -1360,6 +1360,79 @@ select {
   display: block;
 }
 
+.homepage-card,
+.homepage-card-link {
+  display: block;
+  background: var(--s1);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.homepage-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--gold);
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.11);
+}
+
+.homepage-card--with-image {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.homepage-card-content {
+  padding: 1.5rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.homepage-card-subtitle {
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.homepage-card-title {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.homepage-card-meta {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.homepage-card-description {
+  margin: 0;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.homepage-section--image {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  overflow: hidden;
+}
+
+.homepage-section--image .homepage-section-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.homepage-section-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
 .access-card,
 .homepage-access-card {
   background: var(--s1);
