@@ -170,17 +170,35 @@ export default function ProfilePage() {
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
-      <section className="premium-card dashboard-card" style={{ maxWidth: "1100px", margin: "2rem auto" }}>
-        <div className="page-panel-inner">
-          <div>
-            <p className="homepage-kicker">Member profile</p>
-            <h1 className="homepage-section-title" style={{ marginBottom: "0.5rem" }}>{profileHeadline}</h1>
-            <p className="homepage-section-text" style={{ marginBottom: 0 }}>{profileSubtext}</p>
+      <section className="premium-card dashboard-card" style={{ maxWidth: "1120px", margin: "2rem auto", padding: "2rem" }}>
+        <div className="page-panel-inner" style={{ display: "grid", gap: "2rem" }}>
+          <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "2rem", alignItems: "start" }}>
+            <div>
+              <p className="homepage-kicker">Member profile</p>
+              <h1 className="homepage-section-title" style={{ marginBottom: "0.75rem" }}>
+                Your profile is how people understand what you do, what you know, and how to connect with you.
+              </h1>
+              <p className="homepage-section-text" style={{ marginBottom: 0 }}>
+                Trust starts with clarity. Use this page to define your role in the network, the opportunities you are seeking, and the expertise you bring to community work.
+              </p>
+            </div>
+
+            <div className="homepage-section homepage-section--dark" style={{ padding: "1.75rem", borderRadius: "18px" }}>
+              <p className="homepage-kicker">Profile access card</p>
+              <p className="homepage-feature-copy" style={{ marginBottom: "1rem" }}>
+                This is your public introduction in Community Collective. Keep it clear, concise, and centered on what you can offer and who you want to connect with.
+              </p>
+              <div style={{ display: "grid", gap: "0.85rem" }}>
+                <p className="homepage-feature-copy">• Who you are in the network</p>
+                <p className="homepage-feature-copy">• What expertise you bring</p>
+                <p className="homepage-feature-copy">• What opportunities you are looking for</p>
+              </div>
+            </div>
           </div>
 
           {!hasProfileContent ? (
             <div className="status-success" style={{ maxWidth: "760px" }}>
-              Your profile is waiting for a few key details. Add your name, bio, location, and links to be more discoverable in the Directory.
+              Your profile is waiting for a few key details. Add your name, bio, location, and links so people can trust your work and connect with you more easily.
             </div>
           ) : null}
 
@@ -208,7 +226,18 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <form onSubmit={save} className="premium-form form-grid">
+          <form onSubmit={save} className="premium-form" style={{ display: "grid", gap: "1.5rem" }}>
+            <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "1rem" }}>
+              <div>
+                <p className="homepage-feature-title">Identity & role</p>
+                <p className="homepage-feature-copy">Use the fields below to define who you are and how you want to be found.</p>
+              </div>
+              <div>
+                <p className="homepage-feature-title">Visibility & contact</p>
+                <p className="homepage-feature-copy">Keep your public handles and website current so trusted introductions can reach you easily.</p>
+              </div>
+            </div>
+
             <div className="form-row">
               <div>
                 <label className="field-label">Email</label>
@@ -222,6 +251,9 @@ export default function ProfilePage() {
                   onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/\s+/g, ""))}
                   placeholder="Username"
                 />
+                <p className="muted page-note" style={{ marginTop: "0.5rem" }}>
+                  This is your public handle in the directory.
+                </p>
               </div>
             </div>
 
@@ -236,13 +268,19 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <textarea
-              className="page-input"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              placeholder="Short bio"
-              rows={4}
-            />
+            <div>
+              <label className="field-label">Short bio</label>
+              <textarea
+                className="page-input"
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Short bio"
+                rows={4}
+              />
+              <p className="muted page-note" style={{ marginTop: "0.5rem" }}>
+                Share what you do, who you serve, and what access or opportunities you are looking for.
+              </p>
+            </div>
 
             <div className="form-row">
               <input className="page-input" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" />
