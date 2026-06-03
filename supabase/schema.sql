@@ -45,7 +45,10 @@ create table if not exists public.profiles (
 alter table public.profiles enable row level security;
 
 create policy "Public directory read" on public.profiles
-for select using (true);
+for select using (
+  username is not null
+  and trim(username) <> ''
+);
 
 create policy "Users can upsert own profile" on public.profiles
 for all using (auth.uid() = id) with check (auth.uid() = id);
