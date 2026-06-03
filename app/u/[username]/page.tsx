@@ -101,7 +101,7 @@ export default async function PublicProfilePage({ params }: { params: { username
           <div className="public-profile-hero-overlay" />
         </div>
 
-        <div className="public-profile-header">
+        <div className="public-profile-avatar-block">
           <div className="public-profile-avatar-wrap">
             <img
               src={
@@ -112,8 +112,10 @@ export default async function PublicProfilePage({ params }: { params: { username
               className="profile-avatar public-profile-avatar"
             />
           </div>
-          <div className="public-profile-header-copy">
-            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+        </div>
+
+        <div className="public-profile-header-copy">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", flexWrap: "wrap", textAlign: "center" }}>
               <h1>{displayName}</h1>
               {profileRow.is_featured && <span className="profile-badge">Featured</span>}
               {profileRow.is_approved && <span className="profile-badge">Verified</span>}
@@ -121,7 +123,6 @@ export default async function PublicProfilePage({ params }: { params: { username
             {displayUsername && <p className="muted" style={{ margin: "0.5rem 0 0" }}>{displayUsername}</p>}
             {displaySubtitle && <p className="muted" style={{ margin: "0.5rem 0 0" }}>{displaySubtitle}</p>}
             {profileRow.bio && <p style={{ margin: "1rem 0 0", lineHeight: 1.8 }}>{profileRow.bio}</p>}
-          </div>
         </div>
 
         <div className="public-profile-stats">

@@ -169,14 +169,37 @@ select {
   overflow: visible !important;
 }
 
-.public-profile-header {
-  display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: 1.5rem;
-  align-items: center;
-  padding: 0 1.5rem 1.5rem;
-  margin-top: -70px;
+.public-profile-avatar-block {
+  display: flex;
+  justify-content: center;
+  margin-top: -48px;
+  padding: 0 1.5rem 0;
+  position: relative;
   overflow: visible;
+  z-index: 2;
+}
+
+.public-profile-header {
+  display: block;
+  padding: 0 1.5rem 1.5rem;
+  margin-top: 0;
+  overflow: visible;
+}
+
+.public-profile-header-copy {
+  text-align: center;
+  position: relative;
+  z-index: 5;
+}
+
+.public-profile-header-copy h1 {
+  margin: 0;
+  font-size: clamp(3rem, 5vw, 5rem);
+  line-height: 1;
+  color: #fff7d6;
+  opacity: 1;
+  position: relative;
+  z-index: 5;
 }
 
 .public-profile-avatar-wrap {
@@ -356,10 +379,7 @@ select {
 
 @media (max-width: 768px) {
   .public-profile-header {
-    grid-template-columns: 1fr;
-    margin-top: -65px;
     padding: 0 1rem 1rem;
-    overflow: visible;
   }
 
   .public-profile-avatar-wrap {
@@ -367,6 +387,11 @@ select {
     height: 80px;
     min-width: 80px;
     min-height: 80px;
+  }
+
+  .public-profile-avatar-block {
+    margin-top: -40px;
+    padding: 0 1rem 0;
   }
 
   .public-profile-stats {
