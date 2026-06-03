@@ -98,7 +98,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               lastFetchedUserId = u.id;
               setProfile(data as Profile);
               setRole((data as Profile).role ?? null);
-              console.log(`[AUTH-PROVIDER] profile fetched for user=${u.id}, role=${(data as Profile).role ?? "null"}`);
               setError(null);
               return;
             } catch (e: any) {
@@ -135,7 +134,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
             return match ? decodeURIComponent(match[1]) : undefined;
           } catch (e) {
-            console.error(`[getCookie] failed to parse cookie ${name}:`, e);
             return undefined;
           }
         }
@@ -146,7 +144,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // If no in-memory session but server cookies exist (OAuth callback set them),
         // try to rehydrate the client session from the cookie tokens.
-          console.log(`[AUTH-PROVIDER] init: getSession() returned session=${s ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
         if (!s) {
           const accessToken = getCookie("sb-access-token");
           const refreshToken = getCookie("sb-refresh-token");
@@ -164,14 +161,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 u = s.user ?? null;
               }
             } catch (e) {
-              console.error("[init] Failed to rehydrate session from cookies", e);
             }
           }
         }
         if (!mounted) return;
         // Immediately set session/user so consumers can react synchronously.
         // Start profile fetch in background (do not await) to avoid blocking navigation.
-        console.log(`[AUTH-PROVIDER] init complete: setting session=${s ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
         setSession(s);
         setUser(u);
         if (u) {
@@ -204,7 +199,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const resp = supabase.auth.onAuthStateChange(async (event, newSession) => {
         const u = newSession?.user ?? null;
-        console.log(`[AUTH-PROVIDER] onAuthStateChange event: ${event}, session=${newSession ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
 
         if (event === "SIGNED_OUT") {
           if (!authResolved) return;
@@ -230,21 +224,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (event === "SIGNED_IN") {
           setLoading(true);
-          console.log(`[AUTH-PROVIDER] SIGNED_IN event - user ${u?.id}, lastFetchedUserId=${lastFetchedUserId}, profileLoading=${profileLoading}`);
           // Skip profile fetch if we already fetched for this exact user in init()
           if (u?.id === lastFetchedUserId) {
-            console.log(`[AUTH-PROVIDER] SIGNED_IN - profile already fetched for user ${u?.id}, skipping duplicate fetch`);
             setLoading(false);
           } else {
             if (profileFetchPromise && profileFetchInProgressUserId === u?.id) {
-              console.log(`[AUTH-PROVIDER] SIGNED_IN - profile fetch already in progress for user ${u?.id}`);
               await profileFetchPromise;
               setLoading(false);
             } else {
-              console.log(`[AUTH-PROVIDER] SIGNED_IN event - fetching profile for user ${u?.id}`);
               await fetchProfileForUser(u);
               setLoading(false);
-              console.log(`[AUTH-PROVIDER] SIGNED_IN - profile fetch complete`);
             }
           }
           try {
@@ -264,9 +253,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       subscription = resp?.data?.subscription;
-        console.log(`[AUTH-PROVIDER] onAuthStateChange subscription set up`);
     } catch (e) {
-      console.error("Failed to subscribe to auth state changes", e);
       subscription = null;
     }
 
