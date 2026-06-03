@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { ProfileHeader } from "../../components/profile-header";
 import PostCard from "../../components/post-card";
 
 type ProfileRow = {
@@ -91,59 +90,96 @@ export default async function PublicProfilePage({ params }: { params: { username
     .order("created_at", { ascending: false });
 
   const posts: PostRow[] = postsData ?? [];
+  const displayName = profileRow.full_name || profileRow.username || "Community Member";
+  const displayUsername = profileRow.username ? `@${profileRow.username}` : "";
+  const displaySubtitle = [profileRow.industry, profileRow.location].filter(Boolean).join(" • ");
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
-      <section className="premium-card dashboard-card" style={{ maxWidth: "900px", margin: "1rem auto" }}>
-        <div style={{ marginBottom: "1rem" }}>
-          <Link href="/directory" className="gold-link">← Back to Directory</Link>
+      <section className="premium-card dashboard-card public-profile-card" style={{ maxWidth: "960px", margin: "1rem auto", padding: 0, overflow: "hidden" }}>
+        <div className="public-profile-hero" style={{ backgroundImage: profileRow.banner_url ? `url(${profileRow.banner_url})` : undefined }}>
+          <div className="public-profile-hero-overlay" />
         </div>
 
-        <ProfileHeader profile={profileRow} />
-
-        <section>
-          {/* Additional public-facing info */}
-          <div style={{ marginTop: "1rem" }}>
-            {profileRow.description && (
-              <div style={{ marginBottom: "1rem", lineHeight: 1.8 }}>{profileRow.description}</div>
-            )}
-
-            <div style={{ display: "grid", gap: "0.5rem" }}>
-              {profileRow.website && (
-                <a href={profileRow.website} target="_blank" rel="noopener noreferrer" className="gold-link">
-                  🌐 {profileRow.website}
-                </a>
-              )}
-              {profileRow.instagram && (
-                <a href={`https://instagram.com/${profileRow.instagram}`} target="_blank" rel="noopener noreferrer" className="gold-link">
-                  📸 @{profileRow.instagram}
-                </a>
-              )}
-              {profileRow.twitter && (
-                <a href={`https://twitter.com/${profileRow.twitter}`} target="_blank" rel="noopener noreferrer" className="gold-link">
-                  𝕏 @{profileRow.twitter}
-                </a>
-              )}
-              {profileRow.linkedin && (
-                <a href={`https://linkedin.com/in/${profileRow.linkedin}`} target="_blank" rel="noopener noreferrer" className="gold-link">
-                  💼 {profileRow.linkedin}
-                </a>
-              )}
+        <div className="public-profile-header">
+          <div className="public-profile-avatar-wrap">
+            <img
+              src={
+                profileRow.avatar_url ||
+                `https://placehold.co/180x180/1a1408/f4cf70?text=${encodeURIComponent(displayName[0] || "C")}`
+              }
+              alt={displayName}
+              className="profile-avatar public-profile-avatar"
+            />
+          </div>
+          <div className="public-profile-header-copy">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
+              <h1 style={{ margin: 0, fontSize: "2rem" }}>{displayName}</h1>
+              {profileRow.is_featured && <span className="profile-badge">Featured</span>}
+              {profileRow.is_approved && <span className="profile-badge">Verified</span>}
             </div>
+            {displayUsername && <p className="muted" style={{ margin: "0.5rem 0 0" }}>{displayUsername}</p>}
+            {displaySubtitle && <p className="muted" style={{ margin: "0.5rem 0 0" }}>{displaySubtitle}</p>}
+            {profileRow.bio && <p style={{ margin: "1rem 0 0", lineHeight: 1.8 }}>{profileRow.bio}</p>}
+          </div>
+        </div>
+
+        <div className="public-profile-stats">
+          <div className="public-profile-stat">
+            <span className="public-profile-stat-value">{posts.length}</span>
+            <span className="public-profile-stat-label">Posts</span>
+          </div>
+          <div className="public-profile-stat">
+            <span className="public-profile-stat-value">0</span>
+            <span className="public-profile-stat-label">Opportunities</span>
+          </div>
+          <div className="public-profile-stat">
+            <span className="public-profile-stat-value">0</span>
+            <span className="public-profile-stat-label">Interviews</span>
+          </div>
+          <div className="public-profile-stat">
+            <span className="public-profile-stat-value">0</span>
+            <span className="public-profile-stat-label">Connections</span>
+          </div>
+        </div>
+
+        <section className="public-profile-links" style={{ padding: "0 1.5rem 1.5rem" }}>
+          <div style={{ display: "grid", gap: "0.75rem" }}>
+            {profileRow.website && (
+              <a href={profileRow.website} target="_blank" rel="noopener noreferrer" className="gold-link">
+                🌐 {profileRow.website}
+              </a>
+            )}
+            {profileRow.instagram && (
+              <a href={`https://instagram.com/${profileRow.instagram}`} target="_blank" rel="noopener noreferrer" className="gold-link">
+                📸 @{profileRow.instagram}
+              </a>
+            )}
+            {profileRow.twitter && (
+              <a href={`https://twitter.com/${profileRow.twitter}`} target="_blank" rel="noopener noreferrer" className="gold-link">
+                𝕏 @{profileRow.twitter}
+              </a>
+            )}
+            {profileRow.linkedin && (
+              <a href={`https://linkedin.com/in/${profileRow.linkedin}`} target="_blank" rel="noopener noreferrer" className="gold-link">
+                💼 {profileRow.linkedin}
+              </a>
+            )}
           </div>
         </section>
 
-        <section style={{ marginTop: "2rem" }}>
+        <section className="public-profile-posts" style={{ padding: "0 1.5rem 1.5rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", gap: "1rem" }}>
             <h2 style={{ margin: 0, fontSize: "1.5rem" }}>Posts</h2>
           </div>
 
           {posts.length === 0 ? (
-            <div style={{ padding: "1.5rem", border: "1px solid var(--border)", borderRadius: "16px" }}>
-              <p className="muted" style={{ margin: 0 }}>No posts yet.</p>
+            <div className="public-profile-empty">
+              <h3>No posts yet</h3>
+              <p>Photos, videos, interviews, and opportunities will appear here.</p>
             </div>
           ) : (
-            <div className="page-grid">
+            <div className="public-profile-posts-grid">
               {posts.map((post) => (
                 <PostCard
                   key={post.id}
@@ -151,7 +187,7 @@ export default async function PublicProfilePage({ params }: { params: { username
                   title={post.title}
                   body={post.body}
                   post_type={post.post_type}
-                  author_name={profileRow.full_name || profileRow.username}
+                  author_name={displayName}
                   author_id={post.author_id}
                   created_at={post.created_at}
                   media_url={post.media_url}
