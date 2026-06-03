@@ -1,0 +1,16 @@
+alter table public.profiles
+add column if not exists role text default 'community',
+add column if not exists bio text,
+add column if not exists description text,
+add column if not exists industry text,
+add column if not exists location text,
+add column if not exists city text,
+add column if not exists state text,
+add column if not exists avatar_url text,
+add column if not exists banner_url text,
+add column if not exists website text,
+add column if not exists instagram text,
+add column if not exists twitter text,
+add column if not exists linkedin text,
+add column if not exists is_featured boolean not null default false,
+add column if not exists is_approved boolean not null default false;

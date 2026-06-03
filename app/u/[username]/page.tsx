@@ -44,10 +44,10 @@ export default async function PublicProfilePage({ params }: { params: { username
   const supabase = createClient(supabaseUrl, serviceRoleKey);
   const uname = params.username?.trim().toLowerCase();
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("profiles")
     .select(
-      "id,full_name,username,role,bio,description,industry,location,city,state,avatar_url,is_featured,is_approved,website,instagram,twitter,linkedin"
+      "id,full_name,username,role,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin"
     )
     .eq("username", uname)
     .maybeSingle();
@@ -56,28 +56,6 @@ export default async function PublicProfilePage({ params }: { params: { username
     return (
       <main className="premium-page" style={{ paddingTop: "72px" }}>
         <section className="premium-card">
-          <div
-            style={{
-              marginBottom: "1.5rem",
-              background: "#111111",
-              color: "#00ff88",
-              padding: "16px",
-              borderRadius: "8px",
-              whiteSpace: "pre-wrap",
-              overflowX: "auto",
-              fontSize: "14px",
-            }}
-          >
-            <p><strong>Requested Username</strong></p>
-            <pre style={{ margin: 0 }}>{uname}</pre>
-
-            <p style={{ marginTop: "1rem" }}><strong>Supabase Error</strong></p>
-            <pre style={{ margin: 0 }}>{JSON.stringify(error, null, 2)}</pre>
-
-            <p style={{ marginTop: "1rem" }}><strong>Returned Data</strong></p>
-            <pre style={{ margin: 0 }}>{JSON.stringify(data, null, 2)}</pre>
-          </div>
-
           <h1>Profile not found</h1>
           <p className="muted">We couldn't find a profile with that username.</p>
           <Link href="/directory" className="gold-link">
