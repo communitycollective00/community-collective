@@ -6,6 +6,7 @@ type ProfileRow = {
   id: string;
   full_name?: string | null;
   username?: string | null;
+  role?: string | null;
   bio?: string | null;
   description?: string | null;
   industry?: string | null;
@@ -45,7 +46,9 @@ export default async function PublicProfilePage({ params }: { params: { username
 
   const { data, error } = await supabase
     .from("profiles")
-    .select("id, username")
+    .select(
+      "id,full_name,username,role,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin"
+    )
     .eq("username", uname)
     .maybeSingle();
 
