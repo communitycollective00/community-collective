@@ -21,8 +21,8 @@ export default function RecommendPage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim() || !location.trim() || !reason.trim()) {
-      setStatus("Please fill in all required fields (Name, Location, Reason).");
+    if (!name.trim() || !location.trim() || !reason.trim() || !email.trim() || !websiteSocial.trim()) {
+      setStatus("Please fill in all required fields (Name, Email, Location, Reason, Website / Social Link).");
       return;
     }
 
@@ -56,7 +56,7 @@ export default function RecommendPage() {
       }
 
       // Success
-      setStatus("Thank you! Your recommendation has been submitted for review.");
+      setStatus("Thank you! Your spotlight has been submitted for review.");
       setSubmissionType("person");
       setName("");
       setOrganization("");
@@ -67,7 +67,7 @@ export default function RecommendPage() {
       setNotes("");
       setTimeout(() => setStatus(""), 5000);
     } catch (err: any) {
-      setStatus(`Error: ${err?.message || "Failed to submit recommendation."}`);
+      setStatus(`Error: ${err?.message || "Failed to submit spotlight."}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -76,13 +76,13 @@ export default function RecommendPage() {
   return (
     <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card" style={{ maxWidth: 700, margin: "2rem auto" }}>
-        <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>Recommend Someone</h1>
+        <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>Spotlight Someone</h1>
         <p className="muted" style={{ marginBottom: "2rem" }}>
-          Know someone who should be part of the Collective? Have an event, organization, opportunity, or story to share? Help us grow by recommending them.
+          Nominate someone for a feature, interview, spotlight, or community recognition.
         </p>
 
         <form onSubmit={handleSubmit} className="premium-form">
-          <label className="field-label">What are you recommending? *</label>
+          <label className="field-label">What are you spotlighting? *</label>
           <select
             value={submissionType}
             onChange={(e) => setSubmissionType(e.target.value)}
@@ -123,12 +123,13 @@ export default function RecommendPage() {
             placeholder="Company, nonprofit, or affiliation"
           />
 
-          <label className="field-label">Email (optional)</label>
+          <label className="field-label">Email *</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Contact email"
+            required
           />
 
           <label className="field-label">Location *</label>
@@ -159,12 +160,13 @@ export default function RecommendPage() {
             }}
           />
 
-          <label className="field-label">Website / Social Link (optional)</label>
+          <label className="field-label">Website / Social Link *</label>
           <input
             type="text"
             value={websiteSocial}
             onChange={(e) => setWebsiteSocial(e.target.value)}
             placeholder="https://example.com or @username"
+            required
           />
 
           <label className="field-label">Additional Notes (optional)</label>
@@ -191,7 +193,7 @@ export default function RecommendPage() {
             disabled={isSubmitting}
             style={{ width: "100%", padding: "0.85rem", fontWeight: 700 }}
           >
-            {isSubmitting ? "Submitting..." : "Submit Recommendation"}
+            {isSubmitting ? "Submitting..." : "Submit Spotlight"}
           </button>
         </form>
 

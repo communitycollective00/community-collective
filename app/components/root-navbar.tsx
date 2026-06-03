@@ -24,7 +24,7 @@ export default function RootNavBar() {
         <Link href="/voices">Voices</Link>
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
-        <Link href="/recommend">Recommend</Link>
+        <Link href="/recommend">Spotlight</Link>
 
         {isAuthed ? (
           <>
