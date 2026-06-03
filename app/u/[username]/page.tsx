@@ -56,12 +56,24 @@ export default async function PublicProfilePage({ params }: { params: { username
     return (
       <main className="premium-page" style={{ paddingTop: "72px" }}>
         <section className="premium-card">
-          <div style={{ marginBottom: "1.5rem", padding: "1rem", backgroundColor: "#ffe6e6", borderRadius: "4px" }}>
-            <p><strong>Debug: Username requested:</strong> {uname}</p>
-            <p><strong>Debug: Supabase error:</strong></p>
-            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", fontSize: "0.85rem" }}>{JSON.stringify(error, null, 2)}</pre>
-            <p><strong>Debug: Data:</strong></p>
-            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", fontSize: "0.85rem" }}>{JSON.stringify(data, null, 2)}</pre>
+          <div
+            style={{
+              marginBottom: "1.5rem",
+              background: "#111111",
+              color: "#00ff88",
+              padding: "16px",
+              borderRadius: "8px",
+              whiteSpace: "pre-wrap",
+              overflowX: "auto",
+              fontSize: "14px",
+            }}
+          >
+            <p><strong>Requested Username:</strong></p>
+            <pre style={{ margin: 0 }}>{uname}</pre>
+            <p><strong>Supabase Error:</strong></p>
+            <pre style={{ margin: 0 }}>{JSON.stringify(error, null, 2)}</pre>
+            <p><strong>Returned Data:</strong></p>
+            <pre style={{ margin: 0 }}>{JSON.stringify(data, null, 2)}</pre>
           </div>
           <h1>Profile not found</h1>
           <p className="muted">We couldn't find a profile with that username.</p>
