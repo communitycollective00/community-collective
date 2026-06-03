@@ -54,6 +54,13 @@ export default async function PublicProfilePage({ params }: { params: { username
     return (
       <main className="premium-page" style={{ paddingTop: "72px" }}>
         <section className="premium-card">
+          <div style={{ marginBottom: "1.5rem", padding: "1rem", backgroundColor: "#ffe6e6", borderRadius: "4px" }}>
+            <p><strong>Debug: Username requested:</strong> {uname}</p>
+            <p><strong>Debug: Supabase error:</strong></p>
+            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", fontSize: "0.85rem" }}>{JSON.stringify(error, null, 2)}</pre>
+            <p><strong>Debug: Data:</strong></p>
+            <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", fontSize: "0.85rem" }}>{JSON.stringify(data, null, 2)}</pre>
+          </div>
           <h1>Profile not found</h1>
           <p className="muted">We couldn't find a profile with that username.</p>
           <Link href="/directory" className="gold-link">
