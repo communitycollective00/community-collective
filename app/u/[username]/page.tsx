@@ -27,20 +27,6 @@ export default async function PublicProfilePage({ params }: { params: { username
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !serviceRoleKey) {
-    throw new Error("Missing Supabase environment variables. Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.");
-  }
-
-  const supabase = createClient(supabaseUrl, serviceRoleKey);
-  const uname = params.username?.trim().toLowerCase();
-
-  const { data: profile, error } = await (supabase.from("profiles") as any)
-    .select(
-      "id,full_name,username,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin"
-    )
-    .eq("username", uname)
-    .maybeSingle();
-
-  if (!profile) {
     return (
       <main className="premium-page" style={{ paddingTop: "72px" }}>
         <section className="premium-card">
@@ -54,7 +40,31 @@ export default async function PublicProfilePage({ params }: { params: { username
     );
   }
 
-  const profileRow: ProfileRow = profile;
+  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  const uname = params.username?.trim().toLowerCase();
+
+  const { data, error } = await (supabase.from("profiles") as any)
+    .select(
+      "id,full_name,username,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin"
+    )
+    .eq("username", uname)
+    .maybeSingle();
+
+  if (!data) {
+    return (
+      <main className="premium-page" style={{ paddingTop: "72px" }}>
+        <section className="premium-card">
+          <h1>Profile not found</h1>
+          <p className="muted">We couldn't find a profile with that username.</p>
+          <Link href="/directory" className="gold-link">
+            ← Back to Directory
+          </Link>
+        </section>
+      </main>
+    );
+  }
+
+  const profileRow: ProfileRow = data;
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
