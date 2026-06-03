@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { ProfileHeader } from "../../components/profile-header";
+import PostCard from "../../components/post-card";
 
 type ProfileRow = {
   id: string;
@@ -21,6 +22,20 @@ type ProfileRow = {
   instagram?: string | null;
   twitter?: string | null;
   linkedin?: string | null;
+};
+
+type PostRow = {
+  id: string;
+  author_id: string;
+  title?: string | null;
+  body?: string | null;
+  post_type?: string | null;
+  media_url?: string | null;
+  link_url?: string | null;
+  image_url?: string | null;
+  is_published?: boolean | null;
+  created_at?: string | null;
+  updated_at?: string | null;
 };
 
 export default async function PublicProfilePage({ params }: { params: { username: string } }) {
@@ -68,6 +83,15 @@ export default async function PublicProfilePage({ params }: { params: { username
 
   const profileRow: ProfileRow = data;
 
+  const { data: postsData } = await supabase
+    .from("posts")
+    .select("id,author_id,title,body,post_type,media_url,link_url,image_url,is_published,created_at,updated_at")
+    .eq("author_id", profileRow.id)
+    .eq("is_published", true)
+    .order("created_at", { ascending: false });
+
+  const posts: PostRow[] = postsData ?? [];
+
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
       <section className="premium-card dashboard-card" style={{ maxWidth: "900px", margin: "1rem auto" }}>
@@ -107,6 +131,35 @@ export default async function PublicProfilePage({ params }: { params: { username
               )}
             </div>
           </div>
+        </section>
+
+        <section style={{ marginTop: "2rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", gap: "1rem" }}>
+            <h2 style={{ margin: 0, fontSize: "1.5rem" }}>Posts</h2>
+          </div>
+
+          {posts.length === 0 ? (
+            <div style={{ padding: "1.5rem", border: "1px solid var(--border)", borderRadius: "16px" }}>
+              <p className="muted" style={{ margin: 0 }}>No posts yet.</p>
+            </div>
+          ) : (
+            <div className="page-grid">
+              {posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  id={post.id}
+                  title={post.title}
+                  body={post.body}
+                  post_type={post.post_type}
+                  author_name={profileRow.full_name || profileRow.username}
+                  author_id={post.author_id}
+                  created_at={post.created_at}
+                  media_url={post.media_url}
+                  image_url={post.image_url}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </section>
     </main>
