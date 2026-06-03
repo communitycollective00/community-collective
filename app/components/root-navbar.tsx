@@ -115,7 +115,7 @@ export default function RootNavBar() {
             <span className="mb-icon">📇</span>
             <span className="mb-label">Directory</span>
           </Link>
-          <Link href="/spotlight">
+          <Link href="/recommend">
             <span className="mb-icon">✨</span>
             <span className="mb-label">Spotlight</span>
           </Link>
