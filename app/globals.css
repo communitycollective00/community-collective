@@ -72,6 +72,12 @@ select {
   font: inherit;
 }
 
+.mobile-menu-toggle,
+.mobile-menu,
+.mobile-bottom-nav {
+  display: none;
+}
+
 .premium-page {
   display: flex;
   flex-direction: column;

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
+import Link from "next/link";
 import { getSupabaseClient } from "../../lib/supabase";
 import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
 import { useAuth } from "../components/auth-provider";
@@ -156,6 +157,9 @@ export default function ProfilePage() {
             <p className="homepage-kicker">Member profile</p>
             <h1 className="homepage-section-title" style={{ marginBottom: "0.5rem" }}>{profileHeadline}</h1>
             <p className="homepage-section-text" style={{ marginBottom: 0 }}>{profileSubtext}</p>
+            {username ? (
+              <p style={{ marginTop: 8 }}><Link href={`/u/${username}`} className="gold-link">View public profile</Link></p>
+            ) : null}
           </div>
 
           {!hasProfileContent ? (
