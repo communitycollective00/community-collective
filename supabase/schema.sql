@@ -19,6 +19,8 @@ create table if not exists public.profiles (
   linkedin text,
   tiktok text,
   youtube text,
+  looking_for text,
+  can_offer text,
   avatar_url text,
   banner_url text,
   featured_status text default 'none',

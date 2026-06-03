@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
-import { fallbackAvatar, filterProfilePayload } from "../../lib/profile-fields";
+import { fallbackAvatar, filterProfilePayload, calculateProfileCompletion } from "../../lib/profile-fields";
 import { useAuth } from "../components/auth-provider";
 
 export default function ProfilePage() {
@@ -21,6 +21,8 @@ export default function ProfilePage() {
   const [linkedin, setLinkedin] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
   const [description, setDescription] = useState("");
+  const [lookingFor, setLookingFor] = useState("");
+  const [canOffer, setCanOffer] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
   const [status, setStatus] = useState("");
 
@@ -38,7 +40,7 @@ export default function ProfilePage() {
     const loadProfile = async () => {
       const { data: profile, error: profileError } = await (getSupabaseClient().from("profiles") as any)
         .select(
-          "full_name,username,bio,description,city,state,industry,website,instagram,twitter,linkedin,avatar_url,banner_url"
+          "full_name,username,bio,description,city,state,industry,website,instagram,twitter,linkedin,avatar_url,banner_url,looking_for,can_offer"
         )
         .eq("id", user.id)
         .maybeSingle();
@@ -65,6 +67,8 @@ export default function ProfilePage() {
       if (profile.linkedin != null) setLinkedin(profile.linkedin);
       if (profile.avatar_url != null) setAvatarUrl(profile.avatar_url);
       if (profile.banner_url != null) setBannerUrl(profile.banner_url);
+      if (profile.looking_for != null) setLookingFor(profile.looking_for);
+      if (profile.can_offer != null) setCanOffer(profile.can_offer);
     };
 
     loadProfile();
@@ -139,6 +143,8 @@ export default function ProfilePage() {
       instagram,
       twitter,
       linkedin,
+      looking_for: lookingFor,
+      can_offer: canOffer,
       avatar_url: avatarUrl,
       banner_url: bannerUrl,
       updated_at: new Date().toISOString(),
@@ -167,6 +173,22 @@ export default function ProfilePage() {
   const profileSubtext = hasProfileContent
     ? "Update how community members discover you in the directory, and keep your contact details, expertise, and social links current."
     : "Finish your crafted profile so the platform can represent your expertise with the premium visibility it deserves.";
+
+  const profileCompletion = calculateProfileCompletion({
+    full_name: fullName,
+    username,
+    industry,
+    city,
+    state: stateRegion,
+    bio,
+    description,
+    website,
+    avatar_url: avatarUrl,
+  });
+
+  const avatarDisplay = avatarUrl || fallbackAvatar(fullName || username);
+  const locationDisplay = [city, stateRegion].filter(Boolean).join(", ") || "Location";
+
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
@@ -215,13 +237,61 @@ export default function ProfilePage() {
                 }}
               />
             ) : null}
-            <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center" }}>
-              <img src={avatarUrl || fallbackAvatar(fullName || username)} alt="Avatar preview" className="profile-avatar" />
-              <div style={{ minWidth: 0 }}>
-                <p className="muted" style={{ margin: 0 }}>Profile preview</p>
-                <p style={{ margin: "0.5rem 0 0", fontSize: "1rem", color: "#f4e7c1" }}>{fullName || username || "Your name"}</p>
-                <p className="muted" style={{ margin: "0.25rem 0 0" }}>{industry || "Industry"} • {city || stateRegion ? `${city}${city && stateRegion ? ", " : ""}${stateRegion}` : "Location"}</p>
-                {description ? <p className="muted" style={{ margin: "0.75rem 0 0", lineHeight: 1.5 }}>{description}</p> : null}
+            
+            <div style={{ display: "grid", gap: "1.5rem" }}>
+              <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
+                <div style={{ flex: "0 0 auto" }}>
+                  <img 
+                    src={avatarDisplay} 
+                    alt="Avatar preview" 
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      borderRadius: "50%",
+                      border: "3px solid #f4cf70",
+                      objectFit: "cover",
+                    }}
+                  />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p className="muted" style={{ margin: 0, fontSize: "0.85rem" }}>Profile Preview</p>
+                  <p style={{ margin: "0.5rem 0 0", fontSize: "1.1rem", fontWeight: 600, color: "#f4e7c1" }}>
+                    {fullName || username || "Your name"}
+                  </p>
+                  <p className="muted" style={{ margin: "0.25rem 0 0", fontSize: "0.9rem" }}>
+                    {industry || "Industry"} {locationDisplay !== "Location" && `• ${locationDisplay}`}
+                  </p>
+                  {bio ? <p className="muted" style={{ margin: "0.75rem 0 0", lineHeight: 1.5, fontSize: "0.9rem" }}>{bio}</p> : null}
+                </div>
+              </div>
+
+              <div style={{ borderTop: "1px solid rgba(244, 207, 112, 0.12)", paddingTop: "1.5rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+                  <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 500, color: "#f4e7c1" }}>Profile Completion</p>
+                  <p style={{ margin: 0, fontSize: "0.9rem", fontWeight: 600, color: "#f4cf70" }}>{profileCompletion.percentage}%</p>
+                </div>
+                <div style={{
+                  width: "100%",
+                  height: "8px",
+                  borderRadius: "4px",
+                  backgroundColor: "rgba(244, 207, 112, 0.1)",
+                  overflow: "hidden",
+                }}>
+                  <div style={{
+                    width: `${profileCompletion.percentage}%`,
+                    height: "100%",
+                    backgroundColor: "#f4cf70",
+                    transition: "width 0.3s ease",
+                  }} />
+                </div>
+                <p style={{ margin: "0.75rem 0 0", fontSize: "0.85rem", color: "#c89d35" }}>
+                  {profileCompletion.completed} of {profileCompletion.total} sections complete
+                </p>
+                {profileCompletion.missingFields.length > 0 && (
+                  <div style={{ marginTop: "0.75rem" }}>
+                    <p style={{ margin: "0 0 0.5rem", fontSize: "0.85rem", color: "#d3c18e" }}>Missing: {profileCompletion.missingFields.join(", ")}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -294,6 +364,30 @@ export default function ProfilePage() {
               placeholder="Longer profile description"
               rows={4}
             />
+
+            <div className="form-row">
+              <div>
+                <label className="field-label">What are you looking for?</label>
+                <textarea
+                  className="page-input"
+                  value={lookingFor}
+                  onChange={(e) => setLookingFor(e.target.value)}
+                  placeholder="Opportunities, collaborations, mentorship, etc."
+                  rows={3}
+                />
+              </div>
+              <div>
+                <label className="field-label">What can you offer?</label>
+                <textarea
+                  className="page-input"
+                  value={canOffer}
+                  onChange={(e) => setCanOffer(e.target.value)}
+                  placeholder="Skills, expertise, connections, resources, etc."
+                  rows={3}
+                />
+              </div>
+            </div>
+
             <input className="page-input" value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="Website URL" />
             <input className="page-input" value={instagram} onChange={(e) => setInstagram(e.target.value)} placeholder="Instagram" />
             <input className="page-input" value={twitter} onChange={(e) => setTwitter(e.target.value)} placeholder="Twitter / X" />
