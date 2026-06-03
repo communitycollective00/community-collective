@@ -143,3 +143,4 @@ create policy "Users update own media" on storage.objects
 for update using (bucket_id = 'media' and auth.uid()::text = (storage.foldername(name))[1]);
 alter table public.profiles
 add column if not exists banner_url text;
+
