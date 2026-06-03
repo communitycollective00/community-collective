@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getSupabaseClient } from "../../../lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 import { ProfileHeader } from "../../components/profile-header";
 
 type ProfileRow = {
@@ -23,10 +23,17 @@ type ProfileRow = {
 };
 
 export default async function PublicProfilePage({ params }: { params: { username: string } }) {
-  const supabase = getSupabaseClient();
-  const uname = params.username.trim().toLowerCase();
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  const { data: profile } = await (supabase.from("profiles") as any)
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Missing Supabase environment variables. Add NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.");
+  }
+
+  const supabase = createClient(supabaseUrl, serviceRoleKey);
+  const uname = params.username?.trim().toLowerCase();
+
+  const { data: profile, error } = await (supabase.from("profiles") as any)
     .select(
       "id,full_name,username,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin"
     )
