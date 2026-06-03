@@ -79,7 +79,7 @@ export default function RootNavBar() {
         <Link href="/voices">Voices</Link>
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
-        <Link href="/spotlight">Spotlight</Link>
+        <Link href="/recommend">Spotlight</Link>
         {isAuthed ? (
           <>
             {isAdminRole(role) && <Link href="/admin">Admin</Link>}

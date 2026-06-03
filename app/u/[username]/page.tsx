@@ -24,7 +24,7 @@ type ProfileRow = {
 
 export default async function PublicProfilePage({ params }: { params: { username: string } }) {
   const supabase = getSupabaseClient();
-  const uname = params.username;
+  const uname = params.username.trim().toLowerCase();
 
   const { data: profile } = await (supabase.from("profiles") as any)
     .select(
