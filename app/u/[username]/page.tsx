@@ -43,10 +43,9 @@ export default async function PublicProfilePage({ params }: { params: { username
   const supabase = createClient(supabaseUrl, serviceRoleKey);
   const uname = params.username?.trim().toLowerCase();
 
-  const { data, error } = await (supabase.from("profiles") as any)
-    .select(
-      "id,full_name,username,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin"
-    )
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, username")
     .eq("username", uname)
     .maybeSingle();
 
