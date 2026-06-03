@@ -118,20 +118,40 @@ export default function DashboardPage() {
     <main className="premium-page" style={{ paddingTop: "72px" }}>
       <section className="premium-card dashboard-card" style={{ maxWidth: 1200, margin: "2rem auto" }}>
         <div className="dashboard-hero">
-          <h1 style={{ margin: 0 }}>{displayName ? `Welcome back, ${displayName}` : "Welcome back."}</h1>
-          <p className="homepage-section-text" style={{ margin: "0.8rem 0 0" }}>
-            {isProfessional
-              ? "This is your premium hub for profile edits, posts, and community updates."
-              : "Browse verified professionals, update your public details, and find the access you need."}
+          <p className="homepage-kicker">Your Dashboard</p>
+          <h1 style={{ margin: "0 0 0.5rem" }}>Your command center for connection and impact.</h1>
+          <p className="homepage-section-text" style={{ margin: "0.8rem 0 1.5rem", maxWidth: "640px", lineHeight: "1.6" }}>
+            Here's where access turns into action. Browse opportunities, stay connected with people you've found, and shape your path forward.
           </p>
-          <p className="muted" style={{ margin: "0.8rem 0 0", fontStyle: "italic" }}>
-            Dashboard is your personal member control center. Admin command center access is separate and available at /admin for approved staff.
-          </p>
-          <div className="page-actions">
-            {isProfessional ? <Link className="gold-btn" href="/posts/create">Create post</Link> : null}
-            <Link className="gold-btn" href="/profile">Edit Profile</Link>
-            <Link className="gold-btn" href="/directory">Browse Directory</Link>
-            <Link className="gold-btn" href="/opportunities">View Opportunities</Link>
+          <div className="page-actions" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginBottom: "0" }}>
+            <Link href="/profile" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>👤</div>
+                <p className="homepage-feature-title">Complete Your Profile</p>
+                <p className="homepage-feature-copy">Add a photo, headline, and bio so people know who you are.</p>
+              </div>
+            </Link>
+            <Link href="/voices" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>🎤</div>
+                <p className="homepage-feature-title">Browse Voices</p>
+                <p className="homepage-feature-copy">Discover stories and insights from real professionals and community leaders.</p>
+              </div>
+            </Link>
+            <Link href="/opportunities" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>💼</div>
+                <p className="homepage-feature-title">Find Opportunities</p>
+                <p className="homepage-feature-copy">Search jobs, mentorships, collaborations, and community projects.</p>
+              </div>
+            </Link>
+            <Link href="/directory" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>📖</div>
+                <p className="homepage-feature-title">Explore Directory</p>
+                <p className="homepage-feature-copy">Connect with verified professionals, attorneys, traders, and creators.</p>
+              </div>
+            </Link>
           </div>
         </div>
 

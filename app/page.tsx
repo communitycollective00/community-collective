@@ -50,8 +50,8 @@ export default function HomePage() {
                     {action.label}
                   </Link>
                 ) : (
-                  <Link key={action.label} href={action.href} className="gold-link">
-                    {action.label}
+                  <Link key={action.label} href="/signup" className="gold-link">
+                    Get Involved
                   </Link>
                 )
               )}

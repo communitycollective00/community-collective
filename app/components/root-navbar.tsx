@@ -41,15 +41,15 @@ export default function RootNavBar() {
           </>
         ) : !loading ? (
           <>
-            <Link href="/get-access" className="gold-link">
-              Get Access
+            <Link href="/signup" className="gold-link">
+              Get Involved
             </Link>
             <Link href="/login">Login</Link>
           </>
         ) : (
           <>
-            <Link href="/get-access" className="gold-link">
-              Get Access
+            <Link href="/signup" className="gold-link">
+              Get Involved
             </Link>
             <Link href="/login">Login</Link>
           </>

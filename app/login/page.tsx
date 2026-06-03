@@ -80,23 +80,26 @@ export default function LoginPage() {
   return (
     <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card">
-        <h1 style={{ fontSize: "2.8rem", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>Welcome back.</h1>
-        <p style={{ color: "#d3c18e", marginBottom: "1.5rem", maxWidth: "640px" }}>Sign in securely to access your dashboard, profile, and premium directory tools.</p>
+        <h1 style={{ fontSize: "2.8rem", letterSpacing: "0.08em", marginBottom: "0.25rem" }}>Welcome back.</h1>
+        <p style={{ color: "#d3c18e", marginBottom: "2rem", maxWidth: "640px", fontSize: "1rem", lineHeight: "1.6" }}>Sign in to your Community Collective account and access your dashboard, saved items, and the people and opportunities that matter to you.</p>
 
         <form onSubmit={login} className="premium-form">
           <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" />
-          <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
-          <button className="gold-btn" type="submit" disabled={isLoading}>Login</button>
+          <div style={{ position: "relative" }}>
+            <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
+            <button type="button" className="gold-link" onClick={() => { /* Forgot password route to be implemented */ }} style={{ position: "absolute", right: "0", top: "50%", transform: "translateY(-50%)", fontSize: "0.875rem", padding: 0, background: "none", border: "none", cursor: "pointer" }}>Forgot?</button>
+          </div>
+          <button className="gold-btn" type="submit" disabled={isLoading}>Sign In</button>
         </form>
 
-        <div className="quick-links">
-          <button type="button" className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>
+        <div style={{ marginTop: "1.5rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+          <button type="button" className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"} style={{ width: "100%", marginBottom: "0.75rem" }}>
             {googleEnabled ? "Continue with Google" : "Google sign-in coming soon"}
           </button>
-          <button type="button" className="gold-btn" onClick={magicLink}>Send Magic Link (Backup)</button>
+          <button type="button" className="gold-link" onClick={magicLink} style={{ display: "block", textAlign: "center", width: "100%", fontSize: "0.875rem" }}>Or use magic link</button>
         </div>
 
-        <p className="muted" style={{ marginTop: 12 }}>Don't have an account? <Link href="/signup" className="gold-link">Sign up</Link></p>
+        <p className="muted" style={{ marginTop: "2rem" }}>New to Community Collective? <Link href="/signup" className="gold-link">Create your account</Link> — it's instant.</p>
 
         {!googleEnabled && <p className="muted">Google sign-in coming soon. Please use email login or magic link.</p>}
         {status && <p className="muted">{status}</p>}
