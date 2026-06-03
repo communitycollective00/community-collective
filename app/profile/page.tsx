@@ -12,6 +12,7 @@ export default function ProfilePage() {
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
+  const [savedUsername, setSavedUsername] = useState("");
   const [bio, setBio] = useState("");
   const [city, setCity] = useState("");
   const [stateRegion, setStateRegion] = useState("");
@@ -52,7 +53,10 @@ export default function ProfilePage() {
       }
 
       if (profile.full_name != null) setFullName(profile.full_name);
-      if (profile.username != null) setUsername(profile.username);
+      if (profile.username != null) {
+        setUsername(profile.username);
+        setSavedUsername(profile.username);
+      }
       if (profile.bio != null) setBio(profile.bio);
       if (profile.city != null) setCity(profile.city);
       if (profile.state != null) setStateRegion(profile.state);
@@ -141,6 +145,9 @@ export default function ProfilePage() {
     }
 
     setStatus("Profile updated.");
+    if (username.trim()) {
+      setSavedUsername(username.trim());
+    }
   };
 
   const hasProfileContent = Boolean(fullName || username || bio || industry || website || instagram || twitter || linkedin);
@@ -157,8 +164,12 @@ export default function ProfilePage() {
             <p className="homepage-kicker">Member profile</p>
             <h1 className="homepage-section-title" style={{ marginBottom: "0.5rem" }}>{profileHeadline}</h1>
             <p className="homepage-section-text" style={{ marginBottom: 0 }}>{profileSubtext}</p>
-            {username ? (
-              <p style={{ marginTop: 8 }}><Link href={`/u/${username}`} className="gold-link">View public profile</Link></p>
+            {savedUsername.trim() ? (
+              <p style={{ marginTop: 8 }}>
+                <Link href={`/u/${encodeURIComponent(savedUsername.trim())}`} className="gold-link">
+                  View public profile
+                </Link>
+              </p>
             ) : null}
           </div>
 
