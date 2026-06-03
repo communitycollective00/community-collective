@@ -43,7 +43,18 @@ export default async function DebugEnvPage() {
           <p><strong>Query success:</strong> {supabaseUrlExists && serviceRoleKeyExists ? (querySuccess ? "yes" : "no") : "n/a"}</p>
           <p><strong>Data returned:</strong> {supabaseUrlExists && serviceRoleKeyExists ? (dataReturned ? "yes" : "no") : "n/a"}</p>
           <p><strong>Query error:</strong> {queryError ?? "none"}</p>
-          <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", fontSize: "0.85rem", backgroundColor: "#f5f5f5", padding: "0.75rem", borderRadius: "4px" }}>
+          <p><strong>Returned Row:</strong></p>
+          <pre
+            style={{
+              background: "#111",
+              color: "#00ff88",
+              padding: "1rem",
+              borderRadius: "8px",
+              overflowX: "auto",
+              whiteSpace: "pre-wrap",
+              fontSize: "14px",
+            }}
+          >
             {JSON.stringify(data, null, 2)}
           </pre>
         </div>
