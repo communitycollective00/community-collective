@@ -599,10 +599,140 @@ select {
 }
 
 @media (max-width: 768px) {
-  .page-search-row,
-  .form-row,
-  .premium-links {
+  .page-search-row {
     flex-direction: column;
+  }
+
+  /* Hide desktop links and show a mobile toggle/menu instead */
+  .premium-links {
+    display: none !important;
+  }
+
+  .nav-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .mobile-menu-toggle {
+    display: block;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+
+  /* Make the nav stack vertically so the mobile menu pushes content */
+  .premium-nav {
+    display: block;
+  }
+
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.75rem 1rem 1rem 1rem;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    background: rgba(7,6,5,0.92);
+    width: 100%;
+  }
+
+  .mobile-menu.open {
+    display: block;
+  }
+
+  .mobile-menu a,
+  .mobile-menu button {
+    display: block;
+    padding: 0.75rem 0;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  /* Ensure profile and forms collapse to single column */
+  .dashboard-card,
+  .premium-card,
+  .page-panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 1rem auto;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .page-panel-inner,
+  .page-grid,
+  .page-card-panel {
+    grid-template-columns: 1fr !important;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+
+  .page-input {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .profile-avatar {
+    width: 88px;
+    height: 88px;
+    margin: 0.5rem auto;
+    display: block;
+  }
+
+  .profile-meta {
+    justify-content: center;
+  }
+
+  .dashboard-card .gold-btn {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  /* Mobile bottom navigation */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 56px;
+    background: rgba(7,6,5,0.96);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1001;
+  }
+
+  .mobile-bottom-nav a {
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mobile-bottom-nav .mb-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .mobile-bottom-nav .mb-label {
+    font-size: 10px;
+    margin-top: 3px;
+  }
+
+  /* Add bottom padding so page content isn't hidden behind nav */
+  .premium-page {
+    padding-bottom: 88px;
   }
 
   .homepage-hero {
@@ -634,6 +764,97 @@ select {
   background: linear-gradient(180deg, rgba(18,12,6,0.86), rgba(8,6,4,0.70));
   box-shadow: 0 18px 60px rgba(0,0,0,0.28), inset 0 0 80px rgba(200,157,53,0.04);
   backdrop-filter: blur(12px);
+}
+
+/* Dashboard/profile card variant */
+.dashboard-card {
+  max-width: 1100px;
+  margin: 2rem auto;
+}
+
+@media (max-width: 768px) {
+  .dashboard-card {
+    max-width: 100%;
+    margin: 1rem;
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .page-panel {
+    padding: 1rem;
+  }
+
+  .page-panel-inner {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .page-panel-inner > div:first-child {
+    order: 0;
+  }
+
+  .profile-avatar {
+    width: 88px;
+    height: 88px;
+    margin: 0.5rem auto;
+    display: block;
+  }
+
+  .profile-meta {
+    justify-content: center;
+  }
+
+  .dashboard-card .gold-btn {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.95rem;
+  }
+
+  /* Mobile bottom navigation */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 56px;
+    background: rgba(7,6,5,0.96);
+    border-top: 1px solid rgba(255,255,255,0.04);
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1001;
+  }
+
+  .mobile-bottom-nav a {
+    color: var(--muted);
+    font-size: 0.85rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Add bottom padding so page content isn't hidden behind nav */
+  .premium-page {
+    padding-bottom: 88px;
+  }
+}
+
+/* Auth feature cards for signup */
+.auth-feature-cards {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.auth-card {
+  background: linear-gradient(180deg, rgba(18,12,6,0.86), rgba(8,6,4,0.7));
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  flex: 1 1 0;
+  text-align: center;
+}
+@media (max-width: 768px) {
+  .auth-feature-cards { flex-direction: column; }
 }
 
 .homepage-content {

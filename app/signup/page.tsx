@@ -134,19 +134,22 @@ export default function SignupPage() {
     setStatus(error ? "Could not send magic link right now. Please verify your email and try again." : "Magic link sent. Check your inbox.");
   };
 
-  return <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}><section className="premium-card"><h1 style={{ fontSize: "2.8rem", letterSpacing: "0.08em", marginBottom: "0.25rem" }}>Welcome to Community Collective.</h1><p style={{ color: "#d3c18e", marginBottom: "2rem", maxWidth: "640px", fontSize: "1rem", lineHeight: "1.6" }}>Join now and get instant access to a network of real professionals, trusted opportunities, community stories, and the knowledge you need to move forward.</p><form onSubmit={signup} className="premium-form">
+  return <main className="premium-page"><section className="premium-card"><h1>Join Community Collective</h1><p className="muted">Create your profile, discover opportunities, and connect with trusted people in the network.</p>
+  <div className="auth-feature-cards">
+    <div className="auth-card"><h4>Access</h4><p className="muted">Find opportunities and members relevant to your work.</p></div>
+    <div className="auth-card"><h4>Visibility</h4><p className="muted">Showcase your profile to trusted community members.</p></div>
+    <div className="auth-card"><h4>Community</h4><p className="muted">Connect, collaborate, and get discovered.</p></div>
+  </div>
+  <form onSubmit={signup} className="premium-form">
     <input placeholder="Full name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
     <input placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
     <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
     <input required type="password" placeholder="Password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
     <input required type="password" placeholder="Confirm password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })} />
-    <button className="gold-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Creating..." : "Join Now"}</button>
+    <button className="gold-btn" type="submit" disabled={isSubmitting}>{isSubmitting ? "Creating..." : "Create Account"}</button>
   </form>
-  <div style={{ marginTop: "1.5rem", paddingTop: "1.5rem", borderTop: "1px solid rgba(255,255,255,0.1)" }}>
-    <button className="gold-btn" onClick={continueWithGoogle} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"} style={{ width: "100%", marginBottom: "0.75rem" }}>{googleEnabled ? "Continue with Google" : "Google sign-in coming soon"}</button>
-    <button className="gold-link" onClick={sendMagicLink} style={{ display: "block", textAlign: "center", width: "100%", fontSize: "0.875rem" }}>Or use magic link</button>
-  </div>
+  <div className="quick-links"><button className="gold-btn" onClick={continueWithGoogle} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>{googleEnabled ? "Continue with Google" : "Google sign-in coming soon"}</button><button className="gold-btn" onClick={sendMagicLink}>Send Magic Link (Backup)</button></div>
   {!googleEnabled && <p className="muted">Google sign-in coming soon. Please use email signup or magic link.</p>}
-  <p className="muted" style={{ marginTop: "2rem" }}>Already a member? <Link className="gold-link" href="/login">Sign in here</Link></p>
+  <p className="muted">Professional or brand? <Link className="gold-link" href="/apply">Apply to be featured</Link></p>
   {status && <p className="muted">{status}</p>}</section></main>;
 }
