@@ -12,18 +12,20 @@ export default async function DebugEnvPage() {
   let querySuccess = false;
   let queryError: string | null = null;
   let dataReturned = false;
+  let data: any = null;
 
   if (supabaseUrlExists && serviceRoleKeyExists) {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
-    const { data, error } = await (supabase.from("profiles") as any)
+    const { data: result, error } = await (supabase.from("profiles") as any)
       .select("id,username")
       .eq("username", "dpugh40")
       .maybeSingle();
 
     querySuccess = !error;
     queryError = error?.message ?? null;
-    dataReturned = Boolean(data);
+    dataReturned = Boolean(result);
+    data = result;
   }
 
   return (
@@ -41,6 +43,9 @@ export default async function DebugEnvPage() {
           <p><strong>Query success:</strong> {supabaseUrlExists && serviceRoleKeyExists ? (querySuccess ? "yes" : "no") : "n/a"}</p>
           <p><strong>Data returned:</strong> {supabaseUrlExists && serviceRoleKeyExists ? (dataReturned ? "yes" : "no") : "n/a"}</p>
           <p><strong>Query error:</strong> {queryError ?? "none"}</p>
+          <pre style={{ whiteSpace: "pre-wrap", wordWrap: "break-word", fontSize: "0.85rem", backgroundColor: "#f5f5f5", padding: "0.75rem", borderRadius: "4px" }}>
+            {JSON.stringify(data, null, 2)}
+          </pre>
         </div>
 
         <Link href="/">← Back to home</Link>
