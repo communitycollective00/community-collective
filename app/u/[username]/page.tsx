@@ -96,7 +96,7 @@ export default async function PublicProfilePage({ params }: { params: { username
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
-      <section className="premium-card dashboard-card public-profile-card" style={{ maxWidth: "960px", margin: "1rem auto", padding: 0, overflow: "hidden" }}>
+      <section className="premium-card dashboard-card public-profile-card" style={{ maxWidth: "1100px", margin: "1rem auto", padding: 0, overflow: "hidden" }}>
         <div className="public-profile-hero" style={{ backgroundImage: profileRow.banner_url ? `url(${profileRow.banner_url})` : undefined }}>
           <div className="public-profile-hero-overlay" />
         </div>
@@ -114,7 +114,7 @@ export default async function PublicProfilePage({ params }: { params: { username
           </div>
           <div className="public-profile-header-copy">
             <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", flexWrap: "wrap" }}>
-              <h1 style={{ margin: 0, fontSize: "2rem" }}>{displayName}</h1>
+              <h1>{displayName}</h1>
               {profileRow.is_featured && <span className="profile-badge">Featured</span>}
               {profileRow.is_approved && <span className="profile-badge">Verified</span>}
             </div>
@@ -168,13 +168,27 @@ export default async function PublicProfilePage({ params }: { params: { username
           </div>
         </section>
 
+        <section className="public-profile-featured" style={{ padding: "0 1.5rem 1.5rem" }}>
+          <div className="public-profile-section-header">
+            <h2>Featured</h2>
+          </div>
+          <div className="public-profile-content-grid">
+            <div className="public-profile-empty-card">
+              <h3>No featured content yet</h3>
+              <p>Highlights, media, and curated work will appear here.</p>
+            </div>
+            <div className="public-profile-empty-card public-profile-placeholder-card" />
+            <div className="public-profile-empty-card public-profile-placeholder-card" />
+          </div>
+        </section>
+
         <section className="public-profile-posts" style={{ padding: "0 1.5rem 1.5rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem", gap: "1rem" }}>
-            <h2 style={{ margin: 0, fontSize: "1.5rem" }}>Posts</h2>
+          <div className="public-profile-section-header">
+            <h2>Posts</h2>
           </div>
 
           {posts.length === 0 ? (
-            <div className="public-profile-empty">
+            <div className="public-profile-empty-card public-profile-empty-card--large">
               <h3>No posts yet</h3>
               <p>Photos, videos, interviews, and opportunities will appear here.</p>
             </div>
@@ -196,6 +210,20 @@ export default async function PublicProfilePage({ params }: { params: { username
               ))}
             </div>
           )}
+        </section>
+
+        <section className="public-profile-opportunities" style={{ padding: "0 1.5rem 1.5rem" }}>
+          <div className="public-profile-section-header">
+            <h2>Opportunities</h2>
+          </div>
+          <div className="public-profile-content-grid">
+            <div className="public-profile-empty-card">
+              <h3>No opportunities yet</h3>
+              <p>Relevant openings and collaboration opportunities will show here.</p>
+            </div>
+            <div className="public-profile-empty-card public-profile-placeholder-card" />
+            <div className="public-profile-empty-card public-profile-placeholder-card" />
+          </div>
         </section>
       </section>
     </main>
