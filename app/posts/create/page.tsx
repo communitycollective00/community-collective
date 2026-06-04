@@ -17,6 +17,10 @@ export default function CreatePostPage() {
   const [postType, setPostType] = useState("article");
   const [mediaUrl, setMediaUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [caption, setCaption] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [visibility, setVisibility] = useState("public");
+  const [tags, setTags] = useState("");
   const [status, setStatus] = useState("");
   const router = useRouter();
   const { user, profile: providerProfile, role, loading: authLoading } = useAuth();
@@ -52,9 +56,14 @@ export default function CreatePostPage() {
     const payload = {
       title: title.trim(),
       body: body.trim() || null,
+      caption: caption.trim() || null,
       post_type: postType,
+      media_type: postType,
       media_url: mediaUrl.trim() || null,
-      link_url: linkUrl.trim() || null,
+      thumbnail_url: thumbnailUrl.trim() || null,
+      external_url: linkUrl.trim() || null,
+      visibility: visibility,
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
       image_url: postType === "image" ? mediaUrl.trim() || null : null,
     };
 
@@ -94,6 +103,7 @@ export default function CreatePostPage() {
         ) : (
           <form className="premium-form" onSubmit={handleSubmit}>
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title" />
+            <input value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Short caption (optional)" />
             <select value={postType} onChange={(e) => setPostType(e.target.value)}>
               <option value="article">Article / update</option>
               <option value="video">Video</option>
@@ -102,8 +112,17 @@ export default function CreatePostPage() {
             </select>
             <textarea rows={4} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Describe the value of this post, resource, or opportunity." />
             {postType !== "article" ? (
-              <input value={mediaUrl} onChange={(e) => setMediaUrl(e.target.value)} placeholder={postType === "video" ? "Video URL" : postType === "link" ? "External link URL" : "Image URL"} />
+              <>
+                <input value={mediaUrl} onChange={(e) => setMediaUrl(e.target.value)} placeholder={postType === "video" ? "Video URL" : postType === "link" ? "External link URL" : "Image URL"} />
+                <input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} placeholder="Thumbnail image URL (optional)" />
+              </>
             ) : null}
+            <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (comma separated)" />
+            <select value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+              <option value="public">Public</option>
+              <option value="members">Members</option>
+              <option value="private">Private</option>
+            </select>
             <button className="gold-btn" type="submit">Publish post</button>
           </form>
         )}

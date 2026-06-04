@@ -84,9 +84,10 @@ export default async function PublicProfilePage({ params }: { params: { username
 
   const { data: postsData } = await supabase
     .from("posts")
-    .select("id,author_id,title,body,post_type,media_url,link_url,image_url,is_published,created_at,updated_at")
+    .select("id,author_id,title,caption,body,post_type,media_type,media_url,thumbnail_url,external_url,link_url,image_url,visibility,status,is_featured,tags,location,created_at,updated_at")
     .eq("author_id", profileRow.id)
-    .eq("is_published", true)
+    .eq("status", 'published')
+    .eq("visibility", 'public')
     .order("created_at", { ascending: false });
 
   const posts: PostRow[] = postsData ?? [];

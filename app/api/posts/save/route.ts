@@ -10,6 +10,15 @@ type PostPayload = {
   media_url?: string;
   link_url?: string;
   image_url?: string;
+  caption?: string | null;
+  thumbnail_url?: string | null;
+  media_type?: string | null;
+  visibility?: string | null;
+  status?: string | null;
+  is_featured?: boolean | null;
+  tags?: string[] | null;
+  location?: string | null;
+  external_url?: string | null;
 };
 
 export async function POST(request: Request) {
@@ -54,7 +63,14 @@ export async function POST(request: Request) {
     title: payload.title?.trim() || null,
     body: payload.body ?? null,
     post_type: payload.post_type || "article",
+    caption: payload.caption ?? null,
     media_url: payload.media_url ?? null,
+    thumbnail_url: payload.thumbnail_url ?? null,
+    external_url: payload.external_url ?? null,
+    visibility: payload.visibility || 'public',
+    status: payload.status || (isProfessionalRole(userRole) || isAdminRole(userRole) ? 'published' : 'pending_review'),
+    is_featured: payload.is_featured ?? false,
+    tags: payload.tags ?? null,
     link_url: payload.link_url ?? null,
     image_url: payload.image_url ?? null,
     updated_at: new Date().toISOString(),
