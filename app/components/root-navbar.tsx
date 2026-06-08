@@ -43,6 +43,9 @@ export default function RootNavBar() {
 
           {isAuthed ? (
             <>
+              <Link href="/create" className="gold-btn create-btn">
+                + Create
+              </Link>
               {isAdminRole(role) && <Link href="/admin">Admin</Link>}
               <Link href="/dashboard">Dashboard</Link>
               <Link href="/profile">Profile</Link>
@@ -82,6 +85,9 @@ export default function RootNavBar() {
         <Link href="/recommend">Spotlight</Link>
         {isAuthed ? (
           <>
+            <Link href="/create" className="gold-link">
+              + Create
+            </Link>
             {isAdminRole(role) && <Link href="/admin">Admin</Link>}
             <Link href="/dashboard">Dashboard</Link>
             <Link href="/profile">Profile</Link>
@@ -111,6 +117,12 @@ export default function RootNavBar() {
             <span className="mb-icon">🗣️</span>
             <span className="mb-label">Voices</span>
           </Link>
+          {isAuthed && (
+            <Link href="/create">
+              <span className="mb-icon">➕</span>
+              <span className="mb-label">Create</span>
+            </Link>
+          )}
           <Link href="/directory">
             <span className="mb-icon">📇</span>
             <span className="mb-label">Directory</span>
