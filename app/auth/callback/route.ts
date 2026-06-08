@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
   // absolute and relative forms as long as they resolve to the same origin.
   // Allow admin routes (`/admin` and `/admin/*`) and other internal paths.
   const nextParam = requestUrl.searchParams.get("next");
-  let safeNext = "/dashboard";
+  let safeNext = "/";
   if (nextParam) {
     try {
       const candidate = new URL(nextParam, request.url);

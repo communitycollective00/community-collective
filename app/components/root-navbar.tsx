@@ -43,8 +43,8 @@ export default function RootNavBar() {
 
           {isAuthed ? (
             <>
-              <Link href="/create" className="gold-btn create-btn">
-                + Create
+              <Link href="/create" className="create-circle" aria-label="Create">
+                <span aria-hidden>＋</span>
               </Link>
               {isAdminRole(role) && <Link href="/admin">Admin</Link>}
               <Link href="/dashboard">Dashboard</Link>
@@ -86,7 +86,7 @@ export default function RootNavBar() {
         {isAuthed ? (
           <>
             <Link href="/create" className="gold-link">
-              + Create
+              <span className="create-inline">＋</span>
             </Link>
             {isAdminRole(role) && <Link href="/admin">Admin</Link>}
             <Link href="/dashboard">Dashboard</Link>

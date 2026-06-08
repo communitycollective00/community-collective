@@ -240,7 +240,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const currentPath = window.location.pathname;
             const authPaths = ["/", "/login", "/signup", "/auth/callback", "/get-access"];
             if (authPaths.includes(currentPath) || currentPath.startsWith("/auth/")) {
-              window.location.href = "/dashboard";
+              try {
+                const params = new URLSearchParams(window.location.search || "");
+                const nextParam = params.get("next");
+                if (nextParam) {
+                  try {
+                    const candidate = new URL(nextParam, window.location.href);
+                    if (candidate.origin === window.location.origin && candidate.pathname.startsWith("/")) {
+                      window.location.href = candidate.pathname + (candidate.search || "") + (candidate.hash || "");
+                    } else {
+                      window.location.href = "/";
+                    }
+                  } catch (e) {
+                    window.location.href = "/";
+                  }
+                } else {
+                  window.location.href = "/";
+                }
+              } catch (e) {
+                window.location.href = "/";
+              }
             }
           } catch (e) {}
         } else {

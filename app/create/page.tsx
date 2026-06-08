@@ -71,7 +71,7 @@ export default function CreatePage() {
           <p>Share a video link</p>
         </Link>
 
-        <Link href="/create/live" className="create-action-card disabled">
+        <Link href="/create/live" className="create-action-card">
           <div className="card-icon">🔴</div>
           <h2>Live</h2>
           <p>Coming soon</p>
