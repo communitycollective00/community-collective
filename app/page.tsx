@@ -1,24 +1,157 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { HomepageCard } from "./components/homepage-card";
-import { homepageContent } from "./homepage-content";
+import { getSupabaseClient } from "../lib/supabase";
+import MediaFeed from "./components/media-feed";
+
+interface Post {
+  id: string;
+  title: string;
+  body: string;
+  post_type: string;
+  media_url: string | null;
+  image_url: string | null;
+  video_url: string | null;
+  thumbnail_url: string | null;
+  caption: string | null;
+  location: string | null;
+  tags: string[] | null;
+  author_id: string;
+  author_name: string;
+  author_username: string | null;
+  author_avatar: string | null;
+  created_at: string;
+  interview_guest_name: string | null;
+  interview_guest_title: string | null;
+  interview_guest_organization: string | null;
+  interview_cover_url: string | null;
+  interview_summary: string | null;
+  interview_key_takeaways: string[] | null;
+  media_type: string | null;
+  status: string | null;
+  visibility: string | null;
+}
 
 export default function HomePage() {
-  const {
-    hero,
-    featuredStory,
-    peopleBuildingThings,
-    insideAccess,
-    opportunitiesToday,
-    realGame,
-    communityStories,
-    joinMovement,
-  } = homepageContent;
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
+
+  async function loadPosts() {
+    try {
+      setLoading(true);
+      const supabase = getSupabaseClient();
+
+      const { data, error: dbError } = await (supabase.from("posts") as any)
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      if (dbError) {
+        throw dbError;
+      }
+
+      const postsData = (data || []).filter((post: any) => {
+        const published = post.is_published === true || post.status === "published";
+        const visible = post.visibility === undefined || post.visibility === "public";
+        return published && visible;
+      });
+
+      const authorIds = Array.from(
+        new Set(postsData.map((p: any) => p.author_id || p.user_id).filter(Boolean))
+      );
+
+      const { data: profiles } = await (supabase.from("profiles") as any)
+        .select("id,full_name,username,avatar_url")
+        .in("id", authorIds);
+
+      const profileMap = new Map(
+        (profiles || []).map((p) => [
+          p.id,
+          {
+            name: p.full_name || "Creator",
+            username: p.username,
+            avatar: p.avatar_url,
+          },
+        ])
+      );
+
+      const enrichedPosts = postsData.map((post: any) => {
+        const authorId = post.author_id || post.user_id || "";
+        const profile = profileMap.get(authorId) || {
+          name: "Creator",
+          username: null,
+          avatar: null,
+        };
+        return {
+          ...post,
+          author_id: authorId,
+          author_name: (profile as any).name || "Creator",
+          author_username: (profile as any).username,
+          author_avatar: (profile as any).avatar,
+        };
+      });
+
+      setPosts(enrichedPosts);
+    } catch (err) {
+      console.error("Failed to load posts:", err);
+      setError(err instanceof Error ? err.message : "Failed to load posts");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const handleSave = async (postId: string, saved: boolean) => {
+    try {
+      const supabase = getSupabaseClient();
+      const user = await supabase.auth.getUser();
+
+      if (!user.data.user) return;
+
+      if (saved) {
+        await (supabase.from("post_saves") as any).insert({
+          user_id: user.data.user.id,
+          post_id: postId,
+        });
+      } else {
+        await (supabase.from("post_saves") as any)
+          .delete()
+          .eq("user_id", user.data.user.id)
+          .eq("post_id", postId);
+      }
+    } catch (err) {
+      console.error("Failed to save post:", err);
+    }
+  };
+
+  const handleShare = (postId: string) => {
+    const post = posts.find((p) => p.id === postId);
+    if (!post) return;
+
+    const text = `Check out "${post.title || "this post"}" on Community Collective`;
+    const url = `${window.location.origin}/posts/${postId}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: "Community Collective",
+        text,
+        url,
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(`${text}\n${url}`);
+      alert("Link copied to clipboard!");
+    }
+  };
 
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px" }}>
-      <div className="homepage-content">
+      <div className="homepage-hero-section">
         <section className="homepage-hero">
           <div className="homepage-hero-bg" />
           <div className="homepage-hero-grid" />
@@ -28,423 +161,94 @@ export default function HomePage() {
           <div className="homepage-hero-copy">
             <div className="homepage-hero-ribbon">
               <span className="homepage-hero-ribbon-pulse" />
-              <p>{hero.bannerText}</p>
+              <p>Now in Media</p>
             </div>
             <h1 className="homepage-hero-title">
-              {hero.headline.map((segment, index) => (
-                <span key={index}>
-                  <span
-                    className={`homepage-highlight${segment.highlight ? ` homepage-highlight--${segment.highlight}` : ""}`}
-                  >
-                    {segment.text}
-                  </span>
-                  {index < hero.headline.length - 1 && <br />}
-                </span>
-              ))}
+              <span className="homepage-highlight">Real</span> stories.
+              <br />
+              <span className="homepage-highlight--green">Real</span> people.
+              <br />
+              <span className="homepage-highlight">Real</span> change.
             </h1>
-            <p className="homepage-hero-text">{hero.description}</p>
+            <p className="homepage-hero-text">
+              A media platform for documenting stories, sharing knowledge, creating access, and
+              highlighting opportunities.
+            </p>
             <div className="homepage-hero-actions">
-              {hero.actions.map((action) =>
-                action.variant === "button" ? (
-                  <Link key={action.label} href={action.href} className="gold-btn">
-                    {action.label}
-                  </Link>
-                ) : (
-                  <Link key={action.label} href="/signup" className="gold-link">
-                    Get Involved
-                  </Link>
-                )
-              )}
-            </div>
-            <div className="homepage-hero-pill">
-              <span className="homepage-hero-pill-number">{hero.pill.label}</span>
-              <span className="homepage-hero-pill-label">{hero.pill.labelSecondary}</span>
+              <Link href="/create/post" className="gold-btn">
+                Share Your Story
+              </Link>
+              <Link href="/directory" className="gold-link">
+                Explore Community
+              </Link>
             </div>
           </div>
         </section>
 
         <div className="ticker-wrap homepage-ticker">
           <div className="ticker-track">
-            <span className="ticker-item">Real People</span>
+            <span className="ticker-item">Interviews</span>
             <span className="tdot">◆</span>
-            <span className="ticker-item">Real Knowledge</span>
+            <span className="ticker-item">Stories</span>
             <span className="tdot">◆</span>
-            <span className="ticker-item">Real Access</span>
+            <span className="ticker-item">Opportunities</span>
             <span className="tdot">◆</span>
-            <span className="ticker-item">Know Your Rights</span>
+            <span className="ticker-item">Events</span>
             <span className="tdot">◆</span>
-            <span className="ticker-item">Free Legal Game Daily</span>
+            <span className="ticker-item">Knowledge</span>
             <span className="tdot">◆</span>
-            <span className="ticker-item">HUD Programs</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Casting Calls</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Verified Professionals</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Inside Access</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Community First</span>
+            <span className="ticker-item">Community</span>
             <span className="tdot">◆</span>
           </div>
         </div>
-
-        <section
-          className="homepage-section homepage-section--dark homepage-section--image"
-          style={
-            featuredStory.section.backgroundImage
-              ? {
-                  backgroundImage: `url(${featuredStory.section.backgroundImage})`,
-                  backgroundPosition: featuredStory.section.backgroundPosition,
-                }
-              : undefined
-          }
-        >
-          {featuredStory.section.backgroundImage ? (
-            <div
-              className="homepage-section-bg-overlay"
-              style={{ opacity: featuredStory.section.overlayOpacity }}
-            />
-          ) : null}
-          <div className="homepage-section-inner">
-            <div className="homepage-section-header">
-              <div>
-                <p className="homepage-kicker">Featured Story</p>
-                <h2 className="homepage-section-title">A local voice shaping real change.</h2>
-              </div>
-              <Link href="/voices" className="gold-link homepage-section-cta">
-                See All Voices →
-              </Link>
-            </div>
-            <div className="homepage-voice-grid">
-              {featuredStory.cards.map((card) => (
-                <HomepageCard
-                  key={`${card.title}-${card.role}-${card.city}`}
-                  title={card.title}
-                  subtitle={card.subtitle}
-                  image={card.image}
-                  role={card.role}
-                  city={card.city}
-                  description={card.description}
-                  link={card.link}
-                  className="homepage-voice-card"
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="homepage-section"
-          style={
-            peopleBuildingThings.section.backgroundImage
-              ? {
-                  backgroundImage: `url(${peopleBuildingThings.section.backgroundImage})`,
-                  backgroundPosition: peopleBuildingThings.section.backgroundPosition,
-                }
-              : undefined
-          }
-        >
-          {peopleBuildingThings.section.backgroundImage ? (
-            <div
-              className="homepage-section-bg-overlay"
-              style={{ opacity: peopleBuildingThings.section.overlayOpacity }}
-            />
-          ) : null}
-          <div className="homepage-section-inner">
-            <div className="homepage-section-header">
-              <div>
-                <p className="homepage-kicker">People Building Things</p>
-                <h2 className="homepage-section-title">The communities making progress right now.</h2>
-              </div>
-            </div>
-            <div className="homepage-feature-list">
-              {peopleBuildingThings.featureCards.map((card) => (
-                <HomepageCard
-                  key={`${card.title}-${card.role}-${card.city}`}
-                  title={card.title}
-                  subtitle={card.subtitle}
-                  image={card.image}
-                  role={card.role}
-                  city={card.city}
-                  description={card.description}
-                  link={card.link}
-                  className="homepage-feature-card"
-                />
-              ))}
-            </div>
-            <div className="homepage-category-grid">
-              {peopleBuildingThings.categoryCards.map((card) => (
-                <HomepageCard
-                  key={`${card.title}-${card.role}-${card.city}`}
-                  title={card.title}
-                  subtitle={card.subtitle}
-                  image={card.image}
-                  role={card.role}
-                  city={card.city}
-                  description={card.description}
-                  link={card.link}
-                  className="homepage-category-card"
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="homepage-section homepage-section--dark homepage-section--image"
-          style={
-            insideAccess.section.backgroundImage
-              ? {
-                  backgroundImage: `url(${insideAccess.section.backgroundImage})`,
-                  backgroundPosition: insideAccess.section.backgroundPosition,
-                }
-              : undefined
-          }
-        >
-          {insideAccess.section.backgroundImage ? (
-            <div
-              className="homepage-section-bg-overlay"
-              style={{ opacity: insideAccess.section.overlayOpacity }}
-            />
-          ) : null}
-          <div className="homepage-section-inner">
-            <div className="homepage-section-grid homepage-section-grid--split">
-              <div>
-                <p className="homepage-kicker">Inside Access</p>
-                <h2 className="homepage-section-title">The rooms you don’t usually see.</h2>
-                <p className="homepage-section-text">
-                  Curated access to trusted spaces, verified rooms, and knowledge-based gatherings shaped for community stewards.
-                </p>
-              </div>
-              <div className="homepage-access-grid">
-                {insideAccess.cards.map((card) => (
-                  <HomepageCard
-                    key={`${card.title}-${card.role}-${card.city}`}
-                    title={card.title}
-                    subtitle={card.subtitle}
-                    image={card.image}
-                    role={card.role}
-                    city={card.city}
-                    description={card.description}
-                    link={card.link}
-                    className="homepage-access-card"
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="homepage-section homepage-section--dark homepage-section--image"
-          style={
-            opportunitiesToday.section.backgroundImage
-              ? {
-                  backgroundImage: `url(${opportunitiesToday.section.backgroundImage})`,
-                  backgroundPosition: opportunitiesToday.section.backgroundPosition,
-                }
-              : undefined
-          }
-        >
-          {opportunitiesToday.section.backgroundImage ? (
-            <div
-              className="homepage-section-bg-overlay"
-              style={{ opacity: opportunitiesToday.section.overlayOpacity }}
-            />
-          ) : null}
-          <div className="homepage-section-inner">
-            <div className="homepage-section-header">
-              <div>
-                <p className="homepage-kicker">Opportunities Today</p>
-                <h2 className="homepage-section-title">Your next move is right here.</h2>
-              </div>
-              <Link href="/opportunities" className="gold-link homepage-section-cta">
-                See Opportunities →
-              </Link>
-            </div>
-            <div className="homepage-grid-3">
-              {opportunitiesToday.cards.map((card) => (
-                <HomepageCard
-                  key={`${card.title}-${card.role}-${card.city}`}
-                  title={card.title}
-                  subtitle={card.subtitle}
-                  image={card.image}
-                  role={card.role}
-                  city={card.city}
-                  description={card.description}
-                  link={card.link}
-                  className="homepage-feature-card"
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="homepage-section"
-          style={
-            realGame.section.backgroundImage
-              ? {
-                  backgroundImage: `url(${realGame.section.backgroundImage})`,
-                  backgroundPosition: realGame.section.backgroundPosition,
-                }
-              : undefined
-          }
-        >
-          {realGame.section.backgroundImage ? (
-            <div className="homepage-section-bg-overlay" style={{ opacity: realGame.section.overlayOpacity }} />
-          ) : null}
-          <div className="homepage-section-inner">
-            <div className="homepage-section-header">
-              <div>
-                <p className="homepage-kicker">Real Game</p>
-                <h2 className="homepage-section-title">What they never<br />taught you.</h2>
-              </div>
-              <div className="homepage-section-copy">
-                <p className="homepage-section-text">
-                  From lawyers to CEOs, barbers to directors, welders to venue managers — real people sharing real knowledge. The stuff you don't learn until it's too late. Updated daily.
-                </p>
-              </div>
-            </div>
-            <div className="homepage-grid-3">
-              {realGame.cards.map((card) => (
-                <HomepageCard
-                  key={`${card.title}-${card.role}-${card.city}`}
-                  title={card.title}
-                  subtitle={card.subtitle}
-                  image={card.image}
-                  role={card.role}
-                  city={card.city}
-                  description={card.description}
-                  link={card.link}
-                  className="homepage-feature-card"
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="homepage-section"
-          style={
-            communityStories.section.backgroundImage
-              ? {
-                  backgroundImage: `url(${communityStories.section.backgroundImage})`,
-                  backgroundPosition: communityStories.section.backgroundPosition,
-                }
-              : undefined
-          }
-        >
-          {communityStories.section.backgroundImage ? (
-            <div
-              className="homepage-section-bg-overlay"
-              style={{ opacity: communityStories.section.overlayOpacity }}
-            />
-          ) : null}
-          <div className="homepage-section-inner">
-            <div className="homepage-section-header">
-              <div>
-                <p className="homepage-kicker">Community Stories</p>
-                <h2 className="homepage-section-title">Featured This Week</h2>
-              </div>
-              <Link href="/directory" className="gold-link homepage-section-cta">
-                Full Directory →
-              </Link>
-            </div>
-            <div className="homepage-grid-3">
-              {communityStories.cards.map((card) => (
-                <HomepageCard
-                  key={`${card.title}-${card.role}-${card.city}`}
-                  title={card.title}
-                  subtitle={card.subtitle}
-                  image={card.image}
-                  role={card.role}
-                  city={card.city}
-                  description={card.description}
-                  link={card.link}
-                  className="homepage-spotlight-card"
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section
-          className="homepage-section homepage-join-cta"
-          style={
-            joinMovement.section.backgroundImage
-              ? {
-                  backgroundImage: `url(${joinMovement.section.backgroundImage})`,
-                  backgroundPosition: joinMovement.section.backgroundPosition,
-                }
-              : undefined
-          }
-        >
-          {joinMovement.section.backgroundImage ? (
-            <div className="homepage-section-bg-overlay" style={{ opacity: joinMovement.section.overlayOpacity }} />
-          ) : null}
-          <div className="homepage-join-cta-inner">
-            <div>
-              <p className="homepage-kicker">Join The Movement</p>
-              <h2 className="homepage-section-title">{joinMovement.title}</h2>
-              <p className="homepage-section-text">{joinMovement.text}</p>
-            </div>
-            <div className="homepage-join-actions">
-              {joinMovement.actions.map((action) =>
-                action.variant === "button" ? (
-                  <Link key={action.label} href={action.href} className="gold-btn">
-                    {action.label}
-                  </Link>
-                ) : (
-                  <Link key={action.label} href={action.href} className="gold-link">
-                    {action.label}
-                  </Link>
-                )
-              )}
-            </div>
-          </div>
-        </section>
-
-        <footer className="homepage-footer">
-          <div className="footer-brand">
-            <p className="footer-tag">Community Collective</p>
-            <h2>Premium access for creators, professionals, and community stewards.</h2>
-            <p className="footer-description">
-              Build your profile, connect with verified professionals, and stay in the loop with opportunities designed for trusted collaborators.
-            </p>
-          </div>
-          <div className="footer-grid">
-            <div className="footer-section">
-              <h3>Quick Links</h3>
-              <ul>
-                <li><Link href="/directory">Directory</Link></li>
-                <li><Link href="/opportunities">Opportunities</Link></li>
-                <li><Link href="/voices">Voices</Link></li>
-                <li><Link href="/apply">Apply</Link></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h3>Member access</h3>
-              <ul>
-                <li><Link href="/signup">Join</Link></li>
-                <li><Link href="/login">Login</Link></li>
-                <li><Link href="/get-access">Get Access</Link></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h3>Contact & Help</h3>
-              <p>Questions, partnerships, or support?</p>
-              <p>
-                <a href="mailto:hello@communitycollective.org">hello@communitycollective.org</a>
-              </p>
-              <p className="footer-note">For website support or directory listing help, message our team anytime.</p>
-            </div>
-          </div>
-          <div className="footer-bottom">
-            <p>Explore the platform with confidence. Admin access is protected and available for approved staff only.</p>
-          </div>
-        </footer>
       </div>
+
+      <section className="media-feed-section">
+        <div className="media-feed-section-header">
+          <h2>Recent Stories</h2>
+          <Link href="/posts" className="gold-link">
+            View All →
+          </Link>
+        </div>
+
+        {error && (
+          <div style={{ padding: "2rem", textAlign: "center", color: "var(--red)" }}>
+            <p>Failed to load posts. Please try again later.</p>
+          </div>
+        )}
+
+        <MediaFeed
+          posts={posts.map((p) => ({
+            id: p.id,
+            type: (p.post_type || "story") as
+              | "interview"
+              | "event"
+              | "story"
+              | "insight"
+              | "opportunity",
+            creatorId: p.author_id,
+            creatorName: p.author_name,
+            creatorUsername: p.author_username,
+            creatorAvatar: p.author_avatar,
+            title: p.title,
+            caption: p.caption || p.body || "",
+            mediaUrl: p.image_url || p.media_url || p.thumbnail_url,
+            mediaType: p.media_type === "video" || p.post_type === "video" ? "video" : "image",
+            publishedAt: p.created_at,
+            location: p.location,
+            tags: p.tags,
+            guestName: p.interview_guest_name,
+            guestTitle: p.interview_guest_title,
+            guestOrganization: p.interview_guest_organization,
+            coverImage: p.interview_cover_url || p.image_url || p.media_url,
+            interviewSummary: p.interview_summary,
+            keyTakeaways: p.interview_key_takeaways,
+          }))}
+          loading={loading}
+          onSave={handleSave}
+          onShare={handleShare}
+        />
+      </section>
     </main>
   );
 }

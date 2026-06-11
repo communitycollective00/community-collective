@@ -82,15 +82,26 @@ export default async function PublicProfilePage({ params }: { params: { username
 
   const profileRow: ProfileRow = data;
 
-  const { data: postsData } = await supabase
+  let posts: PostRow[] = [];
+  const { data: authorPosts, error: authorError } = await supabase
     .from("posts")
-    .select("id,author_id,title,caption,body,post_type,media_type,media_url,thumbnail_url,external_url,link_url,image_url,visibility,status,is_featured,tags,location,created_at,updated_at")
+    .select("*")
     .eq("author_id", profileRow.id)
-    .eq("status", 'published')
-    .eq("visibility", 'public')
+    .eq("is_published", true)
     .order("created_at", { ascending: false });
 
-  const posts: PostRow[] = postsData ?? [];
+  if (!authorError) {
+    posts = authorPosts ?? [];
+  } else if (authorError.message?.includes("Could not find the 'author_id' column of 'posts'")) {
+    const { data: userPosts } = await supabase
+      .from("posts")
+      .select("*")
+      .eq("user_id", profileRow.id)
+      .eq("is_published", true)
+      .order("created_at", { ascending: false });
+    posts = userPosts ?? [];
+  }
+
   const displayName = profileRow.full_name || profileRow.username || "Community Member";
   const displayUsername = profileRow.username ? `@${profileRow.username}` : "";
   const displaySubtitle = [profileRow.industry, profileRow.location].filter(Boolean).join(" • ");

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseClient } from "../../../lib/supabase";
@@ -30,6 +30,11 @@ export default function CreateVideoPage() {
   }, [providerProfile, role, authLoading]);
 
   const canPublish = isProfessionalRole(profile?.role) || profile?.role === "admin";
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const openVideoPicker = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -37,8 +42,8 @@ export default function CreateVideoPage() {
       setStatus("Only verified professionals can publish.");
       return;
     }
-    if (!mediaUrl.trim() && !selectedFile) {
-      setStatus("Please add a video file or paste a video link.");
+    if (!selectedFile && !mediaUrl.trim()) {
+      setStatus("Please choose a video or paste a video link.");
       return;
     }
 
@@ -50,40 +55,49 @@ export default function CreateVideoPage() {
       return;
     }
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       title: caption.trim() || "Video",
-      caption: caption.trim() || null,
-      post_type: "video",
-      media_type: "video",
-      media_url: mediaUrl.trim(),
-      visibility: "public",
       body: caption.trim() || null,
+      post_type: "video",
+      media_url: undefined,
+      is_published: true,
     };
 
-    // If a local video file was selected, attempt to upload it to storage
     if (selectedFile) {
       try {
         const file = selectedFile;
         const sessionResp = await getSupabaseClient().auth.getSession();
         const userId = sessionResp?.data?.session?.user?.id;
+        if (!userId) {
+          setStatus("Unable to identify your user session.");
+          setIsSubmitting(false);
+          return;
+        }
         const fileExt = (file.name.split(".").pop() || "mp4").replace(/[^a-z0-9]/gi, "");
         const path = `${userId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
 
         const { error: uploadErr } = await getSupabaseClient().storage.from("media").upload(path, file, { upsert: true });
         if (uploadErr) {
-          setStatus("File upload not configured — please paste a video link instead.");
+          setStatus("Video upload failed. Try again or paste a video link.");
           setIsSubmitting(false);
           return;
         }
 
         const { data: urlData } = getSupabaseClient().storage.from("media").getPublicUrl(path);
         const publicUrl = urlData?.publicUrl || "";
+        if (!publicUrl) {
+          setStatus("Unable to generate file URL. Try again.");
+          setIsSubmitting(false);
+          return;
+        }
         payload.media_url = publicUrl;
       } catch (e) {
-        setStatus("Failed to upload video. Try pasting a link instead.");
+        setStatus("Failed to upload video. Try again.");
         setIsSubmitting(false);
         return;
       }
+    } else if (mediaUrl.trim()) {
+      payload.media_url = mediaUrl.trim();
     }
 
     const response = await fetch("/api/posts/save", {
@@ -102,7 +116,7 @@ export default function CreateVideoPage() {
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/");
   };
 
   if (!user || !canPublish) {
@@ -130,12 +144,13 @@ export default function CreateVideoPage() {
 
         <form className="create-form" onSubmit={handleSubmit}>
           <div className="form-group file-first-group">
-            <label htmlFor="video-file">Video</label>
             <input
+              ref={fileInputRef}
               id="video-file"
+              className="file-input-hidden"
               type="file"
               accept="video/*"
-              capture
+              capture="environment"
               onChange={(e) => {
                 const f = e.target.files?.[0] ?? null;
                 setSelectedFile(f);
@@ -145,6 +160,10 @@ export default function CreateVideoPage() {
                 }
               }}
             />
+
+            <button type="button" className="media-picker-button" onClick={openVideoPicker}>
+              {selectedName ? "Change video" : "Open Camera / Choose Video"}
+            </button>
 
             {selectedName && (
               <div className="video-selected">Selected: {selectedName}</div>
@@ -163,12 +182,12 @@ export default function CreateVideoPage() {
                   type="url"
                   value={mediaUrl}
                   onChange={(e) => setMediaUrl(e.target.value)}
-                  placeholder="https://youtube.com/watch?v=... or https://vimeo.com/..."
+                  placeholder="https://example.com/video.mp4"
                 />
               </div>
             )}
 
-            <p className="form-hint">Add a video from your device or paste an external link</p>
+            <p className="form-hint">Add a video from your device or paste a link</p>
           </div>
 
           <div className="form-group">

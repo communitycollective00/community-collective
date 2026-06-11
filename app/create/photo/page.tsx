@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseClient } from "../../../lib/supabase";
@@ -18,6 +18,7 @@ export default function CreatePhotoPage() {
   const [caption, setCaption] = useState("");
   const [status, setStatus] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
   const { user, profile: providerProfile, role, loading: authLoading } = useAuth();
 
@@ -32,9 +33,21 @@ export default function CreatePhotoPage() {
         URL.revokeObjectURL(previewUrl);
       }
     };
-  }, [providerProfile, role, authLoading]);
+  }, [providerProfile, role, authLoading, previewUrl]);
+
+  useEffect(() => {
+    if (fileInputRef.current && navigator.userActivation?.hasBeenActive) {
+      fileInputRef.current.click();
+    }
+  }, []);
 
   const canPublish = isProfessionalRole(profile?.role) || profile?.role === "admin";
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const openPhotoPicker = () => {
+    fileInputRef.current?.click();
+  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -42,8 +55,8 @@ export default function CreatePhotoPage() {
       setStatus("Only verified professionals can publish.");
       return;
     }
-    if (!mediaUrl.trim() && !selectedFile) {
-      setStatus("Please add a photo or paste a link.");
+    if (!selectedFile && !mediaUrl.trim()) {
+      setStatus("Please choose a photo or paste an image link.");
       return;
     }
 
@@ -55,53 +68,52 @@ export default function CreatePhotoPage() {
       return;
     }
 
-    const payload = {
+    const payload: Record<string, unknown> = {
       title: caption.trim() || "Photo",
-      caption: caption.trim() || null,
-      post_type: "image",
-      media_type: "image",
-      // If a file was selected we'll upload it to Supabase storage and set
-      // `media_url`/`image_url` to the resulting public URL. If storage is
-      // not configured (or upload fails), we currently fall back to an
-      // externally-provided URL (the `mediaUrl` input). To wire storage,
-      // connect here to `getSupabaseClient().storage.from('media').upload(...)`.
-      media_url: mediaUrl.trim(),
-      image_url: mediaUrl.trim(),
-      visibility: "public",
       body: caption.trim() || null,
+      post_type: "image",
+      media_url: undefined,
+      image_url: undefined,
+      is_published: true,
     };
 
-    // If a local file was selected, attempt to upload it to the 'media'
-    // storage bucket and replace the media_url with the public URL.
     if (selectedFile) {
       try {
         const file = selectedFile;
         const sessionResp = await getSupabaseClient().auth.getSession();
         const userId = sessionResp?.data?.session?.user?.id;
+        if (!userId) {
+          setStatus("Unable to identify your user session.");
+          setIsSubmitting(false);
+          return;
+        }
         const fileExt = (file.name.split(".").pop() || "jpg").replace(/[^a-z0-9]/gi, "");
         const path = `${userId}/${Date.now()}-${Math.random().toString(36).slice(2)}.${fileExt}`;
 
-        // upload to 'media' bucket; if your project uses a different bucket
-        // name change 'media' to the correct bucket.
         const { error: uploadErr } = await getSupabaseClient().storage.from("media").upload(path, file, { upsert: true });
         if (uploadErr) {
-          // Storage might not be configured in some environments (dev preview).
-          // In that case, surface a helpful message and instruct the user to
-          // paste an external URL instead.
-          setStatus("File upload not configured — please paste an external image link.");
+          setStatus("Photo upload failed. Try again or paste an image link.");
           setIsSubmitting(false);
           return;
         }
 
         const { data: urlData } = getSupabaseClient().storage.from("media").getPublicUrl(path);
         const publicUrl = urlData?.publicUrl || "";
+        if (!publicUrl) {
+          setStatus("Unable to generate file URL. Try again.");
+          setIsSubmitting(false);
+          return;
+        }
         payload.media_url = publicUrl;
         payload.image_url = publicUrl;
       } catch (e) {
-        setStatus("Failed to upload image. Try pasting a link instead.");
+        setStatus("Failed to upload photo. Try again.");
         setIsSubmitting(false);
         return;
       }
+    } else if (mediaUrl.trim()) {
+      payload.media_url = mediaUrl.trim();
+      payload.image_url = mediaUrl.trim();
     }
 
     const response = await fetch("/api/posts/save", {
@@ -120,7 +132,7 @@ export default function CreatePhotoPage() {
       return;
     }
 
-    router.push("/dashboard");
+    router.push("/");
   };
 
   if (!user || !canPublish) {
@@ -148,9 +160,10 @@ export default function CreatePhotoPage() {
 
         <form className="create-form" onSubmit={handleSubmit}>
           <div className="form-group file-first-group">
-            <label htmlFor="photo-file">Photo</label>
             <input
+              ref={fileInputRef}
               id="photo-file"
+              className="file-input-hidden"
               type="file"
               accept="image/*"
               capture="environment"
@@ -158,21 +171,22 @@ export default function CreatePhotoPage() {
                 const f = e.target.files?.[0] ?? null;
                 setSelectedFile(f);
                 if (f) {
-                  try {
-                    const obj = URL.createObjectURL(f);
-                    setPreviewUrl(obj);
-                    // keep mediaUrl empty until upload completes or user pastes a link
-                    setMediaUrl("");
-                    setStatus("");
-                  } catch (err) {}
+                  const obj = URL.createObjectURL(f);
+                  setPreviewUrl(obj);
+                  setMediaUrl("");
+                  setStatus("");
                 } else {
                   setPreviewUrl(null);
                 }
               }}
             />
 
+            <button type="button" className="media-picker-button" onClick={openPhotoPicker}>
+              {previewUrl ? "Change photo" : "Open Camera / Choose Photo"}
+            </button>
+
             {previewUrl && (
-              <div className="image-preview">
+              <div className="media-preview">
                 <img src={previewUrl} alt="Selected photo preview" />
               </div>
             )}
@@ -198,7 +212,7 @@ export default function CreatePhotoPage() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="photo-caption">Say something about it (optional)</label>
+            <label htmlFor="photo-caption">Say something about it</label>
             <textarea
               id="photo-caption"
               rows={4}
