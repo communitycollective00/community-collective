@@ -43,7 +43,6 @@ export default function CreatePhotoPage() {
 
   const canPublish = isProfessionalRole(profile?.role) || profile?.role === "admin";
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const openPhotoPicker = () => {
     fileInputRef.current?.click();
