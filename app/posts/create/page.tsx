@@ -4,13 +4,13 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { isProfessionalRole } from "../../../lib/roles";
+import { MediaCapture } from "../../components/media-capture";
 
 type ProfileData = { role: string | null };
 
-// TODO: If Supabase Storage is fully configured, replace URL-only media fields with a secure upload flow.
-
 export default function CreatePostPage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [postType, setPostType] = useState("article");
@@ -29,6 +29,7 @@ export default function CreatePostPage() {
       }
 
       const user = session.user;
+      setUserId(user.id);
       const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
         .select("role")
         .eq("id", user.id)
@@ -50,6 +51,14 @@ export default function CreatePostPage() {
     }
     if (!title.trim()) {
       setStatus("Title is required.");
+      return;
+    }
+    if ((postType === "image" || postType === "video") && !mediaUrl.trim()) {
+      setStatus(`Please capture or select a ${postType} before publishing.`);
+      return;
+    }
+    if (postType === "link" && !linkUrl.trim()) {
+      setStatus("Please enter a link URL.");
       return;
     }
 
@@ -107,15 +116,37 @@ export default function CreatePostPage() {
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title" />
             <select value={postType} onChange={(e) => setPostType(e.target.value)}>
               <option value="article">Article / update</option>
+              <option value="image">Photo</option>
               <option value="video">Video</option>
               <option value="link">Link</option>
-              <option value="image">Image</option>
             </select>
             <textarea rows={4} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Describe the value of this post, resource, or opportunity." />
-            {postType !== "article" ? (
-              <input value={mediaUrl} onChange={(e) => setMediaUrl(e.target.value)} placeholder={postType === "video" ? "Video URL" : postType === "link" ? "External link URL" : "Image URL"} />
-            ) : null}
-            <button className="gold-btn" type="submit">Publish post</button>
+
+            {postType === "image" && (
+              <>
+                <p className="muted" style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
+                  📸 Add a photo
+                </p>
+                <MediaCapture mediaType="photo" userId={userId} onMediaCaptured={(url) => setMediaUrl(url)} />
+              </>
+            )}
+
+            {postType === "video" && (
+              <>
+                <p className="muted" style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
+                  🎬 Add a video
+                </p>
+                <MediaCapture mediaType="video" userId={userId} onMediaCaptured={(url) => setMediaUrl(url)} />
+              </>
+            )}
+
+            {postType === "link" && (
+              <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="External link URL" />
+            )}
+
+            <button className="gold-btn" type="submit">
+              Publish post
+            </button>
           </form>
         )}
         {status ? <p className="muted">{status}</p> : null}

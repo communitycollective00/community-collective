@@ -52,6 +52,7 @@ export default function PostCard({
           <img
             src={image}
             alt={displayTitle}
+            loading="lazy"
             style={{
               width: "100%",
               height: "200px",
@@ -59,6 +60,22 @@ export default function PostCard({
               borderRadius: "16px",
               marginBottom: "1rem",
               border: "1px solid var(--border)",
+            }}
+          />
+        )}
+
+        {media_url && post_type === "video" && (
+          <video
+            src={media_url}
+            controls
+            style={{
+              width: "100%",
+              height: "200px",
+              objectFit: "cover",
+              borderRadius: "16px",
+              marginBottom: "1rem",
+              border: "1px solid var(--border)",
+              backgroundColor: "#000",
             }}
           />
         )}
@@ -83,7 +100,7 @@ export default function PostCard({
           </p>
         )}
 
-        {media_url && post_type !== "image" && (
+        {media_url && post_type !== "image" && post_type !== "video" && (
           <p className="muted" style={{ margin: "0 0 0.75rem 0", fontSize: "0.9rem", textDecoration: "underline" }}>
             📎 Media attached
           </p>

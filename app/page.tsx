@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getSupabaseClient } from "../lib/supabase";
+import PostCard from "./components/post-card";
 
 const realKnowledgeItems = [
   {
@@ -75,6 +78,43 @@ const happeningsItems = [
 ];
 
 export default function HomePage() {
+  const [recentPosts, setRecentPosts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const loadRecentPosts = async () => {
+      try {
+        const { data: postsData } = await (getSupabaseClient().from("posts") as any)
+          .select("id,title,body,post_type,media_url,image_url,link_url,created_at,author_id")
+          .eq("is_published", true)
+          .order("created_at", { ascending: false })
+          .limit(6);
+
+        // Fetch author info for each post
+        if (postsData && postsData.length > 0) {
+          const authorIds = [...new Set(postsData.map((p) => p.author_id))];
+          const { data: authorsData } = await (getSupabaseClient().from("profiles") as any)
+            .select("id,full_name,username")
+            .in("id", authorIds);
+
+          const authorMap = Object.fromEntries(
+            (authorsData || []).map((a) => [a.id, a])
+          );
+
+          const enrichedPosts = postsData.map((p) => ({
+            ...p,
+            author: authorMap[p.author_id] || { full_name: "Anonymous", username: null },
+          }));
+
+          setRecentPosts(enrichedPosts);
+        }
+      } catch (err) {
+        console.error("[Homepage] Failed to load recent posts:", err);
+      }
+    };
+
+    loadRecentPosts();
+  }, []);
+
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px" }}>
       <div className="homepage-content">
@@ -231,6 +271,40 @@ export default function HomePage() {
               <p className="homepage-feature-copy">Funding pathways, business know-how, and the opportunity rooms that move communities forward.</p>
             </div>
           </div>
+        </section>
+
+        <section className="homepage-section">
+          <div className="homepage-section-header">
+            <div>
+              <p className="homepage-kicker">Latest Posts & Media</p>
+              <h2 className="homepage-section-title">What professionals are sharing now.</h2>
+            </div>
+            <Link href="/posts/create" className="gold-link homepage-section-cta">
+              Create Post →
+            </Link>
+          </div>
+          {recentPosts.length > 0 ? (
+            <div className="page-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
+              {recentPosts.map((post: any) => (
+                <PostCard
+                  key={post.id}
+                  id={post.id}
+                  title={post.title}
+                  body={post.body}
+                  post_type={post.post_type}
+                  author_name={post.author?.full_name || post.author?.username || "Anonymous"}
+                  author_id={post.author_id}
+                  created_at={post.created_at}
+                  media_url={post.media_url}
+                  image_url={post.image_url}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="card" style={{ textAlign: "center", padding: "2rem", marginTop: "1rem" }}>
+              <p className="muted">Posts coming soon. Verified professionals are preparing real knowledge daily.</p>
+            </div>
+          )}
         </section>
 
         <section className="homepage-section">
