@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "../lib/supabase";
-import MediaFeed from "./components/media-feed";
+
 
 interface Post {
   id: string; title: string; body: string; post_type: string;
@@ -151,23 +151,16 @@ export default function HomePage() {
         <section className="media-feed-section">
           <div className="media-feed-section-header">
             <h2>Recent Stories</h2>
-            <Link href="/posts" className="gold-link">View All →</Link>
+            <a href="/posts" className="gold-link">View All →</a>
           </div>
-          <MediaFeed
-            posts={posts.map((p) => ({
-              id: p.id, type: (p.post_type || "story") as "interview"|"event"|"story"|"insight"|"opportunity",
-              creatorId: p.author_id, creatorName: p.author_name, creatorUsername: p.author_username, creatorAvatar: p.author_avatar,
-              title: p.title, caption: p.caption || p.body || "",
-              mediaUrl: p.image_url || p.media_url || p.thumbnail_url,
-              mediaType: p.media_type === "video" || p.post_type === "video" ? "video" : "image",
-              publishedAt: p.created_at, location: p.location, tags: p.tags,
-              guestName: p.interview_guest_name, guestTitle: p.interview_guest_title,
-              guestOrganization: p.interview_guest_organization,
-              coverImage: p.interview_cover_url || p.image_url || p.media_url,
-              interviewSummary: p.interview_summary, keyTakeaways: p.interview_key_takeaways,
-            }))}
-            loading={loading} onSave={handleSave} onShare={handleShare}
-          />
+          <div style={{padding:"1rem"}}>
+            {posts.map(p => (
+              <div key={p.id} style={{padding:"1rem",marginBottom:"1rem",background:"var(--surface)",borderRadius:12,border:"1px solid var(--border)"}}>
+                <strong>{p.title || p.caption}</strong>
+                <p style={{color:"var(--muted)",fontSize:"0.85rem"}}>{p.author_name} · {new Date(p.created_at).toLocaleDateString()}</p>
+              </div>
+            ))}
+          </div>
         </section>
       )}
 
