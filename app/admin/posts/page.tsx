@@ -18,7 +18,7 @@ export default function AdminPostsPage() {
         const supabase = getSupabaseClient();
         const { data, error: fetchErr } = await supabase
           .from("posts")
-          .select("id,title,post_type,author_id,is_published,created_at")
+          .select("id,title,author_id,user_id,post_type,is_published,created_at")
           .order("created_at", { ascending: false })
           .limit(100);
 
@@ -77,8 +77,9 @@ export default function AdminPostsPage() {
                           <h3 style={{ margin: "0 0 0.5rem 0" }}>{post.title || "Untitled"}</h3>
                           <div style={{ fontSize: "0.85rem" }}>
                             <div className="muted">
-                              Type: {post.post_type} • Published: {post.is_published ? "Yes" : "No"}
+                              Type: {post.post_type || "unknown"} • Published: {post.is_published ? "Yes" : "No"}
                             </div>
+                            <div className="muted">Author: {post.author_id || post.user_id || "Unknown"}</div>
                             <div className="muted">Created: {new Date(post.created_at).toLocaleDateString()}</div>
                           </div>
                         </div>

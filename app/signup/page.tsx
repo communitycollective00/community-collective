@@ -134,7 +134,13 @@ export default function SignupPage() {
     setStatus(error ? "Could not send magic link right now. Please verify your email and try again." : "Magic link sent. Check your inbox.");
   };
 
-  return <main className="premium-page"><section className="premium-card"><h1>Member Signup</h1><p className="muted">Create your Community Collective member account.</p><form onSubmit={signup} className="premium-form">
+  return <main className="premium-page"><section className="premium-card"><h1>Join Community Collective</h1><p className="muted">Create your profile, discover opportunities, and connect with trusted people in the network.</p>
+  <div className="auth-feature-cards">
+    <div className="auth-card"><h4>Access</h4><p className="muted">Find opportunities and members relevant to your work.</p></div>
+    <div className="auth-card"><h4>Visibility</h4><p className="muted">Showcase your profile to trusted community members.</p></div>
+    <div className="auth-card"><h4>Community</h4><p className="muted">Connect, collaborate, and get discovered.</p></div>
+  </div>
+  <form onSubmit={signup} className="premium-form">
     <input placeholder="Full name" value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
     <input placeholder="Username" value={form.username} onChange={(e) => setForm({ ...form, username: e.target.value })} />
     <input required type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />

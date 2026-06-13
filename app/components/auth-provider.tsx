@@ -16,6 +16,7 @@ type AuthContextValue = {
   profile: Profile | null;
   role: string | null;
   loading: boolean;
+  profileLoading: boolean;
   error: string | null;
   signOut: () => Promise<void>;
 };
@@ -28,74 +29,97 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [profileLoading, setProfileLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
     const supabase = getSupabaseClient();
+    let lastFetchedUserId: string | null = null; // Track which user's profile was last fetched to avoid duplicates
+    let profileFetchInProgressUserId: string | null = null;
+    let profileFetchPromise: Promise<void> | null = null;
 
     async function fetchProfileForUser(u: any) {
       if (!u) return;
-
-      // Try up to 3 times with exponential backoff for resilience
-      let attempt = 0;
-      let lastErr: any = null;
-      let lastData: any = null;
-
-      while (attempt < 3) {
-        attempt += 1;
-        try {
-          const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
-
-          const result = await Promise.race([
-            fetchPromise,
-            new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 8000)),
-          ] as any);
-
-          const { data, error: fetchErr } = result as any;
-          if (fetchErr) {
-            lastErr = fetchErr;
-            // try again if we have attempts left
-            if (attempt < 3) {
-              await new Promise((r) => setTimeout(r, 500 * attempt));
-              continue;
-            }
-            setError(fetchErr.message ?? String(fetchErr));
-            setProfile(null);
-            setRole(null);
-            return;
-          }
-
-          if (!data) {
-            // no profile found; allow one more retry before reporting a not-found error
-            lastData = null;
-            if (attempt < 3) {
-              await new Promise((r) => setTimeout(r, 500 * attempt));
-              continue;
-            }
-            setError("Profile not found for this user.");
-            setProfile(null);
-            setRole(null);
-            return;
-          }
-
-          // success
-          setProfile(data as Profile);
-          setRole((data as Profile).role ?? null);
-          setError(null);
-          return;
-        } catch (e: any) {
-          lastErr = e;
-          if (attempt < 3) {
-            await new Promise((r) => setTimeout(r, 500 * attempt));
-            continue;
-          }
-          setError(e?.message ?? String(e));
-          setProfile(null);
-          setRole(null);
-          return;
-        }
+      if (u.id === lastFetchedUserId) {
+        return;
       }
+      if (profileFetchPromise && profileFetchInProgressUserId === u.id) {
+        return profileFetchPromise;
+      }
+
+      profileFetchInProgressUserId = u.id;
+      profileFetchPromise = (async () => {
+        setProfileLoading(true);
+        try {
+          // Try up to 2 times (1 retry) with backoff for resilience
+          let attempt = 0;
+          let lastErr: any = null;
+          let lastData: any = null;
+
+          while (attempt < 2) {
+            attempt += 1;
+            try {
+              const fetchPromise = supabase.from("profiles").select("id,role,full_name,username").eq("id", u.id).maybeSingle();
+
+              const result = await Promise.race([
+                fetchPromise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error("Profile fetch timeout")), 3000)),
+              ] as any);
+
+              const { data, error: fetchErr } = result as any;
+              if (fetchErr) {
+                lastErr = fetchErr;
+                // try again if we have attempts left
+                if (attempt < 2) {
+                  await new Promise((r) => setTimeout(r, 300 * attempt));
+                  continue;
+                }
+                setError(fetchErr.message ?? String(fetchErr));
+                setProfile(null);
+                setRole(null);
+                return;
+              }
+
+              if (!data) {
+                // no profile found; allow one more retry before reporting a not-found error
+                lastData = null;
+                if (attempt < 2) {
+                  await new Promise((r) => setTimeout(r, 300 * attempt));
+                  continue;
+                }
+                setError("Profile not found for this user.");
+                setProfile(null);
+                setRole(null);
+                return;
+              }
+
+              // success
+              lastFetchedUserId = u.id;
+              setProfile(data as Profile);
+              setRole((data as Profile).role ?? null);
+              setError(null);
+              return;
+            } catch (e: any) {
+              lastErr = e;
+              if (attempt < 2) {
+                await new Promise((r) => setTimeout(r, 300 * attempt));
+                continue;
+              }
+              setError(e?.message ?? String(e));
+              setProfile(null);
+              setRole(null);
+              return;
+            }
+          }
+        } finally {
+          profileFetchPromise = null;
+          profileFetchInProgressUserId = null;
+          setProfileLoading(false);
+        }
+      })();
+
+      return profileFetchPromise;
     }
 
     let authResolved = false;
@@ -110,7 +134,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const match = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\/\+^])/g, "\\$1") + '=([^;]*)'));
             return match ? decodeURIComponent(match[1]) : undefined;
           } catch (e) {
-            console.error(`[getCookie] failed to parse cookie ${name}:`, e);
             return undefined;
           }
         }
@@ -121,7 +144,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // If no in-memory session but server cookies exist (OAuth callback set them),
         // try to rehydrate the client session from the cookie tokens.
-          console.log(`[AUTH-PROVIDER] init: getSession() returned session=${s ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
         if (!s) {
           const accessToken = getCookie("sb-access-token");
           const refreshToken = getCookie("sb-refresh-token");
@@ -139,17 +161,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 u = s.user ?? null;
               }
             } catch (e) {
-              console.error("[init] Failed to rehydrate session from cookies", e);
             }
           }
         }
         if (!mounted) return;
-        // Immediately set session/user so consumers can react synchronously
-        console.log(`[AUTH-PROVIDER] init complete: setting session=${s ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
+        // Immediately set session/user so consumers can react synchronously.
+        // Start profile fetch in background (do not await) to avoid blocking navigation.
         setSession(s);
         setUser(u);
         if (u) {
-          await fetchProfileForUser(u);
+          // fire-and-forget: fetch profile but don't block init
+          void fetchProfileForUser(u);
         } else {
           setProfile(null);
           setRole(null);
@@ -177,7 +199,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const resp = supabase.auth.onAuthStateChange(async (event, newSession) => {
         const u = newSession?.user ?? null;
-        console.log(`[AUTH-PROVIDER] onAuthStateChange event: ${event}, session=${newSession ? "EXISTS" : "NULL"}, user=${u?.id ?? "NULL"}`);
 
         if (event === "SIGNED_OUT") {
           if (!authResolved) return;
@@ -203,30 +224,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (event === "SIGNED_IN") {
           setLoading(true);
-          console.log(`[AUTH-PROVIDER] SIGNED_IN event - fetching profile for user ${u?.id}`);
-          await fetchProfileForUser(u);
-          setLoading(false);
-          console.log(`[AUTH-PROVIDER] SIGNED_IN - profile fetch complete`);
+          // Skip profile fetch if we already fetched for this exact user in init()
+          if (u?.id === lastFetchedUserId) {
+            setLoading(false);
+          } else {
+            if (profileFetchPromise && profileFetchInProgressUserId === u?.id) {
+              await profileFetchPromise;
+              setLoading(false);
+            } else {
+              await fetchProfileForUser(u);
+              setLoading(false);
+            }
+          }
           try {
             const currentPath = window.location.pathname;
             const authPaths = ["/", "/login", "/signup", "/auth/callback", "/get-access"];
             if (authPaths.includes(currentPath) || currentPath.startsWith("/auth/")) {
-              window.location.href = "/dashboard";
+              try {
+                const params = new URLSearchParams(window.location.search || "");
+                const nextParam = params.get("next");
+                if (nextParam) {
+                  try {
+                    const candidate = new URL(nextParam, window.location.href);
+                    if (candidate.origin === window.location.origin && candidate.pathname.startsWith("/")) {
+                      window.location.href = candidate.pathname + (candidate.search || "") + (candidate.hash || "");
+                    } else {
+                      window.location.href = "/";
+                    }
+                  } catch (e) {
+                    window.location.href = "/";
+                  }
+                } else {
+                  window.location.href = "/";
+                }
+              } catch (e) {
+                window.location.href = "/";
+              }
             }
           } catch (e) {}
         } else {
           // For other auth state change events, ensure loading is finalized
           setLoading(false);
-          if (u) {
+          if (u && u.id !== lastFetchedUserId) {
             await fetchProfileForUser(u);
           }
         }
       });
 
       subscription = resp?.data?.subscription;
-        console.log(`[AUTH-PROVIDER] onAuthStateChange subscription set up`);
     } catch (e) {
-      console.error("Failed to subscribe to auth state changes", e);
       subscription = null;
     }
 
@@ -299,7 +345,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, role, loading, error, signOut }}>
+    <AuthContext.Provider value={{ session, user, profile, role, loading, profileLoading, error, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -7,6 +7,9 @@ type PostCardProps = {
   title: string | null;
   body: string | null;
   post_type: string | null;
+  media_type?: string | null;
+  caption?: string | null;
+  thumbnail_url?: string | null;
   author_name: string | null;
   author_id: string;
   created_at: string | null;
@@ -19,6 +22,9 @@ export default function PostCard({
   title,
   body,
   post_type,
+  media_type,
+  caption,
+  thumbnail_url,
   author_name,
   author_id,
   created_at,
@@ -43,16 +49,16 @@ export default function PostCard({
     }
   };
 
-  const image = image_url || media_url;
+  const image = image_url || media_url || thumbnail_url;
 
   return (
     <Link href={`/posts/${id}`} style={{ textDecoration: "none", color: "inherit" }}>
       <article className="post-card">
-        {image && post_type === "image" && (
+        {media_type === 'image' && image && (
           <img
             src={image}
             alt={displayTitle}
-            loading="lazy"
+            onError={(e) => { (e.target as HTMLImageElement).src = '/original.html'; }}
             style={{
               width: "100%",
               height: "200px",
@@ -64,20 +70,10 @@ export default function PostCard({
           />
         )}
 
-        {media_url && post_type === "video" && (
-          <video
-            src={media_url}
-            controls
-            style={{
-              width: "100%",
-              height: "200px",
-              objectFit: "cover",
-              borderRadius: "16px",
-              marginBottom: "1rem",
-              border: "1px solid var(--border)",
-              backgroundColor: "#000",
-            }}
-          />
+        {media_type === 'video' && media_url && (
+          <video controls style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 16, marginBottom: '1rem' }}>
+            <source src={media_url} />
+          </video>
         )}
 
         <h3>{displayTitle}</h3>
@@ -100,7 +96,7 @@ export default function PostCard({
           </p>
         )}
 
-        {media_url && post_type !== "image" && post_type !== "video" && (
+        {media_url && post_type !== "image" && (
           <p className="muted" style={{ margin: "0 0 0.75rem 0", fontSize: "0.9rem", textDecoration: "underline" }}>
             📎 Media attached
           </p>

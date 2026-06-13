@@ -67,6 +67,7 @@ export function ProfileHeader({
     full_name?: string | null;
     username?: string | null;
     bio?: string | null;
+    description?: string | null;
     industry?: string | null;
     location?: string | null;
     avatar_url?: string | null;
@@ -122,6 +123,11 @@ export function ProfileHeader({
               )}
               {profile.bio && (
                 <p style={{ margin: "1rem 0 0", lineHeight: 1.6, maxWidth: "720px" }}>{profile.bio}</p>
+              )}
+              {profile.description && (
+                <p style={{ margin: "1rem 0 0", lineHeight: 1.6, maxWidth: "720px", opacity: 0.9 }}>
+                  {profile.description}
+                </p>
               )}
               {(profile.website || profile.instagram || profile.twitter || profile.linkedin) && (
                 <div className="profile-meta">

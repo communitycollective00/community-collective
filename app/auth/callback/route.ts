@@ -62,8 +62,26 @@ async function ensureProfileRow(user: AuthUser) {
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") || "/dashboard";
-  const safeNext = next.startsWith("/") ? next : "/dashboard";
+
+  // Preserve a safe internal `next` parameter when present. Accept both
+  // absolute and relative forms as long as they resolve to the same origin.
+  // Allow admin routes (`/admin` and `/admin/*`) and other internal paths.
+  const nextParam = requestUrl.searchParams.get("next");
+  let safeNext = "/";
+  if (nextParam) {
+    try {
+      const candidate = new URL(nextParam, request.url);
+      const isSameOrigin = candidate.origin === requestUrl.origin;
+      const pathname = candidate.pathname || "/";
+
+      // Only allow internal, same-origin paths. Preserve search/hash.
+      if (isSameOrigin && pathname.startsWith("/")) {
+        safeNext = pathname + (candidate.search || "") + (candidate.hash || "");
+      }
+    } catch (e) {
+      // If parsing fails, fall back to default below.
+    }
+  }
 
   if (!code) {
     const loginUrl = new URL("/login", request.url);

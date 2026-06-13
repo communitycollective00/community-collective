@@ -43,6 +43,7 @@ function getSafeDisplayName(profile: DashboardProfile | null) {
 
 export default function DashboardPage() {
   const [posts, setPosts] = useState<PostData[]>([]);
+  const [postsLoading, setPostsLoading] = useState(false);
   const [status, setStatus] = useState("");
 
   const { user, profile: providerProfile, role, loading: authLoading, error: authError } = useAuth();
@@ -51,19 +52,21 @@ export default function DashboardPage() {
     console.log(`[DASHBOARD] useEffect: authLoading=${authLoading}, user=${user?.id ?? "NULL"}`);
     const load = async () => {
       try {
-        if (authLoading) return;
-
         if (!user) {
-          console.log(`[DASHBOARD] user is NULL - redirecting to /login`);
-          window.location.href = "/login";
+          if (!authLoading) {
+            console.log(`[DASHBOARD] user is NULL - redirecting to /login`);
+            window.location.href = "/login";
+          }
           return;
         }
+
         console.log(`[DASHBOARD] user authenticated: ${user.id}`);
+        setPostsLoading(true);
 
         try {
           const supabase = (await import("../../lib/supabase")).getSupabaseClient();
           const { data: postsData } = await (supabase.from("posts") as any)
-            .select("id,title,body,post_type,created_at")
+            .select("id,title,body,created_at")
             .eq("author_id", user.id)
             .order("created_at", { ascending: false })
             .limit(5);
@@ -73,6 +76,8 @@ export default function DashboardPage() {
         }
       } catch (err) {
         console.error("[Dashboard] load failed", err);
+      } finally {
+        setPostsLoading(false);
       }
     };
 
@@ -89,45 +94,64 @@ export default function DashboardPage() {
   const isProfessional = isProfessionalRole((providerProfile as DashboardProfile)?.role ?? role);
   const displayName = getSafeDisplayName(providerProfile as DashboardProfile | null);
 
-  // Show loading state while auth is initializing
-  if (authLoading) {
-    return (
-      <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
-        <section className="premium-card">
-          <p className="muted">Loading your dashboard...</p>
-        </section>
-      </main>
-    );
-  }
+  if (!user) {
+    if (authLoading) {
+      return (
+        <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+          <section className="premium-card">
+            <p className="muted">Loading your dashboard...</p>
+          </section>
+        </main>
+      );
+    }
 
-  // If auth is done loading but no user, redirect to login
-  if (!authLoading && !user) {
     console.log(`[DASHBOARD] render: authLoading=false && user=null - REDIRECT to /login`);
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }
     return null;
   }
+
   console.log(`[DASHBOARD] render: authLoading=${authLoading}, user=${user?.id ?? "NULL"} - rendering dashboard`);
 
   return (
     <main className="premium-page" style={{ paddingTop: "72px" }}>
       <section className="premium-card dashboard-card" style={{ maxWidth: 1200, margin: "2rem auto" }}>
         <div className="dashboard-hero">
-          <h1 style={{ margin: 0 }}>{displayName ? `Welcome back, ${displayName}` : "Welcome back."}</h1>
-          <p className="homepage-section-text" style={{ margin: "0.8rem 0 0" }}>
-            {isProfessional
-              ? "This is your premium hub for profile edits, posts, and community updates."
-              : "Browse verified professionals, update your public details, and find the access you need."}
+          <p className="homepage-kicker">Your Dashboard</p>
+          <h1 style={{ margin: "0 0 0.5rem" }}>Your command center for connection and impact.</h1>
+          <p className="homepage-section-text" style={{ margin: "0.8rem 0 1.5rem", maxWidth: "640px", lineHeight: "1.6" }}>
+            Here's where access turns into action. Browse opportunities, stay connected with people you've found, and shape your path forward.
           </p>
-          <p className="muted" style={{ margin: "0.8rem 0 0", fontStyle: "italic" }}>
-            Dashboard is your personal member control center. Admin command center access is separate and available at /admin for approved staff.
-          </p>
-          <div className="page-actions">
-            {isProfessional ? <Link className="gold-btn" href="/posts/create">Create post</Link> : null}
-            <Link className="gold-btn" href="/profile">Edit Profile</Link>
-            <Link className="gold-btn" href="/directory">Browse Directory</Link>
-            <Link className="gold-btn" href="/opportunities">View Opportunities</Link>
+          <div className="page-actions" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "1rem", marginBottom: "0" }}>
+            <Link href="/profile" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>👤</div>
+                <p className="homepage-feature-title">Complete Your Profile</p>
+                <p className="homepage-feature-copy">Add a photo, headline, and bio so people know who you are.</p>
+              </div>
+            </Link>
+            <Link href="/voices" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>🎤</div>
+                <p className="homepage-feature-title">Browse Voices</p>
+                <p className="homepage-feature-copy">Discover stories and insights from real professionals and community leaders.</p>
+              </div>
+            </Link>
+            <Link href="/opportunities" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>💼</div>
+                <p className="homepage-feature-title">Find Opportunities</p>
+                <p className="homepage-feature-copy">Search jobs, mentorships, collaborations, and community projects.</p>
+              </div>
+            </Link>
+            <Link href="/directory" style={{ textDecoration: "none" }}>
+              <div className="homepage-feature-card" style={{ cursor: "pointer", transition: "all 0.2s ease", height: "100%" }}>
+                <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>📖</div>
+                <p className="homepage-feature-title">Explore Directory</p>
+                <p className="homepage-feature-copy">Connect with verified professionals, attorneys, traders, and creators.</p>
+              </div>
+            </Link>
           </div>
         </div>
 
@@ -156,14 +180,16 @@ export default function DashboardPage() {
 
           <article className="submission-item">
             <h3 style={{ marginTop: 0 }}>Recent posts</h3>
-            {posts.length === 0 ? (
+            {postsLoading ? (
+              <p className="muted">Loading posts...</p>
+            ) : posts.length === 0 ? (
               <p className="muted">No published posts yet.</p>
             ) : (
               <div className="submissions-list">
                 {posts.map((post) => (
                   <article key={post.id} className="post-card">
                     <p style={{ margin: 0, fontWeight: 700 }}>{post.title || "Untitled post"}</p>
-                    <p className="muted" style={{ margin: "0.25rem 0" }}>{post.post_type || "Update"}</p>
+                    <p className="muted" style={{ margin: "0.25rem 0" }}>Update</p>
                     <p className="muted" style={{ margin: 0 }}>{post.body?.slice(0, 110) || "Shared media content."}</p>
                   </article>
                 ))}

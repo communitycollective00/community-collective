@@ -1,520 +1,272 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { getSupabaseClient } from "../lib/supabase";
-import PostCard from "./components/post-card";
+import MediaFeed from "./components/media-feed";
 
-const realKnowledgeItems = [
-  {
-    icon: "⚖️",
-    title: "Legal Game",
-    copy: "Know your rights, protect your future, and navigate systems with confidence.",
-  },
-  {
-    icon: "💰",
-    title: "Business & Funding",
-    copy: "Real-world financial moves and business strategies for building lasting community wealth.",
-  },
-  {
-    icon: "🎬",
-    title: "Media & Storytelling",
-    copy: "Behind-the-scenes stories, production rooms, and the culture moments that matter.",
-  },
+interface Post {
+  id: string; title: string; body: string; post_type: string;
+  media_url: string | null; image_url: string | null; video_url: string | null;
+  thumbnail_url: string | null; caption: string | null; location: string | null;
+  tags: string[] | null; author_id: string; author_name: string;
+  author_username: string | null; author_avatar: string | null; created_at: string;
+  interview_guest_name: string | null; interview_guest_title: string | null;
+  interview_guest_organization: string | null; interview_cover_url: string | null;
+  interview_summary: string | null; interview_key_takeaways: string[] | null;
+  media_type: string | null; status: string | null; visibility: string | null;
+}
+
+const FEATURED_STORIES = [
+  { tag: "FEATURED STORY", title: "Neighborhood Reporter", role: "Documentary Reporter", city: "Chicago", desc: "A Chicago reporter capturing neighborhood resilience, trusted conversations, and the people who keep the story moving." },
+  { tag: "FEATURED STORY", title: "Collective Builder", role: "Collective Organizer", city: "Indianapolis", desc: "A local leader opening doors to shared spaces, resource networks, and the everyday work of building together." },
+  { tag: "FEATURED STORY", title: "Neighborhood Youth Coach", role: "Mentorship Director", city: "Detroit", desc: "A coach supporting young people in their first leadership roles, from neighborhood courts to community halls." },
+];
+const REAL_GAME = [
+  { tag: "REAL GAME", title: "Street Law Clinic", role: "Attorney", city: "Chicago", desc: "Practical legal knowledge rooted in everyday neighborhood experience and real-world cases." },
+  { tag: "REAL GAME", title: "Neighborhood Venture", role: "Small Business Owner", city: "Atlanta", desc: "The daily business decisions, relationships, and risks behind a local enterprise." },
+  { tag: "REAL GAME", title: "Sound & Scene Studio", role: "Educator", city: "Michigan City", desc: "A practical look at teaching, mentoring, and sharing skills in places that are often overlooked." },
+];
+const OPPORTUNITIES = [
+  { tag: "OPPORTUNITIES TODAY", title: "Neighborhood Block Grant", role: "Community Leader", city: "Chicago", desc: "Immediate support and funding for neighborhood projects led by people who live and work locally." },
+  { tag: "OPPORTUNITIES TODAY", title: "Mentorship Session", role: "Youth Coach", city: "Gary", desc: "A scheduled chance for young people to connect with guidance, networks, and real-world direction." },
+  { tag: "OPPORTUNITIES TODAY", title: "Community Artist Residency", role: "Cultural Producer", city: "Indianapolis", desc: "Creative spaces and storytelling projects that support local artists and community memory." },
+];
+const PEOPLE_BUILDING = [
+  { tag: "PEOPLE BUILDING THINGS", title: "Neighborhood Workshop", role: "Tradesman", city: "Gary", desc: "A hands-on mentor teaching welding, carpentry, and the skilled trades that keep neighborhoods moving." },
+  { tag: "PEOPLE BUILDING THINGS", title: "Community Story Archive", role: "Artist", city: "Michigan City", desc: "A local storyteller documenting community rituals, daily work, and the relationships that shape a place." },
+  { tag: "PEOPLE BUILDING THINGS", title: "Corner Store Collective", role: "Local Business Owner", city: "Atlanta", desc: "A small business owner keeping commerce, support, and opportunity alive at the heart of the block." },
+];
+const COMMUNITY_ACCESS = [
+  { tag: "COMMUNITY ACCESS", title: "Neighborhood Legal Aid", role: "Attorney", city: "Chicago", desc: "Practical legal guidance for housing, records, and rights in everyday life." },
+  { tag: "COMMUNITY ACCESS", title: "Neighborhood Story Lab", role: "Documentarian", city: "Detroit", desc: "Neighborhood stories captured through film, interviews, and cultural reporting." },
+];
+const INSIDE_ACCESS = [
+  { tag: "INSIDE ACCESS", title: "Documentary Room", role: "Producer", city: "Chicago", desc: "A behind-the-scenes look at how stories are gathered, edited, and shared with community audiences." },
+  { tag: "INSIDE ACCESS", title: "Community Table", role: "Faith Leader", city: "Indianapolis", desc: "Trusted gatherings where neighbors, leaders, and service providers meet to exchange resources." },
+  { tag: "INSIDE ACCESS", title: "Resource Room", role: "Organizer", city: "Detroit", desc: "A curated collection of doors, rooms, and introductions shaped for people building out of community." },
 ];
 
-const opportunityItems = [
-  {
-    icon: "🎬",
-    title: "Casting Calls",
-    copy: "Curated open calls from verified productions and media teams.",
-  },
-  {
-    icon: "💼",
-    title: "Internships & Grants",
-    copy: "Practical pathways for people building business, culture, and community impact.",
-  },
-  {
-    icon: "🛠️",
-    title: "Collaborations",
-    copy: "Partnerships, brand opportunities, and paid projects from trusted organizations.",
-  },
-];
+function StoryCard({ tag, title, role, city, desc }: { tag: string; title: string; role: string; city: string; desc: string }) {
+  return (
+    <div className="hp-card">
+      <div className="hp-card-img"><span>Image Placeholder</span></div>
+      <div className="hp-card-body">
+        <p className="hp-card-tag">{tag}</p>
+        <h3 className="hp-card-title">{title}</h3>
+        <p className="hp-card-meta">{role} · {city}</p>
+        <p className="hp-card-desc">{desc}</p>
+      </div>
+    </div>
+  );
+}
 
-const spotlightItems = [
-  {
-    title: "Odom Law Group",
-    tag: "Keisha Odom, Esq. · Chicago",
-    copy: "Clearing records, restoring access, and creating pathways for stability.",
-  },
-  {
-    title: "Clarity Media Studio",
-    tag: "Jordan L. · Chicago",
-    copy: "Authentic storytelling for community brands and culture-driven projects.",
-  },
-  {
-    title: "Blackstreet Barber Co.",
-    tag: "Marcus T. · Detroit",
-    copy: "Freestyle workshops, career connections, and tools for local entrepreneurship.",
-  },
-];
-
-const happeningsItems = [
-  {
-    icon: "📍",
-    title: "Community Mixer",
-    copy: "Monthly meetup for members, partners, and professionals to connect in person.",
-  },
-  {
-    icon: "⚖️",
-    title: "Legal Game Workshop",
-    copy: "Free rights and expungement coaching sessions for members and neighbors.",
-  },
-  {
-    icon: "🎬",
-    title: "Media Story Night",
-    copy: "A documentary showcase and networking circle for creators and storytellers.",
-  },
-];
+function WideCard({ tag, title, role, city, desc }: { tag: string; title: string; role: string; city: string; desc: string }) {
+  return (
+    <div className="hp-wide-card">
+      <div className="hp-wide-card-img"><span>Image Placeholder</span></div>
+      <div className="hp-wide-card-body">
+        <p className="hp-card-tag">{tag}</p>
+        <h3 className="hp-card-title">{title}</h3>
+        <p className="hp-card-meta">{role} · {city}</p>
+        <p className="hp-card-desc">{desc}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function HomePage() {
-  const [recentPosts, setRecentPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadRecentPosts = async () => {
-      try {
-        const { data: postsData } = await (getSupabaseClient().from("posts") as any)
-          .select("id,title,body,post_type,media_url,image_url,link_url,created_at,author_id")
-          .eq("is_published", true)
-          .order("created_at", { ascending: false })
-          .limit(6);
+  useEffect(() => { loadPosts(); }, []);
 
-        // Fetch author info for each post
-        if (postsData && postsData.length > 0) {
-          const authorIds = [...new Set(postsData.map((p) => p.author_id))];
-          const { data: authorsData } = await (getSupabaseClient().from("profiles") as any)
-            .select("id,full_name,username")
-            .in("id", authorIds);
+  async function loadPosts() {
+    try {
+      const supabase = getSupabaseClient();
+      const { data } = await (supabase.from("posts") as any)
+        .select("*").order("created_at", { ascending: false }).limit(20);
+      const postsData = (data || []).filter((p: any) => (p.is_published === true || p.status === "published") && (p.visibility === undefined || p.visibility === "public"));
+      const authorIds = Array.from(new Set(postsData.map((p: any) => p.author_id || p.user_id).filter(Boolean)));
+      const { data: profiles } = await (supabase.from("profiles") as any).select("id,full_name,username,avatar_url").in("id", authorIds.length ? authorIds : ["none"]);
+      const profileMap = new Map((profiles || []).map((p: any) => [p.id, { name: p.full_name || "Creator", username: p.username, avatar: p.avatar_url }]));
+      setPosts(postsData.map((post: any) => {
+        const authorId = post.author_id || post.user_id || "";
+        const profile: any = profileMap.get(authorId) || { name: "Creator", username: null, avatar: null };
+        return { ...post, author_id: authorId, author_name: profile.name, author_username: profile.username, author_avatar: profile.avatar };
+      }));
+    } catch (err) { console.error("Failed to load posts:", err); }
+    finally { setLoading(false); }
+  }
 
-          const authorMap = Object.fromEntries(
-            (authorsData || []).map((a) => [a.id, a])
-          );
+  const handleSave = async (postId: string, saved: boolean) => {
+    const supabase = getSupabaseClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    if (saved) { await (supabase.from("post_saves") as any).insert({ user_id: user.id, post_id: postId }); }
+    else { await (supabase.from("post_saves") as any).delete().eq("user_id", user.id).eq("post_id", postId); }
+  };
 
-          const enrichedPosts = postsData.map((p) => ({
-            ...p,
-            author: authorMap[p.author_id] || { full_name: "Anonymous", username: null },
-          }));
-
-          setRecentPosts(enrichedPosts);
-        }
-      } catch (err) {
-        console.error("[Homepage] Failed to load recent posts:", err);
-      }
-    };
-
-    loadRecentPosts();
-  }, []);
+  const handleShare = (postId: string) => {
+    const post = posts.find((p) => p.id === postId);
+    if (!post) return;
+    const url = `${window.location.origin}/posts/${postId}`;
+    if (navigator.share) { navigator.share({ title: "Community Collective", text: post.title, url }); }
+    else { navigator.clipboard.writeText(url); alert("Link copied!"); }
+  };
 
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px" }}>
-      <div className="homepage-content">
-        <section className="homepage-hero">
-          <div className="homepage-hero-bg" />
-          <div className="homepage-hero-grid" />
-          <div className="homepage-hero-glow" />
-          <div className="homepage-hero-glow2" />
 
-          <div className="homepage-hero-copy">
-            <div className="homepage-hero-ribbon">
-              <span className="homepage-hero-ribbon-pulse" />
-              <p>Now Accepting Founding Members — National</p>
-            </div>
-            <h1 className="homepage-hero-title">
-              REAL <span className="homepage-highlight">PEOPLE.</span>
-              <br />
-              REAL <span className="homepage-highlight homepage-highlight--green">KNOWLEDGE.</span>
-              <br />
-              REAL <span className="homepage-highlight">ACCESS.</span>
-            </h1>
-            <p className="homepage-hero-text">
-              A trusted ecosystem where top lawyers post free legal game, professionals from every walk of life share real knowledge, and communities finally get access to the rooms, people, and opportunities that were always there — just never for them.
-            </p>
-            <div className="homepage-hero-actions">
-              <Link href="/directory" className="gold-btn">
-                Explore Directory
-              </Link>
-              <Link href="/get-access" className="gold-link">
-                Get Access
-              </Link>
-            </div>
-            <div className="homepage-hero-pill">
-              <span className="homepage-hero-pill-number">Free</span>
-              <span className="homepage-hero-pill-label">To Join</span>
-            </div>
+      <section className="homepage-hero">
+        <div className="homepage-hero-bg" /><div className="homepage-hero-grid" />
+        <div className="homepage-hero-glow" /><div className="homepage-hero-glow2" />
+        <div className="homepage-hero-copy">
+          <div className="homepage-hero-ribbon">
+            <span className="homepage-hero-ribbon-pulse" />
+            <p>Now Accepting Founding Members — National</p>
           </div>
-        </section>
-
-        <div className="ticker-wrap homepage-ticker">
-          <div className="ticker-track">
-            <span className="ticker-item">Real People</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Real Knowledge</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Real Access</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Know Your Rights</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Free Legal Game Daily</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">HUD Programs</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Casting Calls</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Verified Professionals</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Inside Access</span>
-            <span className="tdot">◆</span>
-            <span className="ticker-item">Community First</span>
-            <span className="tdot">◆</span>
+          <h1 className="homepage-hero-title">
+            <span className="homepage-highlight">Real</span> people.<br />
+            <span className="homepage-highlight--green">Real</span> knowledge.<br />
+            <span className="homepage-highlight">Real</span> access.
+          </h1>
+          <p className="homepage-hero-text">A living archive of people doing meaningful work — storytelling, organizing, mentoring, and trusted access from communities on the move.</p>
+          <div className="homepage-hero-actions">
+            <Link href="/directory" className="gold-btn">Explore Directory</Link>
+            <Link href="/apply" className="gold-link">Get Involved</Link>
           </div>
         </div>
+      </section>
 
-        <section className="homepage-section">
-          <div className="homepage-section-grid homepage-section-grid--split">
-            <div>
-              <p className="homepage-kicker">What This Is</p>
-              <h2 className="homepage-section-title">Not just a platform. An ecosystem.</h2>
-              <p className="homepage-section-text">
-                This is a trust-based access network powered by real people and real media. Not content-first. Not social-first. <strong>Access-first.</strong> Everything else — media, opportunities, profiles — is evidence of that access.
-              </p>
-              <div className="homepage-feature-list">
-                <div className="homepage-feature-card">
-                  <span>◆</span>
-                  <div>
-                    <p className="homepage-feature-title">Professionals Teach</p>
-                    <p className="homepage-feature-copy">Selected, verified professionals post real knowledge daily. Legal rights, financial game, health, trades — the stuff people need before it's too late.</p>
-                  </div>
-                </div>
-                <div className="homepage-feature-card">
-                  <span>◆</span>
-                  <div>
-                    <p className="homepage-feature-title">Culture Gets Documented</p>
-                    <p className="homepage-feature-copy">Backstage moments, raw conversations, overlooked voices — documented with intention. A long-term media archive with real cultural value.</p>
-                  </div>
-                </div>
-                <div className="homepage-feature-card">
-                  <span>◆</span>
-                  <div>
-                    <p className="homepage-feature-title">Communities Get Access</p>
-                    <p className="homepage-feature-copy">Real resources. Real opportunities. Real connections. The rooms they were never invited into — now open.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="homepage-category-grid">
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">⚖️</div>
-                <div>
-                  <p className="homepage-category-title">Legal</p>
-                  <p className="homepage-category-copy">Criminal defense, expungement, civil rights, business law</p>
-                </div>
-              </div>
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">🎬</div>
-                <div>
-                  <p className="homepage-category-title">Media & Film</p>
-                  <p className="homepage-category-copy">Production, content creation, storytelling, documentation</p>
-                </div>
-              </div>
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">💰</div>
-                <div>
-                  <p className="homepage-category-title">Finance & Business</p>
-                  <p className="homepage-category-copy">Credit, wealth building, business formation, investment</p>
-                </div>
-              </div>
-              <div className="homepage-category-card">
-                <div className="homepage-category-card-icon">🔧</div>
-                <div>
-                  <p className="homepage-category-title">Trades & Skills</p>
-                  <p className="homepage-category-copy">Welders, electricians, truckers, barbers — real knowledge from real work</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="homepage-section homepage-section--dark">
-          <div className="homepage-section-header">
-            <div>
-              <p className="homepage-kicker">Featured Voices</p>
-              <h2 className="homepage-section-title">Selected. Verified. For real.</h2>
-            </div>
-            <Link href="/voices" className="gold-link homepage-section-cta">
-              See All Voices →
-            </Link>
-          </div>
-          <div className="homepage-voice-grid">
-            <div className="homepage-voice-card">
-              <div className="homepage-voice-avatar">⚖️</div>
-              <h3>Legal Strategy</h3>
-              <p className="homepage-feature-copy">Verified counsel, rights guides, expungement coaching, and real legal game for the people.</p>
-            </div>
-            <div className="homepage-voice-card">
-              <div className="homepage-voice-avatar">🎬</div>
-              <h3>Media & Storytelling</h3>
-              <p className="homepage-feature-copy">Documentaries, backstage access, and culture-shaping media built with community trust.</p>
-            </div>
-            <div className="homepage-voice-card">
-              <div className="homepage-voice-avatar">💼</div>
-              <h3>Finance & Opportunities</h3>
-              <p className="homepage-feature-copy">Funding pathways, business know-how, and the opportunity rooms that move communities forward.</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="homepage-section">
-          <div className="homepage-section-header">
-            <div>
-              <p className="homepage-kicker">Latest Posts & Media</p>
-              <h2 className="homepage-section-title">What professionals are sharing now.</h2>
-            </div>
-            <Link href="/posts/create" className="gold-link homepage-section-cta">
-              Create Post →
-            </Link>
-          </div>
-          {recentPosts.length > 0 ? (
-            <div className="page-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))" }}>
-              {recentPosts.map((post: any) => (
-                <PostCard
-                  key={post.id}
-                  id={post.id}
-                  title={post.title}
-                  body={post.body}
-                  post_type={post.post_type}
-                  author_name={post.author?.full_name || post.author?.username || "Anonymous"}
-                  author_id={post.author_id}
-                  created_at={post.created_at}
-                  media_url={post.media_url}
-                  image_url={post.image_url}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="card" style={{ textAlign: "center", padding: "2rem", marginTop: "1rem" }}>
-              <p className="muted">Posts coming soon. Verified professionals are preparing real knowledge daily.</p>
-            </div>
-          )}
-        </section>
-
-        <section className="homepage-section">
-          <div className="homepage-section-header">
-            <div>
-              <p className="homepage-kicker">Real Knowledge</p>
-              <h2 className="homepage-section-title">What they never<br />taught you.</h2>
-            </div>
-            <div className="homepage-section-copy">
-              <p className="homepage-section-text">
-                From lawyers to CEOs, barbers to directors, welders to venue managers — real people sharing real knowledge. The stuff you don't learn until it's too late. Updated daily.
-              </p>
-            </div>
-          </div>
-          <div className="homepage-grid-3">
-            {realKnowledgeItems.map((item) => (
-              <div key={item.title} className="homepage-feature-card">
-                <span>{item.icon}</span>
-                <div>
-                  <p className="homepage-feature-title">{item.title}</p>
-                  <p className="homepage-feature-copy">{item.copy}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="homepage-section homepage-section--dark">
-          <div className="homepage-section-header">
-            <div>
-              <p className="homepage-kicker">Opportunities</p>
-              <h2 className="homepage-section-title">Your next move is right here.</h2>
-            </div>
-            <Link href="/opportunities" className="gold-link homepage-section-cta">
-              See Opportunities →
-            </Link>
-          </div>
-          <div className="homepage-grid-3">
-            {opportunityItems.map((item) => (
-              <div key={item.title} className="homepage-feature-card">
-                <span>{item.icon}</span>
-                <div>
-                  <p className="homepage-feature-title">{item.title}</p>
-                  <p className="homepage-feature-copy">{item.copy}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="homepage-section homepage-access-section">
-          <div className="homepage-section-grid homepage-section-grid--split">
-            <div>
-              <p className="homepage-kicker">Inside Access</p>
-              <h2 className="homepage-section-title">The rooms you don’t usually see.</h2>
-              <p className="homepage-section-text">
-                Curated access to trusted spaces, verified rooms, and knowledge-based gatherings shaped for community stewards.
-              </p>
-            </div>
-            <div className="homepage-access-grid">
-              <div className="homepage-access-card">
-                <div className="homepage-access-thumb">🎬</div>
-                <div className="homepage-access-body">
-                  <p className="homepage-kicker">Verified Media</p>
-                  <h3>Production rooms and story access</h3>
-                  <p className="homepage-feature-copy">Join verified storytelling rooms where creators, professionals, and stewards collaborate on projects.</p>
-                </div>
-              </div>
-              <div className="homepage-access-card">
-                <div className="homepage-access-thumb">🛡️</div>
-                <div className="homepage-access-body">
-                  <p className="homepage-kicker">Trusted Support</p>
-                  <h3>Legal and financial guidance</h3>
-                  <p className="homepage-feature-copy">A trusted network of advisors, attorneys, and stewards delivering practical community-first guidance.</p>
-                </div>
-              </div>
-              <div className="homepage-access-card">
-                <div className="homepage-access-thumb">🚪</div>
-                <div className="homepage-access-body">
-                  <p className="homepage-kicker">Opportunity Rooms</p>
-                  <h3>Curated entry to the right spaces</h3>
-                  <p className="homepage-feature-copy">Priority access to rooms, collaborations, and opportunities designed for people already building forward.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="homepage-section homepage-section--dark">
-          <div className="homepage-section-header">
-            <div>
-              <p className="homepage-kicker">Member Spotlights</p>
-              <h2 className="homepage-section-title">Featured This Week</h2>
-            </div>
-            <Link href="/directory" className="gold-link homepage-section-cta">
-              Full Directory →
-            </Link>
-          </div>
-          <div className="homepage-grid-3">
-            {spotlightItems.map((item) => (
-              <div key={item.title} className="homepage-spotlight-card">
-                <p className="homepage-feature-title">{item.title}</p>
-                <p className="homepage-feature-copy">{item.tag}</p>
-                <p className="homepage-feature-copy">{item.copy}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="homepage-section">
-          <div className="homepage-section-header">
-            <div>
-              <p className="homepage-kicker">What's Happening</p>
-              <h2 className="homepage-section-title">In the Collective</h2>
-            </div>
-            <Link href="/apply" className="gold-link homepage-section-cta">
-              See All →
-            </Link>
-          </div>
-          <div className="homepage-grid-3">
-            {happeningsItems.map((item) => (
-              <div key={item.title} className="homepage-event-card">
-                <div className="homepage-event-icon">{item.icon}</div>
-                <p className="homepage-feature-title">{item.title}</p>
-                <p className="homepage-feature-copy">{item.copy}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="homepage-section homepage-support-section homepage-section--dark">
-          <div className="homepage-support-panel">
-            <div>
-              <p className="homepage-kicker">Support The Collective</p>
-              <h2 className="homepage-section-title">Keep trusted knowledge free.</h2>
-              <p className="homepage-section-text">
-                Support the platform with donations, partnerships, or by sharing verified opportunities. Your support helps keep community-first resources available to everyone.
-              </p>
-            </div>
-            <div className="homepage-support-actions">
-              <Link href="/get-access" className="gold-btn">
-                Get Access
-              </Link>
-              <a href="mailto:hello@communitycollective.org" className="gold-link">
-                Contact Support
-              </a>
-            </div>
-          </div>
-        </section>
-
-        <section className="homepage-join-cta">
-          <div className="homepage-join-cta-inner">
-            <div>
-              <p className="homepage-kicker">You Belong Here</p>
-              <h2 className="homepage-section-title">Real people.<br />Real game.<br />Real access.</h2>
-              <p className="homepage-section-text">
-                Whether you're a professional with game to share, a business that deserves visibility, a creative looking for opportunities, or a community member who just needs real resources — The Collective is built for you. All of you.
-              </p>
-            </div>
-            <div className="homepage-join-actions">
-              <Link href="/get-access" className="gold-btn">
-                Get Access Now
-              </Link>
-              <Link href="/voices" className="gold-link">
-                Meet the Voices
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <footer className="homepage-footer">
-          <div className="footer-brand">
-            <p className="footer-tag">Community Collective</p>
-            <h2>Premium access for creators, professionals, and community stewards.</h2>
-            <p className="footer-description">
-              Build your profile, connect with verified professionals, and stay in the loop with opportunities designed for trusted collaborators.
-            </p>
-          </div>
-          <div className="footer-grid">
-            <div className="footer-section">
-              <h3>Quick Links</h3>
-              <ul>
-                <li><Link href="/directory">Directory</Link></li>
-                <li><Link href="/opportunities">Opportunities</Link></li>
-                <li><Link href="/voices">Voices</Link></li>
-                <li><Link href="/apply">Apply</Link></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h3>Member access</h3>
-              <ul>
-                <li><Link href="/signup">Join</Link></li>
-                <li><Link href="/login">Login</Link></li>
-                <li><Link href="/get-access">Get Access</Link></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h3>Contact & Help</h3>
-              <p>Questions, partnerships, or support?</p>
-              <p>
-                <a href="mailto:hello@communitycollective.org">hello@communitycollective.org</a>
-              </p>
-              <p className="footer-note">For website support or directory listing help, message our team anytime.</p>
-            </div>
-          </div>
-          <div className="footer-bottom">
-            <p>Explore the platform with confidence. Admin access is protected and available for approved staff only.</p>
-          </div>
-        </footer>
+      <div className="ticker-wrap homepage-ticker">
+        <div className="ticker-track">
+          {["Game Daily","HUD Programs","Casting Calls","Verified Professionals","Inside Access","Opportunities","Stories","Community","Game Daily","HUD Programs","Casting Calls","Verified Professionals","Inside Access","Opportunities","Stories","Community"].map((item, i) => (
+            <span key={i}><span className="ticker-item">{item}</span><span className="tdot">◆</span></span>
+          ))}
+        </div>
       </div>
+
+      {!loading && posts.length > 0 && (
+        <section className="media-feed-section">
+          <div className="media-feed-section-header">
+            <h2>Recent Stories</h2>
+            <Link href="/posts" className="gold-link">View All →</Link>
+          </div>
+          <MediaFeed
+            posts={posts.map((p) => ({
+              id: p.id, type: (p.post_type || "story") as "interview"|"event"|"story"|"insight"|"opportunity",
+              creatorId: p.author_id, creatorName: p.author_name, creatorUsername: p.author_username, creatorAvatar: p.author_avatar,
+              title: p.title, caption: p.caption || p.body || "",
+              mediaUrl: p.image_url || p.media_url || p.thumbnail_url,
+              mediaType: p.media_type === "video" || p.post_type === "video" ? "video" : "image",
+              publishedAt: p.created_at, location: p.location, tags: p.tags,
+              guestName: p.interview_guest_name, guestTitle: p.interview_guest_title,
+              guestOrganization: p.interview_guest_organization,
+              coverImage: p.interview_cover_url || p.image_url || p.media_url,
+              interviewSummary: p.interview_summary, keyTakeaways: p.interview_key_takeaways,
+            }))}
+            loading={loading} onSave={handleSave} onShare={handleShare}
+          />
+        </section>
+      )}
+
+      <section className="hp-section">
+        <div className="hp-section-head">
+          <p className="hp-eyebrow">COMMUNITY STORIES</p>
+          <h2 className="hp-section-title">FEATURED THIS WEEK</h2>
+          <Link href="/directory" className="gold-btn hp-section-cta">FULL DIRECTORY →</Link>
+        </div>
+        <div className="hp-grid-3">
+          {FEATURED_STORIES.map((s, i) => <StoryCard key={i} {...s} />)}
+        </div>
+      </section>
+
+      <div className="hp-divider" />
+
+      <section className="hp-section">
+        <div className="hp-section-split">
+          <div className="hp-section-split-left">
+            <p className="hp-eyebrow">REAL GAME</p>
+            <h2 className="hp-section-title">WHAT THEY NEVER TAUGHT YOU.</h2>
+            <p className="hp-section-body">From lawyers to CEOs, barbers to directors — real people sharing real knowledge. Updated daily.</p>
+          </div>
+          <div className="hp-grid-3">
+            {REAL_GAME.map((s, i) => <StoryCard key={i} {...s} />)}
+          </div>
+        </div>
+      </section>
+
+      <div className="hp-divider" />
+
+      <section className="hp-section">
+        <div className="hp-section-head">
+          <p className="hp-eyebrow">OPPORTUNITIES TODAY</p>
+          <h2 className="hp-section-title">YOUR NEXT MOVE IS RIGHT HERE.</h2>
+          <Link href="/opportunities" className="gold-btn hp-section-cta">SEE OPPORTUNITIES →</Link>
+        </div>
+        <div className="hp-grid-3">
+          {OPPORTUNITIES.map((s, i) => <StoryCard key={i} {...s} />)}
+        </div>
+      </section>
+
+      <div className="hp-divider" />
+
+      <section className="hp-section">
+        <div className="hp-section-head">
+          <p className="hp-eyebrow">PEOPLE BUILDING THINGS</p>
+          <h2 className="hp-section-title">THE COMMUNITIES MAKING PROGRESS RIGHT NOW.</h2>
+        </div>
+        <div className="hp-grid-wide">
+          {PEOPLE_BUILDING.map((s, i) => <WideCard key={i} {...s} />)}
+        </div>
+      </section>
+
+      <div className="hp-divider" />
+
+      <section className="hp-section">
+        <div className="hp-section-split">
+          <div className="hp-section-split-left">
+            <p className="hp-eyebrow">INSIDE ACCESS</p>
+            <h2 className="hp-section-title">THE ROOMS YOU DON&apos;T USUALLY SEE.</h2>
+            <p className="hp-section-body">Curated access to trusted spaces, verified rooms, and knowledge-based gatherings shaped for community stewards.</p>
+          </div>
+          <div className="hp-grid-3">
+            {INSIDE_ACCESS.map((s, i) => <StoryCard key={i} {...s} />)}
+          </div>
+        </div>
+      </section>
+
+      <div className="hp-divider" />
+
+      <section className="hp-section">
+        <div className="hp-grid-2">
+          {COMMUNITY_ACCESS.map((s, i) => <WideCard key={i} {...s} />)}
+        </div>
+      </section>
+
+      <div className="hp-divider" />
+
+      <section className="hp-join-section">
+        <div className="hp-join-inner">
+          <p className="hp-eyebrow">JOIN THE MOVEMENT</p>
+          <h2 className="hp-join-title">
+            <span style={{ color: "var(--gold)" }}>Real</span> people.<br />
+            <span style={{ color: "var(--accent)" }}>Real</span> knowledge.<br />
+            <span style={{ color: "var(--gold)" }}>Real</span> access.
+          </h2>
+          <p className="hp-join-body">Community Collective is a living archive of people doing meaningful work — storytelling, organizing, mentoring, and trusted access from communities on the move.</p>
+          <div className="hp-join-actions">
+            <Link href="/directory" className="gold-btn">Explore Directory</Link>
+            <Link href="/apply" className="gold-btn hp-join-btn-outline">Get Involved</Link>
+          </div>
+          <div className="hp-join-badge">
+            <span className="hp-join-badge-text">FREE</span>
+            <span className="hp-join-badge-sub">TO JOIN</span>
+          </div>
+        </div>
+      </section>
+
     </main>
   );
 }

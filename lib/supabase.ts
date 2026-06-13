@@ -52,7 +52,6 @@ export function getSupabaseClient() {
     console.warn("Supabase not configured: returning safe stub client for browser runtime.");
     return client;
   }
-
   client = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
       persistSession: true,

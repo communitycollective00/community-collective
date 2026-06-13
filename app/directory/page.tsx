@@ -21,6 +21,45 @@ type DirectoryProfile = {
   is_featured?: boolean;
 };
 
+const directoryHighlights = [
+  {
+    icon: "🛠️",
+    title: "Skilled trades",
+    copy: "People who turn experience into work, income, and local impact.",
+  },
+  {
+    icon: "🧑‍🏫",
+    title: "Educators",
+    copy: "Trusted teachers, trainers, and coaches who share what they know with care.",
+  },
+  {
+    icon: "⚖️",
+    title: "Attorneys",
+    copy: "Real legal guidance from people who understand systems and community rights.",
+  },
+  {
+    icon: "🎨",
+    title: "Creators",
+    copy: "Storytellers, media makers, and artists using their work to build access.",
+  },
+  {
+    icon: "🤝",
+    title: "Organizers",
+    copy: "Leaders and connectors who build trusted community relationships.",
+  },
+  {
+    icon: "📈",
+    title: "Business owners",
+    copy: "People growing local enterprise with expertise rooted in real people and places.",
+  },
+];
+
+const accessStatements = [
+  "Access is a relationship, not a resume.",
+  "The right introduction can change everything.",
+  "Verified expertise and local knowledge make every connection more valuable.",
+];
+
 export default function DirectoryPage() {
   const [profiles, setProfiles] = useState<DirectoryProfile[]>([]);
   const [search, setSearch] = useState("");
@@ -96,22 +135,45 @@ export default function DirectoryPage() {
 
   return (
     <main className="premium-page" style={{ paddingTop: "92px" }}>
-      <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        <div style={{ marginBottom: "2rem" }}>
-          <p className="homepage-kicker">The Directory</p>
-          <h1 className="homepage-section-title">Search trusted professionals</h1>
-          <p className="homepage-section-text">
-            Find verified creators, professionals, advisors, and service providers by name, field, location, and expertise.
-          </p>
+      <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
+        <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "2.5rem", marginBottom: "2rem" }}>
+          <div>
+            <p className="homepage-kicker">The Directory</p>
+            <h1 className="homepage-section-title">Access is a relationship. The right introduction can change everything.</h1>
+            <p className="homepage-section-text">
+              This directory is the engine behind Community Collective. Here you find trusted professionals, local experts, mentors, creators, organizers, educators, and leaders who make access meaningful.
+            </p>
+            <div className="homepage-grid-3" style={{ gap: "1rem", marginTop: "1.5rem" }}>
+              {directoryHighlights.map((highlight) => (
+                <div key={highlight.title} className="homepage-feature-card">
+                  <div style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>{highlight.icon}</div>
+                  <p className="homepage-feature-title">{highlight.title}</p>
+                  <p className="homepage-feature-copy">{highlight.copy}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="homepage-section homepage-section--dark" style={{ padding: "1.75rem", borderRadius: "18px" }}>
+            <p className="homepage-kicker">Why this directory matters</p>
+            <p className="homepage-section-text">
+              Community Collective is not LinkedIn. It is a trusted access network where introductions are rooted in community impact, lived expertise, and verified relationships.
+            </p>
+            <div style={{ display: "grid", gap: "0.85rem", marginTop: "1rem" }}>
+              {accessStatements.map((statement) => (
+                <p key={statement} className="homepage-feature-copy">{statement}</p>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="page-search">
+        <div className="page-search" style={{ marginBottom: "2rem" }}>
           <div className="page-search-row">
             <input
               className="page-input"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, field, location..."
+              placeholder="Search by name, expertise, or location..."
             />
           </div>
           <div className="page-search-row">

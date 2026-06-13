@@ -80,7 +80,7 @@ export default function LoginPage() {
   return (
     <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
       <section className="premium-card">
-        <h1 style={{ fontSize: "2.8rem", letterSpacing: "0.08em", marginBottom: "0.5rem" }}>Welcome back.</h1>
+        <h1 style={{ fontSize: "1.6rem", letterSpacing: "0.04em", marginBottom: "0.5rem" }}>Welcome back.</h1>
         <p style={{ color: "#d3c18e", marginBottom: "1.5rem", maxWidth: "640px" }}>Sign in securely to access your dashboard, profile, and premium directory tools.</p>
 
         <form onSubmit={login} className="premium-form">
@@ -88,6 +88,8 @@ export default function LoginPage() {
           <input required type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
           <button className="gold-btn" type="submit" disabled={isLoading}>Login</button>
         </form>
+
+        <p style={{ marginTop: 8 }}><a href="#" onClick={(e) => e.preventDefault()} className="gold-link">Forgot password?</a></p>
 
         <div className="quick-links">
           <button type="button" className="gold-btn" onClick={googleLogin} disabled={!googleEnabled} title={!googleEnabled ? "Google sign-in coming soon" : "Continue with Google"}>

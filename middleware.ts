@@ -9,7 +9,7 @@ const publicRoutes = [
   "/auth/callback",
 ];
 
-const protectedRoutes = ["/admin"];
+const protectedRoutes: string[] = [];
 
 function matchesRoute(pathname: string, route: string) {
   return pathname === route || pathname.startsWith(`${route}/`);
@@ -49,11 +49,11 @@ export async function middleware(request: NextRequest) {
     }
 
     const { data: profile } = await (supabase.from("profiles") as any)
-      .select("role,is_approved")
+      .select("role")
       .eq("id", userId)
       .maybeSingle();
 
-    if (!profile || profile.role !== "admin" || profile.is_approved !== true) {
+    if (!profile || profile.role !== "admin") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
   }

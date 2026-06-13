@@ -17,6 +17,8 @@ export const PROFILE_COLUMNS = [
   "linkedin",
   "tiktok",
   "youtube",
+  "looking_for",
+  "can_offer",
   "avatar_url",
   "banner_url",
   "featured_status",
@@ -57,4 +59,37 @@ export function computeProfileCompleted(profile: Record<string, unknown>) {
     profile.avatar_url,
   ];
   return fields.every((v) => Boolean(v && String(v).trim()));
+}
+
+export function calculateProfileCompletion(profile: Record<string, unknown>): { completed: number; total: number; percentage: number; missingFields: string[] } {
+  const completionFields = [
+    { key: "full_name", label: "Full Name" },
+    { key: "username", label: "Username" },
+    { key: "industry", label: "Industry" },
+    { key: "city", label: "City" },
+    { key: "state", label: "State" },
+    { key: "bio", label: "Short Bio" },
+    { key: "description", label: "Full Description" },
+    { key: "website", label: "Website" },
+    { key: "avatar_url", label: "Avatar" },
+  ];
+
+  const missingFields: string[] = [];
+  let completed = 0;
+
+  completionFields.forEach(({ key, label }) => {
+    const value = profile[key];
+    if (value && String(value).trim()) {
+      completed++;
+    } else {
+      missingFields.push(label);
+    }
+  });
+
+  return {
+    completed,
+    total: completionFields.length,
+    percentage: Math.round((completed / completionFields.length) * 100),
+    missingFields,
+  };
 }

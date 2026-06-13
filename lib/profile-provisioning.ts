@@ -23,12 +23,9 @@ export async function upsertProfileWithRetry(
 ) {
   const payload = {
     id: seed.id,
-    email: seed.email ?? null,
     full_name: seed.fullName?.trim() || (seed.email?.split("@")[0] ?? ""),
     username: seed.username?.trim() || createUsernamePlaceholder(seed.id),
     role: seed.role || "public",
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
   };
 
   let lastError: unknown = null;

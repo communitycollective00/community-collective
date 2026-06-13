@@ -4,42 +4,34 @@ import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSupabaseClient } from "../../../lib/supabase";
 import { isProfessionalRole } from "../../../lib/roles";
-import { MediaCapture } from "../../components/media-capture";
+import { useAuth } from "../../components/auth-provider";
 
 type ProfileData = { role: string | null };
 
+// TODO: If Supabase Storage is fully configured, replace URL-only media fields with a secure upload flow.
+
 export default function CreatePostPage() {
   const [profile, setProfile] = useState<ProfileData | null>(null);
-  const [userId, setUserId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [postType, setPostType] = useState("article");
   const [mediaUrl, setMediaUrl] = useState("");
   const [linkUrl, setLinkUrl] = useState("");
+  const [caption, setCaption] = useState("");
+  const [thumbnailUrl, setThumbnailUrl] = useState("");
+  const [visibility, setVisibility] = useState("public");
+  const [tags, setTags] = useState("");
   const [status, setStatus] = useState("");
   const router = useRouter();
+  const { user, profile: providerProfile, role, loading: authLoading } = useAuth();
 
   useEffect(() => {
-    const load = async () => {
-      const { data } = await getSupabaseClient().auth.getSession();
-      const session = data.session;
-      if (!session) {
-        window.location.href = "/login";
-        return;
-      }
-
-      const user = session.user;
-      setUserId(user.id);
-      const { data: profileData } = await (getSupabaseClient().from("profiles") as any)
-        .select("role")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      setProfile(profileData || null);
-    };
-
-    load();
-  }, []);
+    if (providerProfile) {
+      setProfile({ role: providerProfile.role });
+    } else if (!authLoading) {
+      setProfile({ role });
+    }
+  }, [providerProfile, role, authLoading]);
 
   const canPublish = isProfessionalRole(profile?.role) || profile?.role === "admin";
 
@@ -53,14 +45,6 @@ export default function CreatePostPage() {
       setStatus("Title is required.");
       return;
     }
-    if ((postType === "image" || postType === "video") && !mediaUrl.trim()) {
-      setStatus(`Please capture or select a ${postType} before publishing.`);
-      return;
-    }
-    if (postType === "link" && !linkUrl.trim()) {
-      setStatus("Please enter a link URL.");
-      return;
-    }
 
     const { data } = await getSupabaseClient().auth.getSession();
     const accessToken = data.session?.access_token;
@@ -72,9 +56,14 @@ export default function CreatePostPage() {
     const payload = {
       title: title.trim(),
       body: body.trim() || null,
+      caption: caption.trim() || null,
       post_type: postType,
+      media_type: postType,
       media_url: mediaUrl.trim() || null,
-      link_url: linkUrl.trim() || null,
+      thumbnail_url: thumbnailUrl.trim() || null,
+      external_url: linkUrl.trim() || null,
+      visibility: visibility,
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
       image_url: postType === "image" ? mediaUrl.trim() || null : null,
     };
 
@@ -114,39 +103,27 @@ export default function CreatePostPage() {
         ) : (
           <form className="premium-form" onSubmit={handleSubmit}>
             <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Post title" />
+            <input value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Short caption (optional)" />
             <select value={postType} onChange={(e) => setPostType(e.target.value)}>
               <option value="article">Article / update</option>
-              <option value="image">Photo</option>
               <option value="video">Video</option>
               <option value="link">Link</option>
+              <option value="image">Image</option>
             </select>
             <textarea rows={4} value={body} onChange={(e) => setBody(e.target.value)} placeholder="Describe the value of this post, resource, or opportunity." />
-
-            {postType === "image" && (
+            {postType !== "article" ? (
               <>
-                <p className="muted" style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
-                  📸 Add a photo
-                </p>
-                <MediaCapture mediaType="photo" userId={userId} onMediaCaptured={(url) => setMediaUrl(url)} />
+                <input value={mediaUrl} onChange={(e) => setMediaUrl(e.target.value)} placeholder={postType === "video" ? "Video URL" : postType === "link" ? "External link URL" : "Image URL"} />
+                <input value={thumbnailUrl} onChange={(e) => setThumbnailUrl(e.target.value)} placeholder="Thumbnail image URL (optional)" />
               </>
-            )}
-
-            {postType === "video" && (
-              <>
-                <p className="muted" style={{ fontSize: "0.9rem", marginBottom: "0.5rem" }}>
-                  🎬 Add a video
-                </p>
-                <MediaCapture mediaType="video" userId={userId} onMediaCaptured={(url) => setMediaUrl(url)} />
-              </>
-            )}
-
-            {postType === "link" && (
-              <input value={linkUrl} onChange={(e) => setLinkUrl(e.target.value)} placeholder="External link URL" />
-            )}
-
-            <button className="gold-btn" type="submit">
-              Publish post
-            </button>
+            ) : null}
+            <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Tags (comma separated)" />
+            <select value={visibility} onChange={(e) => setVisibility(e.target.value)}>
+              <option value="public">Public</option>
+              <option value="members">Members</option>
+              <option value="private">Private</option>
+            </select>
+            <button className="gold-btn" type="submit">Publish post</button>
           </form>
         )}
         {status ? <p className="muted">{status}</p> : null}
