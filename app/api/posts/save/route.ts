@@ -167,7 +167,7 @@ export async function POST(request: Request) {
   });
 
   if (!postData.title) {
-    return NextResponse.json({ error: "title_required" }, { status: 400 });
+    postData.title = (payload.body || '').slice(0, 60) || payload.post_type || 'Post';
   }
 
   if (payload.id) {
