@@ -63,7 +63,7 @@ export default function VoicesPage() {
         <section className="homepage-section" style={{ paddingTop: "4rem", paddingBottom: "4rem" }}>
           <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "2.5rem" }}>
             <div>
-              <p className="homepage-kicker">Real voices</p>
+              <p className="homepage-kicker">Neighborhood Heroes</p>
               <h1 className="homepage-section-title">The heart of Community Collective is people sharing knowledge, experience, and leadership.</h1>
               <p className="homepage-section-text">
                 This is not a page of influencers. It is a page of practitioners, mentors, tradespeople, organizers, and leaders who share real knowledge, lived experience, and the community work that actually moves people forward.
@@ -82,7 +82,7 @@ export default function VoicesPage() {
             <div className="homepage-voice-card" style={{ padding: "2rem", minHeight: "420px", display: "grid", gap: "1.5rem", position: "relative" }}>
               <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at top left, rgba(201, 168, 76, 0.12), transparent 20%)", pointerEvents: "none" }} />
               <div style={{ position: "relative", zIndex: 1 }}>
-                <p className="homepage-kicker">Why voices matter</p>
+                <p className="homepage-kicker">Why This Matters</p>
                 <h2 className="homepage-section-title" style={{ fontSize: "2rem", marginBottom: "1rem" }}>
                   Knowledge transfers through people, perspective, and trust.
                 </h2>

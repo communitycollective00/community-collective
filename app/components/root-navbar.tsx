@@ -37,7 +37,7 @@ export default function RootNavBar() {
         {/* Desktop links (hidden on small screens via CSS) */}
         <div className="premium-links">
           <Link href="/">Home</Link>
-          <Link href="/voices">Neighborhood Heroes</Link>
+          <Link href="/voices">Voices</Link>
           <Link href="/opportunities">Opportunities</Link>
           <Link href="/directory">Directory</Link>
 
@@ -79,7 +79,7 @@ export default function RootNavBar() {
       {/* Mobile menu (in-flow so it pushes content, not overlay) */}
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
         <Link href="/">Home</Link>
-        <Link href="/voices">Neighborhood Heroes</Link>
+        <Link href="/voices">Voices</Link>
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
         <Link href="/recommend">Spotlight</Link>
