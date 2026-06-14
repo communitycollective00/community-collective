@@ -44,12 +44,13 @@ export default function CreateInterviewPage() {
 
     try {
       const sb = getSupabaseClient();
-      const { data: sessionData } = await sb.auth.getSession();
-      const user = sessionData?.session?.user;
+      const { data } = await sb.auth.getSession();
+      const user = data?.session?.user;
+      console.log("DEBUG USER:", user);
+      console.log("DEBUG SESSION:", data?.session);
 
       if (!user) {
         setError("Not logged in.");
-        setSaving(false);
         return;
       }
 
