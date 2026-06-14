@@ -61,18 +61,20 @@ export default function CreateInterviewPage() {
         setUploading(false);
       }
 
-      const { error: saveError } = await sb.from("posts").insert({
+ const { error: saveError } = await sb.from("posts").insert({
         profile_id: user.id,
-        title: form.guestName,
-        body: form.summary,
-        image_url: finalCoverUrl,
-        video_url: finalVideoUrl,
-        type: "interview",
-        metadata: {
-          guestTitle: form.guestTitle,
-          organization: form.organization,
-          keyTakeaways: form.keyTakeaways,
-        },
+        post_type: "interview",
+        interview_guest_name: form.guestName,
+        interview_guest_title: form.guestTitle,
+        interview_guest_organization: form.organization,
+        interview_cover_url: finalCoverUrl,
+        interview_summary: form.summary,
+        interview_key_takeaways: form.keyTakeaways
+          ? form.keyTakeaways.split("\n").filter(Boolean)
+          : [],
+        media_url: finalVideoUrl,
+        is_published: true,
+        status: "published",
       });
 
       if (saveError) {
