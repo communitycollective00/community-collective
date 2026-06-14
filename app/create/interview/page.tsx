@@ -27,7 +27,7 @@ export default function CreateInterviewPage() {
     const sb = getSupabaseClient();
     const ext = file.name.split(".").pop() || "";
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await sb.storage.from(bucket).upload(path, file);
+    const { error } = await sb.storage.from(bucket).upload(path, file, { upsert: true });
     if (error) throw error;
     const { data } = sb.storage.from(bucket).getPublicUrl(path);
     return data.publicUrl;
