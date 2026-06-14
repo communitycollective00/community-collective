@@ -28,9 +28,9 @@ const REAL_GAME = [
   { tag: "REAL GAME", title: "Sound & Scene Studio", role: "Educator", city: "Michigan City", desc: "A practical look at teaching, mentoring, and sharing skills in places that are often overlooked." },
 ];
 const OPPORTUNITIES = [
-  { tag: "OPPORTUNITIES TODAY", title: "Neighborhood Block Grant", role: "Community Leader", city: "Chicago", desc: "Immediate support and funding for neighborhood projects led by people who live and work locally." },
-  { tag: "OPPORTUNITIES TODAY", title: "Mentorship Session", role: "Youth Coach", city: "Gary", desc: "A scheduled chance for young people to connect with guidance, networks, and real-world direction." },
-  { tag: "OPPORTUNITIES TODAY", title: "Community Artist Residency", role: "Cultural Producer", city: "Indianapolis", desc: "Creative spaces and storytelling projects that support local artists and community memory." },
+  { tag: "OPPORTUNITIES", title: "Neighborhood Block Grant", role: "Community Leader", city: "Chicago", desc: "Immediate support and funding for neighborhood projects led by people who live and work locally." },
+  { tag: "OPPORTUNITIES", title: "Mentorship Session", role: "Youth Coach", city: "Gary", desc: "A scheduled chance for young people to connect with guidance, networks, and real-world direction." },
+  { tag: "OPPORTUNITIES", title: "Community Artist Residency", role: "Cultural Producer", city: "Indianapolis", desc: "Creative spaces and storytelling projects that support local artists and community memory." },
 ];
 const PEOPLE_BUILDING = [
   { tag: "PEOPLE BUILDING THINGS", title: "Neighborhood Workshop", role: "Tradesman", city: "Gary", desc: "A hands-on mentor teaching welding, carpentry, and the skilled trades that keep neighborhoods moving." },
@@ -42,9 +42,9 @@ const COMMUNITY_ACCESS = [
   { tag: "COMMUNITY ACCESS", title: "Neighborhood Story Lab", role: "Documentarian", city: "Detroit", desc: "Neighborhood stories captured through film, interviews, and cultural reporting." },
 ];
 const INSIDE_ACCESS = [
-  { tag: "INSIDE ACCESS", title: "Documentary Room", role: "Producer", city: "Chicago", desc: "A behind-the-scenes look at how stories are gathered, edited, and shared with community audiences." },
-  { tag: "INSIDE ACCESS", title: "Community Table", role: "Faith Leader", city: "Indianapolis", desc: "Trusted gatherings where neighbors, leaders, and service providers meet to exchange resources." },
-  { tag: "INSIDE ACCESS", title: "Resource Room", role: "Organizer", city: "Detroit", desc: "A curated collection of doors, rooms, and introductions shaped for people building out of community." },
+  { tag: "FROM THE INSIDE", title: "Documentary Room", role: "Producer", city: "Chicago", desc: "A behind-the-scenes look at how stories are gathered, edited, and shared with community audiences." },
+  { tag: "FROM THE INSIDE", title: "Community Table", role: "Faith Leader", city: "Indianapolis", desc: "Trusted gatherings where neighbors, leaders, and service providers meet to exchange resources." },
+  { tag: "FROM THE INSIDE", title: "Resource Room", role: "Organizer", city: "Detroit", desc: "A curated collection of doors, rooms, and introductions shaped for people building out of community." },
 ];
 
 function StoryCard({ tag, title, role, city, desc }: { tag: string; title: string; role: string; city: string; desc: string }) {
@@ -134,14 +134,14 @@ export default function HomePage() {
           <p className="homepage-hero-text">A living archive of people doing meaningful work — storytelling, organizing, mentoring, and trusted access from communities on the move.</p>
           <div className="homepage-hero-actions">
             <Link href="/directory" className="gold-btn">Explore Directory</Link>
-            <Link href="/apply" className="gold-link">Get Involved</Link>
+            <Link href="/apply" className="gold-link">Tap In</Link>
           </div>
         </div>
       </section>
 
       <div className="ticker-wrap homepage-ticker">
         <div className="ticker-track">
-          {["Game Daily","HUD Programs","Casting Calls","Verified Professionals","Inside Access","Opportunities","Stories","Community","Game Daily","HUD Programs","Casting Calls","Verified Professionals","Inside Access","Opportunities","Stories","Community"].map((item, i) => (
+          {["Game Daily","HUD Programs","Casting Calls","Verified Professionals","From The Inside","Opportunities","Stories","Community","Game Daily","HUD Programs","Casting Calls","Verified Professionals","From The Inside","Opportunities","Stories","Community"].map((item, i) => (
             <span key={i}><span className="ticker-item">{item}</span><span className="tdot">◆</span></span>
           ))}
         </div>
@@ -167,7 +167,7 @@ export default function HomePage() {
       <section className="hp-section">
         <div className="hp-section-head">
           <p className="hp-eyebrow">COMMUNITY STORIES</p>
-          <h2 className="hp-section-title">FEATURED THIS WEEK</h2>
+          <h2 className="hp-section-title">ON THE RADAR</h2>
           <Link href="/directory" className="gold-btn hp-section-cta">FULL DIRECTORY →</Link>
         </div>
         <div className="hp-grid-3">
@@ -194,7 +194,7 @@ export default function HomePage() {
 
       <section className="hp-section">
         <div className="hp-section-head">
-          <p className="hp-eyebrow">OPPORTUNITIES TODAY</p>
+          <p className="hp-eyebrow">OPPORTUNITIES</p>
           <h2 className="hp-section-title">YOUR NEXT MOVE IS RIGHT HERE.</h2>
           <Link href="/opportunities" className="gold-btn hp-section-cta">SEE OPPORTUNITIES →</Link>
         </div>
@@ -220,7 +220,7 @@ export default function HomePage() {
       <section className="hp-section">
         <div className="hp-section-split">
           <div className="hp-section-split-left">
-            <p className="hp-eyebrow">INSIDE ACCESS</p>
+            <p className="hp-eyebrow">FROM THE INSIDE</p>
             <h2 className="hp-section-title">THE ROOMS YOU DON&apos;T USUALLY SEE.</h2>
             <p className="hp-section-body">Curated access to trusted spaces, verified rooms, and knowledge-based gatherings shaped for community stewards.</p>
           </div>
@@ -242,7 +242,7 @@ export default function HomePage() {
 
       <section className="hp-join-section">
         <div className="hp-join-inner">
-          <p className="hp-eyebrow">JOIN THE MOVEMENT</p>
+          <p className="hp-eyebrow">YOU BELONG HERE</p>
           <h2 className="hp-join-title">
             <span style={{ color: "var(--gold)" }}>Real</span> people.<br />
             <span style={{ color: "var(--accent)" }}>Real</span> knowledge.<br />
@@ -251,7 +251,7 @@ export default function HomePage() {
           <p className="hp-join-body">Community Collective is a living archive of people doing meaningful work — storytelling, organizing, mentoring, and trusted access from communities on the move.</p>
           <div className="hp-join-actions">
             <Link href="/directory" className="gold-btn">Explore Directory</Link>
-            <Link href="/apply" className="gold-btn hp-join-btn-outline">Get Involved</Link>
+            <Link href="/apply" className="gold-btn hp-join-btn-outline">Tap In</Link>
           </div>
           <div className="hp-join-badge">
             <span className="hp-join-badge-text">FREE</span>

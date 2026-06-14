@@ -37,7 +37,7 @@ export default function RootNavBar() {
         {/* Desktop links (hidden on small screens via CSS) */}
         <div className="premium-links">
           <Link href="/">Home</Link>
-          <Link href="/voices">Voices</Link>
+          <Link href="/voices">Neighborhood Heroes</Link>
           <Link href="/opportunities">Opportunities</Link>
           <Link href="/directory">Directory</Link>
 
@@ -48,7 +48,7 @@ export default function RootNavBar() {
               </Link>
               {isAdminRole(role) && <Link href="/admin">Admin</Link>}
               <Link href="/dashboard">Dashboard</Link>
-              <Link href="/profile">Profile</Link>
+              <Link href={user ? `/u/${user.user_metadata?.username || user.email?.split('@')[0]}` : '/profile'}>Profile</Link>
               <button
                 onClick={handleLogout}
                 className="gold-btn"
@@ -61,14 +61,14 @@ export default function RootNavBar() {
           ) : !loading ? (
             <>
               <Link href="/get-access" className="gold-link">
-                Get Access
+                Tap In
               </Link>
               <Link href="/login">Login</Link>
             </>
           ) : (
             <>
               <Link href="/get-access" className="gold-link">
-                Get Access
+                Tap In
               </Link>
               <Link href="/login">Login</Link>
             </>
@@ -79,7 +79,7 @@ export default function RootNavBar() {
       {/* Mobile menu (in-flow so it pushes content, not overlay) */}
       <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
         <Link href="/">Home</Link>
-        <Link href="/voices">Voices</Link>
+        <Link href="/voices">Neighborhood Heroes</Link>
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
         <Link href="/recommend">Spotlight</Link>
@@ -90,17 +90,17 @@ export default function RootNavBar() {
             </Link>
             {isAdminRole(role) && <Link href="/admin">Admin</Link>}
             <Link href="/dashboard">Dashboard</Link>
-            <Link href="/profile">Profile</Link>
+            <Link href={user ? `/u/${user.user_metadata?.username || user.email?.split('@')[0]}` : '/profile'}>Profile</Link>
             <button onClick={handleLogout} className="gold-btn" style={{ cursor: "pointer" }} aria-label="Logout">Logout</button>
           </>
         ) : !loading ? (
           <>
-            <Link href="/get-access" className="gold-link">Get Access</Link>
+            <Link href="/get-access" className="gold-link">Tap In</Link>
             <Link href="/login">Login</Link>
           </>
         ) : (
           <>
-            <Link href="/get-access" className="gold-link">Get Access</Link>
+            <Link href="/get-access" className="gold-link">Tap In</Link>
             <Link href="/login">Login</Link>
           </>
         )}
@@ -131,7 +131,7 @@ export default function RootNavBar() {
             <span className="mb-icon">✨</span>
             <span className="mb-label">Spotlight</span>
           </Link>
-          <Link href="/profile">
+          <Link href={user ? `/u/${user.user_metadata?.username || user.email?.split('@')[0]}` : '/login'}>
             <span className="mb-icon">👤</span>
             <span className="mb-label">Profile</span>
           </Link>
