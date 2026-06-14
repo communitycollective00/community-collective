@@ -1,4 +1,5 @@
 "use client";
+import PostCard from "./components/post-card";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -155,10 +156,20 @@ export default function HomePage() {
           </div>
           <div style={{padding:"1rem"}}>
             {posts.map(p => (
-              <div key={p.id} style={{padding:"1rem",marginBottom:"1rem",background:"var(--surface)",borderRadius:12,border:"1px solid var(--border)"}}>
-                <strong>{p.title || p.caption}</strong>
-                <p style={{color:"var(--muted)",fontSize:"0.85rem"}}>{p.author_name} · {new Date(p.created_at).toLocaleDateString()}</p>
-              </div>
+              <PostCard
+                key={p.id}
+                id={p.id}
+                title={p.title || p.caption}
+                body={p.body}
+                post_type={p.post_type}
+                media_type={p.media_type}
+                author_name={p.author_name}
+                author_id={p.author_id}
+                created_at={p.created_at}
+                media_url={p.media_url}
+                image_url={p.image_url}
+                thumbnail_url={p.thumbnail_url}
+              />
             ))}
           </div>
         </section>

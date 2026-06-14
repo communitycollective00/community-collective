@@ -72,7 +72,7 @@ export default function PostCard({
 
         {(post_type === 'video' || media_type === 'video') && (media_url || image_url) && (
           <video controls style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 16, marginBottom: '1rem' }}>
-            <source src={media_url || image_url || ''} />
+            <source src={media_url || ''} />
           </video>
         )}
 
@@ -96,7 +96,7 @@ export default function PostCard({
           </p>
         )}
 
-        {media_url && post_type !== "image" && (
+        {media_url && post_type !== "image" && post_type !== "video" && (
           <p className="muted" style={{ margin: "0 0 0.75rem 0", fontSize: "0.9rem", textDecoration: "underline" }}>
             📎 Media attached
           </p>
