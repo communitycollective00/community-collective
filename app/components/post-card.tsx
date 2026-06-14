@@ -54,7 +54,7 @@ export default function PostCard({
   return (
     <Link href={`/posts/${id}`} style={{ textDecoration: "none", color: "inherit" }}>
       <article className="post-card">
-        {media_type === 'image' && image && (
+        {(post_type === 'image' || post_type === 'photo' || media_type === 'image') && image && (
           <img
             src={image}
             alt={displayTitle}
@@ -70,9 +70,9 @@ export default function PostCard({
           />
         )}
 
-        {media_type === 'video' && media_url && (
+        {(post_type === 'video' || media_type === 'video') && (media_url || image_url) && (
           <video controls style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 16, marginBottom: '1rem' }}>
-            <source src={media_url} />
+            <source src={media_url || image_url || ''} />
           </video>
         )}
 
