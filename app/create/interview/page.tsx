@@ -3,6 +3,7 @@ export const dynamic = "force-dynamic";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { getSupabaseClient } from "../../../lib/supabase";
 
 export default function CreateInterviewPage() {
   const router = useRouter();
@@ -17,13 +18,10 @@ export default function CreateInterviewPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  const getClient = () => {
-    const { getSupabaseClient } = require("../../../lib/supabase");
-    return getSupabaseClient();
-  };
+
 
   const uploadFile = async (file: File, bucket: string) => {
-    const sb = getClient();
+    const sb = getSupabaseClient();
     const ext = file.name.split(".").pop();
     const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const { error } = await sb.storage.from(bucket).upload(path, file);
@@ -37,13 +35,14 @@ export default function CreateInterviewPage() {
     setSaving(true); setError("");
     try {
       setUploading(true);
-      const sb = getClient();
+      const sb = getSupabaseClient();
       let finalCoverUrl = form.coverUrl;
       let finalVideoUrl = form.videoUrl;
       if (coverFile) finalCoverUrl = await uploadFile(coverFile, "posts");
       if (videoFile) finalVideoUrl = await uploadFile(videoFile, "posts");
       setUploading(false);
-      const { data: { user } } = await sb.auth.getUser();
+      const { data: { session } } = await sb.auth.getSession();
+      const user = session?.user;
       if (!user) { setError("Not logged in."); setSaving(false); return; }
       const { data: profile } = await sb.from("profiles").select("full_name, username").eq("id", user.id).single();
       const takeawaysArray = form.keyTakeaways.split("\n").map((s: string) => s.trim()).filter(Boolean);
