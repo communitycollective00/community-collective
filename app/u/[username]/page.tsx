@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import PostCard from "../../components/post-card";
+import ProfileEditButton from "../../components/profile-edit-button";
 
 type ProfileRow = {
   id: string;
@@ -129,6 +130,7 @@ export default async function PublicProfilePage({ params }: { params: { username
         <div className="public-profile-header-copy">
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", flexWrap: "wrap", textAlign: "center" }}>
               <h1>{displayName}</h1>
+              <ProfileEditButton username={profileRow.username || ""} />
               {profileRow.is_featured && <span className="profile-badge">Featured</span>}
               {profileRow.is_approved && <span className="profile-badge">Verified</span>}
             </div>
