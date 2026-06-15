@@ -124,8 +124,8 @@ export default function HomePage() {
 
       // Background
       console.log("BG RES:", bgRes.data, bgRes.error);
-      if (bgRes.data?.image_url) setHeroBg(bgRes.data.image_url);
-
+const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+if (bgRow?.image_url) setHeroBg(bgRow.image_url);
       // Slots
       setSlots(slotsRes.data || []);
 
