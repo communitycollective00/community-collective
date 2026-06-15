@@ -14,6 +14,12 @@ type AdminStats = {
 
 const adminSections = [
   {
+    title: "🔑 Control Room",
+    description: "Fill homepage card slots, set page backgrounds, manage featured content.",
+    href: "/admin/control-room",
+    highlight: true,
+  },
+  {
     title: "Applications",
     description: "Review member access requests and approval status.",
     href: "/admin/applications",
