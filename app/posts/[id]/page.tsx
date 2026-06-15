@@ -12,6 +12,13 @@ type PostRow = {
   link_url: string | null;
   created_at: string | null;
   author_id: string;
+  interview_guest_name?: string | null;
+  interview_guest_title?: string | null;
+  interview_guest_organization?: string | null;
+  interview_cover_url?: string | null;
+  interview_summary?: string | null;
+  interview_key_takeaways?: string[] | null;
+  caption?: string | null;
 };
 
 type AuthorProfile = {
@@ -51,7 +58,7 @@ export default async function PostDetailPage({ params }: { params: { id: string 
   const supabase = getSupabaseClient();
 
   const { data: postData } = await (supabase.from("posts") as any)
-    .select("id,title,body,post_type,media_url,image_url,created_at,author_id")
+    .select("id,title,body,caption,post_type,media_url,image_url,created_at,author_id,interview_guest_name,interview_guest_title,interview_guest_organization,interview_cover_url,interview_summary,interview_key_takeaways")
     .eq("id", params.id)
     .maybeSingle();
 
@@ -110,35 +117,58 @@ export default async function PostDetailPage({ params }: { params: { id: string 
         </div>
 
         <article style={{ marginBottom: "2rem" }}>
-          {postData.body ? (
-            <div style={{ whiteSpace: "pre-line", lineHeight: 1.8, marginBottom: "1.5rem" }}>{postData.body}</div>
-          ) : (
-            <p className="muted">No post body provided.</p>
-          )}
 
-          {postData.image_url && (
-            <img
-              src={postData.image_url}
-              alt={displayTitle}
-              style={{ width: "100%", borderRadius: "16px", objectFit: "cover", marginBottom: "1.5rem", border: "1px solid var(--border)" }}
-            />
-          )}
-
-          {postData.media_url && postData.post_type !== "image" && (
-            <div style={{ marginBottom: "1.5rem" }}>
-              <p className="muted" style={{ marginBottom: "0.5rem" }}>Media link</p>
-              <a href={postData.media_url} target="_blank" rel="noopener noreferrer" className="gold-link">
-                {postData.media_url}
-              </a>
+          {/* Interview guest info */}
+          {postData.post_type === "interview" && postData.interview_guest_name && (
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, padding: "1.25rem", marginBottom: "1.5rem" }}>
+              <p style={{ color: "var(--gold2)", fontSize: "0.75rem", fontFamily: "var(--font-display)", letterSpacing: "0.1em", margin: "0 0 0.5rem" }}>INTERVIEW WITH</p>
+              <h2 style={{ margin: "0 0 0.25rem", fontSize: "1.5rem", color: "var(--text)" }}>{postData.interview_guest_name}</h2>
+              {postData.interview_guest_title && <p style={{ margin: "0 0 0.1rem", color: "var(--muted)" }}>{postData.interview_guest_title}</p>}
+              {postData.interview_guest_organization && <p style={{ margin: 0, color: "var(--secondary)", fontSize: "0.9rem" }}>{postData.interview_guest_organization}</p>}
             </div>
           )}
 
+          {/* Cover image */}
+          {(postData.interview_cover_url || postData.image_url) && (
+            <img
+              src={postData.interview_cover_url || postData.image_url || ""}
+              alt={displayTitle}
+              style={{ width: "100%", borderRadius: 16, objectFit: "cover", maxHeight: 480, marginBottom: "1.5rem", border: "1px solid var(--border)" }}
+            />
+          )}
+
+          {/* Video player */}
+          {postData.media_url && (postData.post_type === "video" || postData.post_type === "interview") && (
+            <video controls preload="metadata" style={{ width: "100%", borderRadius: 16, marginBottom: "1.5rem", background: "#000", maxHeight: 520 }}>
+              <source src={postData.media_url} />
+              Your browser does not support video playback.
+            </video>
+          )}
+
+          {/* Summary */}
+          {(postData.interview_summary || postData.body || postData.caption) && (
+            <div style={{ whiteSpace: "pre-line", lineHeight: 1.8, marginBottom: "1.5rem", color: "var(--text)" }}>
+              {postData.interview_summary || postData.body || postData.caption}
+            </div>
+          )}
+
+          {/* Key takeaways */}
+          {postData.interview_key_takeaways && postData.interview_key_takeaways.length > 0 && (
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, padding: "1.25rem", marginBottom: "1.5rem" }}>
+              <p style={{ color: "var(--gold2)", fontSize: "0.75rem", fontFamily: "var(--font-display)", letterSpacing: "0.1em", margin: "0 0 0.75rem" }}>KEY TAKEAWAYS</p>
+              <ul style={{ margin: 0, paddingLeft: "1.25rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                {postData.interview_key_takeaways.map((t: string, i: number) => (
+                  <li key={i} style={{ color: "var(--muted)", lineHeight: 1.6 }}>{t}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* External link */}
           {postData.link_url && (
             <div>
               <p className="muted" style={{ marginBottom: "0.5rem" }}>External link</p>
-              <a href={postData.link_url} target="_blank" rel="noopener noreferrer" className="gold-link">
-                {postData.link_url}
-              </a>
+              <a href={postData.link_url} target="_blank" rel="noopener noreferrer" className="gold-link">{postData.link_url}</a>
             </div>
           )}
         </article>
