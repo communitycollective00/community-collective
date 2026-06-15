@@ -12,7 +12,7 @@ type PostWithAuthor = {
   post_type: string | null;
   media_url: string | null;
   image_url: string | null;
-  link_url: string | null;
+  interview_cover_url: string | null;
   created_at: string | null;
   author_id: string;
   author_name: string;
@@ -34,7 +34,7 @@ export default function PostsFeedPage() {
         const supabase = getSupabaseClient();
         const { data: postsData, error: postsError } = await (supabase.from("posts") as any)
           .select(
-            "id,title,body,post_type,media_url,image_url,created_at,author_id,is_published"
+            "id,title,body,post_type,media_url,image_url,interview_cover_url,created_at,author_id,is_published"
           )
           .eq("is_published", true)
           .order("created_at", { ascending: false })
@@ -76,7 +76,7 @@ export default function PostsFeedPage() {
               post_type: post.post_type,
               media_url: post.media_url,
               image_url: post.image_url,
-              link_url: post.link_url,
+              interview_cover_url: post.interview_cover_url,
               created_at: post.created_at,
               author_id: post.author_id,
               author_name: author?.full_name || author?.username || "Community",
@@ -132,7 +132,7 @@ export default function PostsFeedPage() {
                 author_id={post.author_id}
                 created_at={post.created_at}
                 media_url={post.media_url}
-                image_url={post.image_url}
+                image_url={post.image_url || post.interview_cover_url}
               />
             ))}
           </div>
