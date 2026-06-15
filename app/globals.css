@@ -1014,6 +1014,9 @@ select {
   }
 
   .homepage-hero {
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
     padding: 3.5rem 0 2rem;
   }
 
@@ -1146,6 +1149,9 @@ select {
 }
 
 .homepage-hero {
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
@@ -1863,6 +1869,9 @@ select {
 
 .hero,
 .homepage-hero {
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
   min-height: calc(100vh - 92px);
   display: grid;
   gap: 2.5rem;
@@ -2397,6 +2406,9 @@ select {
   }
 
   .homepage-hero {
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh;
     padding: 3rem 0 2rem;
   }
 
@@ -2802,7 +2814,10 @@ select {
   .gold-btn, .gold-link, input, textarea, select { min-height: 44px; }
   .quick-links { display: grid; grid-template-columns: 1fr; }
   .homepage-content { padding: 1.25rem; }
-  .homepage-hero { grid-template-columns: 1fr; padding: 3rem 0 1.5rem; }
+  .homepage-hero {
+  background-size: cover;
+  background-position: center;
+  min-height: 80vh; grid-template-columns: 1fr; padding: 3rem 0 1.5rem; }
   .homepage-hero-title { font-size: clamp(2.5rem, 10vw, 4.2rem); }
   .homepage-hero-actions { justify-content: center; }
   .homepage-voice-grid,
