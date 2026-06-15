@@ -1,6 +1,6 @@
 "use client";
 import PostCard from "./components/post-card";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef} from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "../lib/supabase";
 
@@ -106,8 +106,12 @@ export default function HomePage() {
   const [heroBg, setHeroBg] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { loadAll(); }, []);
-
+const hasFetched = useRef(false);
+  useEffect(() => { 
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+    loadAll(); 
+  }, []);
   async function loadAll() {
     try {
       const supabase = getSupabaseClient();
