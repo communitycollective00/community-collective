@@ -79,7 +79,7 @@ export default function PostsFeedPage() {
               interview_cover_url: post.interview_cover_url,
               created_at: post.created_at,
               author_id: post.author_id,
-              author_name: author?.full_name || author?.username || "Community",
+              author_name: author?.full_name || author?.username || "Dpugh",
             };
           })
         );
