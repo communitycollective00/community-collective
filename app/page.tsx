@@ -123,6 +123,7 @@ export default function HomePage() {
       ]);
 
       // Background
+      console.log("BG RES:", bgRes.data, bgRes.error);
       if (bgRes.data?.image_url) setHeroBg(bgRes.data.image_url);
 
       // Slots
