@@ -61,9 +61,11 @@ export default function CreateInterviewPage() {
         setUploading(false);
       }
 
- const { error: saveError } = await sb.from("posts").insert({
+const { error: saveError } = await sb.from("posts").insert({
         profile_id: user.id,
         post_type: "interview",
+        title: form.guestName,
+        author_name: user.user_metadata?.full_name || user.email || "Unknown",
         interview_guest_name: form.guestName,
         interview_guest_title: form.guestTitle,
         interview_guest_organization: form.organization,
@@ -76,7 +78,6 @@ export default function CreateInterviewPage() {
         is_published: true,
         status: "published",
       });
-
       if (saveError) {
         console.error("Insert error:", JSON.stringify(saveError));
         throw saveError;
