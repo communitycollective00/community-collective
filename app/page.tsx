@@ -127,8 +127,8 @@ const hasFetched = useRef(false);
 
       // Background
       console.log("BG RES:", bgRes.data, bgRes.error);
-const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
-if (bgRow?.image_url) setHeroBg(bgRow.image_url);
+      const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+      if (bgRow?.image_url) setHeroBg(bgRow.image_url);
       // Slots
       setSlots(slotsRes.data || []);
 
