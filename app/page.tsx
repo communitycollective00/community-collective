@@ -123,8 +123,7 @@ const hasFetched = useRef(false);
         (supabase.from("homepage_slots") as any)
           .select("*").order("slot_index"),
         (supabase.from("page_backgrounds") as any)
-          .select("*").eq("page_key", "home").single(),
-      ]);
+ .select("*").eq("page_key", "home").limit(1),     ]);
 
       // Background
       console.log("BG RES:", bgRes.data, bgRes.error);
