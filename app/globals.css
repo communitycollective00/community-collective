@@ -1209,7 +1209,7 @@ select {
   inset: 0;
   background: radial-gradient(circle at 10% 12%, rgba(200,157,53,0.12), transparent 18%),
               radial-gradient(circle at 85% 18%, rgba(61,190,138,0.12), transparent 22%),
-              linear-gradient(180deg, rgba(8,6,4,0.94), rgba(8,6,4,0.82));
+              linear-gradient(180deg, rgba(8,6,4,0.55), rgba(8,6,4,0.35));
   pointer-events: none;
   z-index: 0;
 }
