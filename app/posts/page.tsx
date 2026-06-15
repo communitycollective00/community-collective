@@ -34,7 +34,7 @@ export default function PostsFeedPage() {
         const supabase = getSupabaseClient();
         const { data: postsData, error: postsError } = await (supabase.from("posts") as any)
           .select(
-            "id,title,body,post_type,media_url,image_url,link_url,created_at,author_id,is_published"
+            "id,title,body,post_type,media_url,image_url,created_at,author_id,is_published"
           )
           .eq("is_published", true)
           .order("created_at", { ascending: false })

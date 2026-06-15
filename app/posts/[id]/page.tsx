@@ -51,7 +51,7 @@ export default async function PostDetailPage({ params }: { params: { id: string 
   const supabase = getSupabaseClient();
 
   const { data: postData } = await (supabase.from("posts") as any)
-    .select("id,title,body,post_type,media_url,image_url,link_url,created_at,author_id")
+    .select("id,title,body,post_type,media_url,image_url,created_at,author_id")
     .eq("id", params.id)
     .maybeSingle();
 
