@@ -71,7 +71,7 @@ export default function PostCard({
         )}
 
         {(post_type === 'video' || post_type === 'interview' || media_type === 'video') && (media_url || image_url) && (
-          <video controls style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 16, marginBottom: '1rem' }}>
+          <video controls preload="metadata" style={{ width: '100%', height: 200, objectFit: 'cover', borderRadius: 16, marginBottom: '1rem', backgroundColor: '#000' }}>
             <source src={media_url || ''} />
           </video>
         )}
