@@ -54,7 +54,7 @@ export default function PostCard({
   return (
     <Link href={`/posts/${id}`} style={{ textDecoration: "none", color: "inherit" }}>
       <article className="post-card">
-        {(post_type === 'image' || post_type === 'photo' || media_type === 'image') && image && (
+        {(post_type === 'image' || post_type === 'photo' || post_type === 'interview' || media_type === 'image') && image && (
           <img
             src={image}
             alt={displayTitle}
