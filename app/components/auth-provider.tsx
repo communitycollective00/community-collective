@@ -238,7 +238,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
           try {
             const currentPath = window.location.pathname;
-            const authPaths = ["/", "/login", "/signup", "/auth/callback", "/get-access"];
+            const authPaths = ["/login", "/signup", "/auth/callback", "/get-access"];
             if (authPaths.includes(currentPath) || currentPath.startsWith("/auth/")) {
               try {
                 const params = new URLSearchParams(window.location.search || "");
