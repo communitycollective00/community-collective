@@ -214,7 +214,7 @@ export default function HomePage() {
               height: "100%",
               objectFit: "cover",
               objectPosition: "center",
-              zIndex: 0,
+              zIndex: -1,
             }}
           />
         )}
