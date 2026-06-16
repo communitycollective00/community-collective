@@ -7,7 +7,6 @@ let client: ReturnType<typeof createClient> | any | null = null;
 // crashes when env is not configured (e.g., build-only preview), return a
 // lightweight no-op stub that implements the methods the app expects.
 export function getSupabaseClient() {
-  if (client) return client;
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
