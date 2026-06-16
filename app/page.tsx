@@ -1,6 +1,6 @@
 "use client";
 import PostCard from "./components/post-card";
-import { useEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "../lib/supabase";
 
@@ -22,7 +22,6 @@ interface Slot {
   link_url: string; is_active: boolean;
 }
 
-// Fallback static data — used only when no slot data exists in Supabase
 const FALLBACKS: Record<string, Slot[]> = {
   "Featured This Week": [
     { id: "f1", section: "Featured This Week", slot_index: 0, title: "Neighborhood Reporter", role: "Documentary Reporter", city: "Chicago", description: "A Chicago reporter capturing neighborhood resilience, trusted conversations, and the people who keep the story moving.", image_url: "", link_url: "", is_active: true },
@@ -105,54 +104,73 @@ export default function HomePage() {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [heroBg, setHeroBg] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const hasFetched = useRef(false);
 
-const hasFetched = useRef(false);
-  useEffect(() => { 
+  useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
-    loadAll(); 
+    loadAll();
   }, []);
+
   async function loadAll() {
+    const supabase = getSupabaseClient();
     try {
-      const supabase = getSupabaseClient();
+      // 1. Background + slots in parallel — isolated so they always render
+      const [slotsRes, bgRes] = await Promise.all([
+        (supabase.from("homepage_slots") as any).select("*").order("slot_index"),
+        (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "home").limit(1),
+      ]);
 
-      // Parallel fetch — posts + profiles + slots + background
-      const [postsRes, slotsRes, bgRes] = await Promise.all([
-        (supabase.from("posts") as any)
-          .select("*").order("created_at", { ascending: false }).limit(20),
-        (supabase.from("homepage_slots") as any)
-          .select("*").order("slot_index"),
-        (supabase.from("page_backgrounds") as any)
- .select("*").eq("page_key", "home").limit(1),     ]);
-
-      // Background
-      console.log("BG RES:", bgRes.data, bgRes.error);
-      const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
-      if (bgRow?.image_url) setHeroBg(bgRow.image_url);
-      // Slots
       setSlots(slotsRes.data || []);
 
-      // Posts + author resolution
-      const postsData = (postsRes.data || []).filter((p: any) =>
+      const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+      if (bgRow?.image_url) setHeroBg(bgRow.image_url);
+
+    } catch (err) {
+      console.error("Slots/bg fetch failed:", err);
+    }
+
+    // 2. Posts — separate try/catch so a failure here never kills bg/slots
+    try {
+      const { data: postsRaw } = await (supabase.from("posts") as any)
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+      const postsData = (postsRaw || []).filter((p: any) =>
         (p.is_published === true || p.status === "published") &&
         (p.visibility === undefined || p.visibility === "public")
       );
+
       const authorIds = Array.from(new Set(
         postsData.map((p: any) => p.author_id || p.user_id).filter(Boolean)
-      ));
+      )) as string[];
+
       const { data: profiles } = await (supabase.from("profiles") as any)
         .select("id,full_name,username,avatar_url")
         .in("id", authorIds.length ? authorIds : ["none"]);
+
       const profileMap = new Map(
-        (profiles || []).map((p: any) => [p.id, { name: p.full_name || "Creator", username: p.username, avatar: p.avatar_url }])
+        (profiles || []).map((p: any) => [p.id, {
+          name: p.full_name || "Creator",
+          username: p.username,
+          avatar: p.avatar_url,
+        }])
       );
+
       setPosts(postsData.map((post: any) => {
         const authorId = post.author_id || post.user_id || "";
         const profile: any = profileMap.get(authorId) || { name: "Creator", username: null, avatar: null };
-        return { ...post, author_id: authorId, author_name: profile.name, author_username: profile.username, author_avatar: profile.avatar };
+        return {
+          ...post,
+          author_id: authorId,
+          author_name: profile.name,
+          author_username: profile.username,
+          author_avatar: profile.avatar,
+        };
       }));
     } catch (err) {
-      console.error("Failed to load homepage:", err);
+      console.error("Posts fetch failed:", err);
     } finally {
       setLoading(false);
     }
@@ -162,22 +180,29 @@ const hasFetched = useRef(false);
     const supabase = getSupabaseClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return;
-    if (saved) { await (supabase.from("post_saves") as any).insert({ user_id: user.id, post_id: postId }); }
-    else { await (supabase.from("post_saves") as any).delete().eq("user_id", user.id).eq("post_id", postId); }
+    if (saved) {
+      await (supabase.from("post_saves") as any).insert({ user_id: user.id, post_id: postId });
+    } else {
+      await (supabase.from("post_saves") as any).delete().eq("user_id", user.id).eq("post_id", postId);
+    }
   };
 
   const handleShare = (postId: string) => {
     const post = posts.find((p) => p.id === postId);
     if (!post) return;
     const url = `${window.location.origin}/posts/${postId}`;
-    if (navigator.share) { navigator.share({ title: "Community Collective", text: post.title, url }); }
-    else { navigator.clipboard.writeText(url); alert("Link copied!"); }
+    if (navigator.share) {
+      navigator.share({ title: "Community Collective", text: post.title, url });
+    } else {
+      navigator.clipboard.writeText(url);
+      alert("Link copied!");
+    }
   };
 
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px" }}>
 
-     <section className="homepage-hero">
+      <section className="homepage-hero">
         {heroBg && (
           <img
             src={heroBg}
@@ -193,8 +218,10 @@ const hasFetched = useRef(false);
             }}
           />
         )}
-        <div className="homepage-hero-bg" /><div className="homepage-hero-grid" />
-        <div className="homepage-hero-glow" /><div className="homepage-hero-glow2" />
+        <div className="homepage-hero-bg" />
+        <div className="homepage-hero-grid" />
+        <div className="homepage-hero-glow" />
+        <div className="homepage-hero-glow2" />
         <div className="homepage-hero-copy">
           <div className="homepage-hero-ribbon">
             <span className="homepage-hero-ribbon-pulse" />
