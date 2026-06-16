@@ -139,10 +139,30 @@ export default async function PostDetailPage({ params }: { params: { id: string 
 
           {/* Video player */}
           {postData.media_url && (postData.post_type === "video" || postData.post_type === "interview") && (
-            <video controls preload="metadata" style={{ width: "100%", borderRadius: 16, marginBottom: "1.5rem", background: "#000", maxHeight: 520 }}>
-              <source src={postData.media_url} />
-              Your browser does not support video playback.
-            </video>
+  (() => {
+    const url = postData.media_url;
+    const isYouTube = url.includes("youtube.com") || url.includes("youtu.be");
+    const embedUrl = isYouTube
+      ? url.includes("embed") ? url
+        : url.includes("shorts") ? `https://www.youtube.com/embed/${url.split("shorts/")[1]?.split("?")[0]}`
+        : url.includes("watch") ? `https://www.youtube.com/embed/${url.split("v=")[1]?.split("&")[0]}`
+        : url.includes("youtu.be") ? `https://www.youtube.com/embed/${url.split("youtu.be/")[1]?.split("?")[0]}`
+        : url
+      : null;
+    return isYouTube ? (
+      <iframe
+        src={embedUrl}
+        style={{ width: "100%", height: 520, borderRadius: 16, marginBottom: "1.5rem", border: "none" }}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    ) : (
+      <video controls preload="metadata" style={{ width: "100%", borderRadius: 16, marginBottom: "1.5rem", background: "#000", maxHeight: 520 }}>
+        <source src={url} />
+        Your browser does not support video playback.
+      </video>
+    );
+  })()
           )}
 
           {/* Summary */}
