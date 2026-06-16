@@ -203,21 +203,6 @@ export default function HomePage() {
     <main className="premium-page homepage-main" style={{ paddingTop: "92px", ...(heroBg ? { backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" } : {}) }}>
 
       <section className="homepage-hero">
-        {heroBg && (
-          <img
-            src={heroBg}
-            alt=""
-            style={{
-              position: "absolute",
-              inset: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              objectPosition: "center",
-              zIndex: 1,
-            }}
-          />
-        )}
         <div className="homepage-hero-bg" />
         <div className="homepage-hero-grid" />
         <div className="homepage-hero-glow" />
