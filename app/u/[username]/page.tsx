@@ -48,9 +48,7 @@ export default async function PublicProfilePage({ params }: { params: { username
         <section className="premium-card">
           <h1>Profile not found</h1>
           <p className="muted">We couldn't find a profile with that username.</p>
-          <Link href="/directory" className="gold-link">
-            ← Back to Directory
-          </Link>
+          <Link href="/directory" className="gold-link">← Back to Directory</Link>
         </section>
       </main>
     );
@@ -59,29 +57,34 @@ export default async function PublicProfilePage({ params }: { params: { username
   const supabase = createClient(supabaseUrl, serviceRoleKey);
   const uname = params.username?.trim().toLowerCase();
 
-  const { data } = await supabase
-    .from("profiles")
-    .select(
-      "id,full_name,username,role,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin"
-    )
-    .eq("username", uname)
-    .maybeSingle();
+  const [profileRes, bgRes] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("id,full_name,username,role,bio,description,industry,location,city,state,avatar_url,banner_url,is_featured,is_approved,website,instagram,twitter,linkedin")
+      .eq("username", uname)
+      .maybeSingle(),
+    supabase
+      .from("page_backgrounds")
+      .select("image_url")
+      .eq("page_key", "profile")
+      .limit(1),
+  ]);
 
-  if (!data) {
+  if (!profileRes.data) {
     return (
       <main className="premium-page" style={{ paddingTop: "72px" }}>
         <section className="premium-card">
           <h1>Profile not found</h1>
           <p className="muted">We couldn't find a profile with that username.</p>
-          <Link href="/directory" className="gold-link">
-            ← Back to Directory
-          </Link>
+          <Link href="/directory" className="gold-link">← Back to Directory</Link>
         </section>
       </main>
     );
   }
 
-  const profileRow: ProfileRow = data;
+  const profileRow: ProfileRow = profileRes.data;
+  const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+  const pageBg = bgRow?.image_url || null;
 
   let posts: PostRow[] = [];
   const { data: authorPosts, error: authorError } = await supabase
@@ -105,142 +108,177 @@ export default async function PublicProfilePage({ params }: { params: { username
 
   const displayName = profileRow.full_name || profileRow.username || "Community Member";
   const displayUsername = profileRow.username ? `@${profileRow.username}` : "";
-  const displaySubtitle = [profileRow.industry, profileRow.location].filter(Boolean).join(" • ");
+  const locationLine = [profileRow.city, profileRow.state].filter(Boolean).join(", ") || profileRow.location || null;
+  const hasSocials = profileRow.website || profileRow.instagram || profileRow.twitter || profileRow.linkedin;
+
+  const bgStyle = pageBg
+    ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
+    : {};
 
   return (
-    <main className="premium-page" style={{ paddingTop: "72px" }}>
-      <section className="premium-card dashboard-card public-profile-card" style={{ maxWidth: "1100px", margin: "1rem auto", padding: 0, overflow: "hidden" }}>
-        <div className="public-profile-hero" style={{ backgroundImage: profileRow.banner_url ? `url(${profileRow.banner_url})` : undefined }}>
-          <div className="public-profile-hero-overlay" />
-        </div>
+    <main className="premium-page" style={{ paddingTop: "72px", ...bgStyle }}>
 
-        <div className="public-profile-avatar-block">
-          <div className="public-profile-avatar-wrap">
+      {/* ── HERO BANNER ── */}
+      <div style={{ position: "relative", width: "100%", height: 220, background: profileRow.banner_url ? "transparent" : "var(--surface)", overflow: "hidden" }}>
+        {profileRow.banner_url && (
+          <img
+            src={profileRow.banner_url}
+            alt=""
+            style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+          />
+        )}
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7) 100%)" }} />
+      </div>
+
+      {/* ── MAIN LAYOUT: two-column on desktop ── */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 1.5rem 4rem", display: "grid", gridTemplateColumns: "280px 1fr", gap: "2rem", alignItems: "start" }}>
+
+        {/* ── LEFT COLUMN: identity card ── */}
+        <aside style={{ position: "sticky", top: "100px" }}>
+
+          {/* Avatar — overlaps banner */}
+          <div style={{ marginTop: -72, marginBottom: "1.25rem" }}>
             <img
-              src={
-                profileRow.avatar_url ||
-                `https://placehold.co/180x180/1a1408/f4cf70?text=${encodeURIComponent(displayName[0] || "C")}`
-              }
+              src={profileRow.avatar_url || `https://placehold.co/160x160/1a1408/f4cf70?text=${encodeURIComponent(displayName[0] || "C")}`}
               alt={displayName}
-              className="profile-avatar public-profile-avatar"
+              style={{ width: 120, height: 120, borderRadius: "50%", objectFit: "cover", border: "3px solid var(--gold)", display: "block" }}
             />
           </div>
-        </div>
 
-        <div className="public-profile-header-copy">
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem", flexWrap: "wrap", textAlign: "center" }}>
-              <h1>{displayName}</h1>
+          {/* Name + badges */}
+          <div style={{ marginBottom: "1rem" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap", marginBottom: "0.25rem" }}>
+              <h1 style={{ fontSize: "1.4rem", fontWeight: 700, color: "var(--text)", margin: 0 }}>{displayName}</h1>
               <ProfileEditButton username={profileRow.username || ""} />
-              {profileRow.is_featured && <span className="profile-badge">Featured</span>}
-              {profileRow.is_approved && <span className="profile-badge">Verified</span>}
             </div>
-            {displayUsername && <p className="muted" style={{ margin: "0.5rem 0 0" }}>{displayUsername}</p>}
-            {displaySubtitle && <p className="muted" style={{ margin: "0.5rem 0 0" }}>{displaySubtitle}</p>}
-            {profileRow.bio && <p style={{ margin: "1rem 0 0", lineHeight: 1.8 }}>{profileRow.bio}</p>}
-        </div>
-
-        <div className="public-profile-stats">
-          <div className="public-profile-stat">
-            <span className="public-profile-stat-value">{posts.length}</span>
-            <span className="public-profile-stat-label">Posts</span>
-          </div>
-          <div className="public-profile-stat">
-            <span className="public-profile-stat-value">0</span>
-            <span className="public-profile-stat-label">Opportunities</span>
-          </div>
-          <div className="public-profile-stat">
-            <span className="public-profile-stat-value">0</span>
-            <span className="public-profile-stat-label">Interviews</span>
-          </div>
-          <div className="public-profile-stat">
-            <span className="public-profile-stat-value">0</span>
-            <span className="public-profile-stat-label">Connections</span>
-          </div>
-        </div>
-
-        <section className="public-profile-links" style={{ padding: "0 1.5rem 1.5rem" }}>
-          <div style={{ display: "grid", gap: "0.75rem" }}>
-            {profileRow.website && (
-              <a href={profileRow.website} target="_blank" rel="noopener noreferrer" className="gold-link">
-                🌐 {profileRow.website}
-              </a>
-            )}
-            {profileRow.instagram && (
-              <a href={`https://instagram.com/${profileRow.instagram}`} target="_blank" rel="noopener noreferrer" className="gold-link">
-                📸 @{profileRow.instagram}
-              </a>
-            )}
-            {profileRow.twitter && (
-              <a href={`https://twitter.com/${profileRow.twitter}`} target="_blank" rel="noopener noreferrer" className="gold-link">
-                𝕏 @{profileRow.twitter}
-              </a>
-            )}
-            {profileRow.linkedin && (
-              <a href={`https://linkedin.com/in/${profileRow.linkedin}`} target="_blank" rel="noopener noreferrer" className="gold-link">
-                💼 {profileRow.linkedin}
-              </a>
-            )}
-          </div>
-        </section>
-
-        <section className="public-profile-featured" style={{ padding: "0 1.5rem 1.5rem" }}>
-          <div className="public-profile-section-header">
-            <h2>Featured</h2>
-          </div>
-          <div className="public-profile-content-grid">
-            <div className="public-profile-empty-card">
-              <h3>No featured content yet</h3>
-              <p>Highlights, media, and curated work will appear here.</p>
-            </div>
-            <div className="public-profile-empty-card public-profile-placeholder-card" />
-            <div className="public-profile-empty-card public-profile-placeholder-card" />
-          </div>
-        </section>
-
-        <section className="public-profile-posts" style={{ padding: "0 1.5rem 1.5rem" }}>
-          <div className="public-profile-section-header">
-            <h2>Posts</h2>
+            {displayUsername && <p style={{ color: "var(--muted)", fontSize: "0.85rem", margin: "0 0 0.25rem" }}>{displayUsername}</p>}
+            {profileRow.role && <p style={{ color: "var(--gold)", fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 0.25rem" }}>{profileRow.role}</p>}
+            {profileRow.industry && <p style={{ color: "var(--muted)", fontSize: "0.85rem", margin: "0 0 0.25rem" }}>{profileRow.industry}</p>}
+            {locationLine && <p style={{ color: "var(--muted)", fontSize: "0.85rem", margin: 0 }}>📍 {locationLine}</p>}
           </div>
 
-          {posts.length === 0 ? (
-            <div className="public-profile-empty-card public-profile-empty-card--large">
-              <h3>No posts yet</h3>
-              <p>Photos, videos, interviews, and opportunities will appear here.</p>
-            </div>
-          ) : (
-            <div className="public-profile-posts-grid">
-              {posts.map((post) => (
-                <PostCard
-                  key={post.id}
-                  id={post.id}
-                  title={post.title}
-                  body={post.body}
-                  post_type={post.post_type}
-                  author_name={displayName}
-                  author_id={post.author_id}
-                  created_at={post.created_at}
-                  media_url={post.media_url}
-                  image_url={post.image_url}
-                />
-              ))}
+          {/* Verification badges */}
+          {(profileRow.is_featured || profileRow.is_approved) && (
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+              {profileRow.is_featured && <span className="profile-badge">⭐ Featured</span>}
+              {profileRow.is_approved && <span className="profile-badge">✓ Verified</span>}
             </div>
           )}
-        </section>
 
-        <section className="public-profile-opportunities" style={{ padding: "0 1.5rem 1.5rem" }}>
-          <div className="public-profile-section-header">
-            <h2>Opportunities</h2>
+          {/* Bio */}
+          {profileRow.bio && (
+            <p style={{ color: "var(--muted)", fontSize: "0.9rem", lineHeight: 1.7, marginBottom: "1.25rem" }}>{profileRow.bio}</p>
+          )}
+
+          {/* Stats row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "1.5rem" }}>
+            {[
+              { value: posts.length, label: "Posts" },
+              { value: 0, label: "Opportunities" },
+              { value: 0, label: "Interviews" },
+              { value: 0, label: "Connections" },
+            ].map(({ value, label }) => (
+              <div key={label} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 10, padding: "0.75rem", textAlign: "center" }}>
+                <div style={{ fontSize: "1.3rem", fontWeight: 700, color: "var(--gold)", lineHeight: 1 }}>{value}</div>
+                <div style={{ fontSize: "0.7rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.08em", marginTop: "0.25rem" }}>{label}</div>
+              </div>
+            ))}
           </div>
-          <div className="public-profile-content-grid">
-            <div className="public-profile-empty-card">
-              <h3>No opportunities yet</h3>
-              <p>Relevant openings and collaboration opportunities will show here.</p>
+
+          {/* Socials */}
+          {hasSocials && (
+            <div style={{ display: "grid", gap: "0.6rem" }}>
+              {profileRow.website && (
+                <a href={profileRow.website} target="_blank" rel="noopener noreferrer" className="gold-link" style={{ fontSize: "0.85rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  🌐 {profileRow.website.replace(/^https?:\/\//, "")}
+                </a>
+              )}
+              {profileRow.instagram && (
+                <a href={`https://instagram.com/${profileRow.instagram}`} target="_blank" rel="noopener noreferrer" className="gold-link" style={{ fontSize: "0.85rem" }}>
+                  📸 @{profileRow.instagram}
+                </a>
+              )}
+              {profileRow.twitter && (
+                <a href={`https://twitter.com/${profileRow.twitter}`} target="_blank" rel="noopener noreferrer" className="gold-link" style={{ fontSize: "0.85rem" }}>
+                  𝕏 @{profileRow.twitter}
+                </a>
+              )}
+              {profileRow.linkedin && (
+                <a href={`https://linkedin.com/in/${profileRow.linkedin}`} target="_blank" rel="noopener noreferrer" className="gold-link" style={{ fontSize: "0.85rem" }}>
+                  💼 {profileRow.linkedin}
+                </a>
+              )}
             </div>
-            <div className="public-profile-empty-card public-profile-placeholder-card" />
-            <div className="public-profile-empty-card public-profile-placeholder-card" />
+          )}
+        </aside>
+
+        {/* ── RIGHT COLUMN: content ── */}
+        <div style={{ paddingTop: "1.5rem" }}>
+
+          {/* Description / extended bio */}
+          {profileRow.description && (
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, padding: "1.5rem", marginBottom: "1.5rem" }}>
+              <p style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.12em", color: "var(--gold2)", marginBottom: "0.75rem" }}>ABOUT</p>
+              <p style={{ color: "var(--text)", lineHeight: 1.8, fontSize: "0.95rem" }}>{profileRow.description}</p>
+            </div>
+          )}
+
+          {/* Featured section */}
+          <div style={{ marginBottom: "2rem" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+              <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text)", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Featured</h2>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, padding: "1.25rem", gridColumn: "1 / -1" }}>
+                <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>Highlights, media, and curated work will appear here.</p>
+              </div>
+            </div>
           </div>
-        </section>
-      </section>
+
+          {/* Posts */}
+          <div style={{ marginBottom: "2rem" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+              <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text)", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>
+                Posts <span style={{ color: "var(--muted)", fontWeight: 400 }}>({posts.length})</span>
+              </h2>
+            </div>
+
+            {posts.length === 0 ? (
+              <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, padding: "2rem", textAlign: "center" }}>
+                <p style={{ color: "var(--muted)", fontSize: "0.9rem" }}>No posts yet. Photos, videos, interviews, and opportunities will appear here.</p>
+              </div>
+            ) : (
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem" }}>
+                {posts.map((post) => (
+                  <PostCard
+                    key={post.id}
+                    id={post.id}
+                    title={post.title}
+                    body={post.body}
+                    post_type={post.post_type}
+                    author_name={displayName}
+                    author_id={post.author_id}
+                    created_at={post.created_at}
+                    media_url={post.media_url}
+                    image_url={post.image_url}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Opportunities */}
+          <div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+              <h2 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text)", textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Opportunities</h2>
+            </div>
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 14, padding: "1.25rem" }}>
+              <p style={{ color: "var(--muted)", fontSize: "0.875rem" }}>Relevant openings and collaboration opportunities will show here.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
     </main>
   );
 }
