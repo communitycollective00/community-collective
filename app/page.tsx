@@ -214,7 +214,7 @@ export default function HomePage() {
               height: "100%",
               objectFit: "cover",
               objectPosition: "center",
-              zIndex: -1,
+              zIndex: 1,
             }}
           />
         )}
@@ -222,7 +222,7 @@ export default function HomePage() {
         <div className="homepage-hero-grid" />
         <div className="homepage-hero-glow" />
         <div className="homepage-hero-glow2" />
-        <div className="homepage-hero-copy">
+        <div className="homepage-hero-copy" style={{ position: "relative", zIndex: 2 }}>
           <div className="homepage-hero-ribbon">
             <span className="homepage-hero-ribbon-pulse" />
             <p>Now Accepting Founding Members — National</p>
