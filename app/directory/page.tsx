@@ -22,36 +22,12 @@ type DirectoryProfile = {
 };
 
 const directoryHighlights = [
-  {
-    icon: "🛠️",
-    title: "Skilled trades",
-    copy: "People who turn experience into work, income, and local impact.",
-  },
-  {
-    icon: "🧑‍🏫",
-    title: "Educators",
-    copy: "Trusted teachers, trainers, and coaches who share what they know with care.",
-  },
-  {
-    icon: "⚖️",
-    title: "Attorneys",
-    copy: "Real legal guidance from people who understand systems and community rights.",
-  },
-  {
-    icon: "🎨",
-    title: "Creators",
-    copy: "Storytellers, media makers, and artists using their work to build access.",
-  },
-  {
-    icon: "🤝",
-    title: "Organizers",
-    copy: "Leaders and connectors who build trusted community relationships.",
-  },
-  {
-    icon: "📈",
-    title: "Business owners",
-    copy: "People growing local enterprise with expertise rooted in real people and places.",
-  },
+  { icon: "🛠️", title: "Skilled trades", copy: "People who turn experience into work, income, and local impact." },
+  { icon: "🧑‍🏫", title: "Educators", copy: "Trusted teachers, trainers, and coaches who share what they know with care." },
+  { icon: "⚖️", title: "Attorneys", copy: "Real legal guidance from people who understand systems and community rights." },
+  { icon: "🎨", title: "Creators", copy: "Storytellers, media makers, and artists using their work to build access." },
+  { icon: "🤝", title: "Organizers", copy: "Leaders and connectors who build trusted community relationships." },
+  { icon: "📈", title: "Business owners", copy: "People growing local enterprise with expertise rooted in real people and places." },
 ];
 
 const accessStatements = [
@@ -66,27 +42,34 @@ export default function DirectoryPage() {
   const [industry, setIndustry] = useState("all");
   const [location, setLocation] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [pageBg, setPageBg] = useState<string>("");
 
   useEffect(() => {
-    const loadProfiles = async () => {
+    const loadAll = async () => {
       try {
-        const { data, error } = await (getSupabaseClient().from("profiles") as any)
-          .select("id,full_name,username,bio,city,state,industry,location,avatar_url,role,is_approved,is_featured")
-          .neq("role", null)
-          .order("is_featured", { ascending: false })
-          .order("full_name", { ascending: true });
+        const supabase = getSupabaseClient();
 
-        if (!error) {
-          setProfiles(data ?? []);
-        }
+        const [bgRes, profilesRes] = await Promise.all([
+          (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "directory").limit(1),
+          (supabase.from("profiles") as any)
+            .select("id,full_name,username,bio,city,state,industry,location,avatar_url,role,is_approved,is_featured")
+            .neq("role", null)
+            .order("is_featured", { ascending: false })
+            .order("full_name", { ascending: true }),
+        ]);
+
+        const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+        if (bgRow?.image_url) setPageBg(bgRow.image_url);
+
+        if (!profilesRes.error) setProfiles(profilesRes.data ?? []);
       } catch (e) {
-        console.error("Error loading profiles", e);
+        console.error("Error loading directory", e);
       } finally {
         setLoading(false);
       }
     };
 
-    loadProfiles();
+    loadAll();
   }, []);
 
   const industryOptions = useMemo(
@@ -98,11 +81,7 @@ export default function DirectoryPage() {
     () => [
       "all",
       ...Array.from(
-        new Set(
-          profiles
-            .map((p) => p.location || [p.city, p.state].filter(Boolean).join(", "))
-            .filter(Boolean)
-        )
+        new Set(profiles.map((p) => p.location || [p.city, p.state].filter(Boolean).join(", ")).filter(Boolean))
       ) as string[],
     ],
     [profiles]
@@ -123,9 +102,13 @@ export default function DirectoryPage() {
     });
   }, [profiles, search, industry, location]);
 
+  const bgStyle = pageBg
+    ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
+    : {};
+
   if (loading) {
     return (
-      <main className="premium-page" style={{ paddingTop: "92px" }}>
+      <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
         <section className="premium-card">
           <LoadingState message="Loading professional directory..." />
         </section>
@@ -134,7 +117,7 @@ export default function DirectoryPage() {
   }
 
   return (
-    <main className="premium-page" style={{ paddingTop: "92px" }}>
+    <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
       <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
         <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "2.5rem", marginBottom: "2rem" }}>
           <div>
@@ -177,26 +160,14 @@ export default function DirectoryPage() {
             />
           </div>
           <div className="page-search-row">
-            <select
-              className="page-select"
-              value={industry}
-              onChange={(e) => setIndustry(e.target.value)}
-            >
+            <select className="page-select" value={industry} onChange={(e) => setIndustry(e.target.value)}>
               {industryOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt === "all" ? "All industries" : opt}
-                </option>
+                <option key={opt} value={opt}>{opt === "all" ? "All industries" : opt}</option>
               ))}
             </select>
-            <select
-              className="page-select"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-            >
+            <select className="page-select" value={location} onChange={(e) => setLocation(e.target.value)}>
               {locationOptions.map((opt) => (
-                <option key={opt} value={opt}>
-                  {opt === "all" ? "All locations" : opt}
-                </option>
+                <option key={opt} value={opt}>{opt === "all" ? "All locations" : opt}</option>
               ))}
             </select>
           </div>

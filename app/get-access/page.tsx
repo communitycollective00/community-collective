@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 
 type ApplicationForm = {
@@ -28,23 +28,14 @@ const initialForm: ApplicationForm = {
 };
 
 const accessBenefits = [
-  {
-    title: "For real people",
-    copy: "Find practical knowledge, trusted professionals, and community-ready resources without the gatekeeper noise.",
-  },
-  {
-    title: "For trusted professionals",
-    copy: "Share your expertise, build reputation, and connect with the people who need your work most.",
-  },
-  {
-    title: "For local opportunity",
-    copy: "Access curated openings, collaborations, workshops, and support rooted in real neighborhoods and real systems.",
-  },
+  { title: "For real people", copy: "Find practical knowledge, trusted professionals, and community-ready resources without the gatekeeper noise." },
+  { title: "For trusted professionals", copy: "Share your expertise, build reputation, and connect with the people who need your work most." },
+  { title: "For local opportunity", copy: "Access curated openings, collaborations, workshops, and support rooted in real neighborhoods and real systems." },
 ];
 
 const nextSteps = [
   "We review every application and approve members and professionals who align with the network.",
-  "Once approved, you’ll get an email with membership access and next-step instructions.",
+  "Once approved, you'll get an email with membership access and next-step instructions.",
   "Members can immediately explore the directory, opportunities, voices, and community resources.",
 ];
 
@@ -53,6 +44,23 @@ export default function GetAccessPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [pageBg, setPageBg] = useState<string>("");
+
+  useEffect(() => {
+    async function loadBg() {
+      try {
+        const supabase = getSupabaseClient();
+        // get-access page uses the "opportunities" key (labeled "Get In" in control room)
+        const { data } = await (supabase.from("page_backgrounds") as any)
+          .select("*").eq("page_key", "opportunities").limit(1);
+        const bgRow = Array.isArray(data) ? data[0] : data;
+        if (bgRow?.image_url) setPageBg(bgRow.image_url);
+      } catch (e) {
+        // silent — background is non-critical
+      }
+    }
+    loadBg();
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -61,7 +69,6 @@ export default function GetAccessPage() {
 
     try {
       const supabase = getSupabaseClient();
-
       const { error: insertError } = await (supabase.from("applications") as any).insert({
         full_name: form.full_name,
         email: form.email,
@@ -75,9 +82,7 @@ export default function GetAccessPage() {
         status: "pending",
       });
 
-      if (insertError) {
-        throw insertError;
-      }
+      if (insertError) throw insertError;
 
       setSuccess(true);
       setForm(initialForm);
@@ -88,14 +93,18 @@ export default function GetAccessPage() {
     }
   }
 
+  const bgStyle = pageBg
+    ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
+    : {};
+
   if (success) {
     return (
-      <main className="premium-page" style={{ paddingTop: "92px" }}>
+      <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
         <section className="premium-card" style={{ maxWidth: "760px", margin: "2rem auto", padding: "2.5rem" }}>
           <p className="homepage-kicker">Application submitted</p>
           <h1 className="homepage-section-title">Your access request is in review</h1>
           <p className="homepage-section-text">
-            Thanks for applying to Community Collective. We’ll review your application and send next-step access details to your inbox.
+            Thanks for applying to Community Collective. We'll review your application and send next-step access details to your inbox.
           </p>
           <div style={{ display: "grid", gap: "1rem", marginTop: "1.5rem" }}>
             <div className="homepage-feature-card">
@@ -113,7 +122,7 @@ export default function GetAccessPage() {
   }
 
   return (
-    <main className="premium-page" style={{ paddingTop: "92px" }}>
+    <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
       <section className="premium-card" style={{ maxWidth: "1200px", margin: "2rem auto", padding: "2.5rem" }}>
         <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "2.5rem" }}>
           <div>
@@ -151,7 +160,7 @@ export default function GetAccessPage() {
               Free membership starts with your application.
             </h2>
             <p className="homepage-section-text" style={{ marginBottom: "1.75rem" }}>
-              Public members, professionals, and organizations are welcome. Complete the form below, and we’ll review your application quickly.
+              Public members, professionals, and organizations are welcome. Complete the form below, and we'll review your application quickly.
             </p>
 
             <form className="premium-form" onSubmit={onSubmit}>
@@ -186,55 +195,16 @@ export default function GetAccessPage() {
               </fieldset>
 
               <div style={{ display: "grid", gap: "1rem", marginBottom: "1rem" }}>
-                <input
-                  placeholder="Full Name"
-                  value={form.full_name}
-                  onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-                  required
-                />
-                <input
-                  placeholder="Email Address"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  required
-                />
-                <input
-                  placeholder="Phone (optional)"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                />
+                <input placeholder="Full Name" value={form.full_name} onChange={(e) => setForm({ ...form, full_name: e.target.value })} required />
+                <input placeholder="Email Address" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
+                <input placeholder="Phone (optional)" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-                  <input
-                    placeholder="City"
-                    value={form.city}
-                    onChange={(e) => setForm({ ...form, city: e.target.value })}
-                    required
-                  />
-                  <input
-                    placeholder="State"
-                    value={form.state}
-                    onChange={(e) => setForm({ ...form, state: e.target.value })}
-                    required
-                  />
+                  <input placeholder="City" value={form.city} onChange={(e) => setForm({ ...form, city: e.target.value })} required />
+                  <input placeholder="State" value={form.state} onChange={(e) => setForm({ ...form, state: e.target.value })} required />
                 </div>
-                <input
-                  placeholder="Industry / Category"
-                  value={form.industry}
-                  onChange={(e) => setForm({ ...form, industry: e.target.value })}
-                  required
-                />
-                <input
-                  placeholder="Role Applying For (e.g., Community Member, Expert, Creator, etc.)"
-                  value={form.reason}
-                  onChange={(e) => setForm({ ...form, reason: e.target.value })}
-                  required
-                />
-                <input
-                  placeholder="Website / Social Link (optional)"
-                  value={form.website_social}
-                  onChange={(e) => setForm({ ...form, website_social: e.target.value })}
-                />
+                <input placeholder="Industry / Category" value={form.industry} onChange={(e) => setForm({ ...form, industry: e.target.value })} required />
+                <input placeholder="Role Applying For (e.g., Community Member, Expert, Creator, etc.)" value={form.reason} onChange={(e) => setForm({ ...form, reason: e.target.value })} required />
+                <input placeholder="Website / Social Link (optional)" value={form.website_social} onChange={(e) => setForm({ ...form, website_social: e.target.value })} />
               </div>
 
               <button className="gold-btn" type="submit" disabled={submitting} style={{ width: "100%", marginTop: "0.5rem" }}>

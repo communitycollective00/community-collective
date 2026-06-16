@@ -43,23 +43,37 @@ interface Interview {
 export default function VoicesPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [pageBg, setPageBg] = useState<string>("");
 
   useEffect(() => {
     async function load() {
       const supabase = getSupabaseClient();
-      const { data } = await (supabase.from("posts") as any)
-        .select("id, title, interview_guest_name, interview_guest_title, interview_guest_organization, interview_cover_url, interview_summary")
-        .eq("post_type", "interview")
-        .eq("is_published", true)
-        .order("created_at", { ascending: false });
-      setInterviews(data || []);
+
+      // Fetch background + interviews in parallel
+      const [bgRes, interviewRes] = await Promise.all([
+        (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "voices").limit(1),
+        (supabase.from("posts") as any)
+          .select("id, title, interview_guest_name, interview_guest_title, interview_guest_organization, interview_cover_url, interview_summary")
+          .eq("post_type", "interview")
+          .eq("is_published", true)
+          .order("created_at", { ascending: false }),
+      ]);
+
+      const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+      if (bgRow?.image_url) setPageBg(bgRow.image_url);
+
+      setInterviews(interviewRes.data || []);
       setLoaded(true);
     }
     load();
   }, []);
 
+  const bgStyle = pageBg
+    ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
+    : {};
+
   return (
-    <main className="premium-page" style={{ paddingTop: 92 }}>
+    <main className="premium-page" style={{ paddingTop: 92, ...bgStyle }}>
 
       <section style={{ maxWidth: 1100, margin: "0 auto", padding: "3rem 1.5rem 2rem" }}>
         <p className="hp-eyebrow">NEIGHBORHOOD HEROES</p>

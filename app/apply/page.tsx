@@ -2,22 +2,47 @@
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 
-const initial = { professional_name: "", phone: "", category: "", industry: "", city: "", state: "", location: "", website: "", credentials: "", featured_reason: "", description: "" };
+const initial = {
+  professional_name: "",
+  phone: "",
+  category: "",
+  industry: "",
+  city: "",
+  state: "",
+  location: "",
+  website: "",
+  credentials: "",
+  featured_reason: "",
+  description: "",
+};
+
 export default function ApplyPage() {
   const [form, setForm] = useState(initial);
   const [status, setStatus] = useState("");
   const [userId, setUserId] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [pageBg, setPageBg] = useState<string>("");
 
   useEffect(() => {
-    getSupabaseClient().auth.getSession().then(({ data }) => {
-      if (!data.session) {
+    async function loadAll() {
+      const supabase = getSupabaseClient();
+
+      const [sessionRes, bgRes] = await Promise.all([
+        supabase.auth.getSession(),
+        (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "apply").limit(1),
+      ]);
+
+      if (!sessionRes.data.session) {
         window.location.href = "/login";
         return;
       }
-      setUserId(data.session.user.id);
-      setUserEmail(data.session.user.email ?? "");
-    });
+      setUserId(sessionRes.data.session.user.id);
+      setUserEmail(sessionRes.data.session.user.email ?? "");
+
+      const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+      if (bgRow?.image_url) setPageBg(bgRow.image_url);
+    }
+    loadAll();
   }, []);
 
   const submit = async (e: FormEvent) => {
@@ -68,8 +93,12 @@ export default function ApplyPage() {
     }
   };
 
+  const bgStyle = pageBg
+    ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
+    : {};
+
   return (
-    <main className="premium-page">
+    <main className="premium-page" style={{ ...bgStyle }}>
       <section className="premium-card">
         <h1>Apply to be a verified professional</h1>
         <p className="muted">Submit your application to be reviewed for verified professional access.</p>

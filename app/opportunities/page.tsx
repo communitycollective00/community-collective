@@ -18,44 +18,16 @@ type Opportunity = {
 };
 
 const opportunitySections = [
-  {
-    icon: "🎓",
-    title: "Mentorship & Apprenticeships",
-    copy: "Guided pathways that build skill, confidence, and real work experience with trusted people.",
-  },
-  {
-    icon: "🤝",
-    title: "Collaborations & Community Projects",
-    copy: "Local teams, creative work, and projects that connect people with shared purpose.",
-  },
-  {
-    icon: "💼",
-    title: "Jobs, Grants & Support",
-    copy: "Opportunities that move communities forward, not just listings that chase clicks.",
-  },
+  { icon: "🎓", title: "Mentorship & Apprenticeships", copy: "Guided pathways that build skill, confidence, and real work experience with trusted people." },
+  { icon: "🤝", title: "Collaborations & Community Projects", copy: "Local teams, creative work, and projects that connect people with shared purpose." },
+  { icon: "💼", title: "Jobs, Grants & Support", copy: "Opportunities that move communities forward, not just listings that chase clicks." },
 ];
 
 const opportunityTypes = [
-  {
-    icon: "🛠️",
-    title: "Local work",
-    copy: "Service, trades, and community-focused work where access creates real movement.",
-  },
-  {
-    icon: "📚",
-    title: "Creative opportunity",
-    copy: "Projects for storytellers, culture builders, and people making work with meaning.",
-  },
-  {
-    icon: "🌐",
-    title: "Community opportunity",
-    copy: "Programs, events, and collaborations that strengthen neighborhood infrastructure.",
-  },
-  {
-    icon: "🔗",
-    title: "Pathway access",
-    copy: "Access to networks, mentorship, and openings that change trajectories over time.",
-  },
+  { icon: "🛠️", title: "Local work", copy: "Service, trades, and community-focused work where access creates real movement." },
+  { icon: "📚", title: "Creative opportunity", copy: "Projects for storytellers, culture builders, and people making work with meaning." },
+  { icon: "🌐", title: "Community opportunity", copy: "Programs, events, and collaborations that strengthen neighborhood infrastructure." },
+  { icon: "🔗", title: "Pathway access", copy: "Access to networks, mentorship, and openings that change trajectories over time." },
 ];
 
 export default function OpportunitiesPage() {
@@ -63,18 +35,25 @@ export default function OpportunitiesPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(true);
+  const [pageBg, setPageBg] = useState<string>("");
 
   useEffect(() => {
-    const loadOpportunities = async () => {
+    const loadAll = async () => {
       try {
-        const { data, error } = await (getSupabaseClient().from("opportunities") as any)
-          .select("id,title,organization,description,location,category,apply_link,deadline,featured")
-          .order("featured", { ascending: false })
-          .order("deadline", { ascending: true });
+        const supabase = getSupabaseClient();
 
-        if (!error) {
-          setOpportunities(data ?? []);
-        }
+        const [bgRes, oppsRes] = await Promise.all([
+          (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "opportunities").limit(1),
+          (supabase.from("opportunities") as any)
+            .select("id,title,organization,description,location,category,apply_link,deadline,featured")
+            .order("featured", { ascending: false })
+            .order("deadline", { ascending: true }),
+        ]);
+
+        const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
+        if (bgRow?.image_url) setPageBg(bgRow.image_url);
+
+        if (!oppsRes.error) setOpportunities(oppsRes.data ?? []);
       } catch (e) {
         console.error("Error loading opportunities", e);
       } finally {
@@ -82,7 +61,7 @@ export default function OpportunitiesPage() {
       }
     };
 
-    loadOpportunities();
+    loadAll();
   }, []);
 
   const categories = useMemo(
@@ -103,9 +82,13 @@ export default function OpportunitiesPage() {
     });
   }, [opportunities, search, category]);
 
+  const bgStyle = pageBg
+    ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
+    : {};
+
   if (loading) {
     return (
-      <main className="premium-page" style={{ paddingTop: "92px" }}>
+      <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
         <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <LoadingState message="Loading opportunities..." />
         </section>
@@ -114,7 +97,7 @@ export default function OpportunitiesPage() {
   }
 
   return (
-    <main className="premium-page" style={{ paddingTop: "92px" }}>
+    <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
       <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
         <div style={{ marginBottom: "2rem" }}>
           <p className="homepage-kicker">Opportunities</p>
@@ -128,7 +111,7 @@ export default function OpportunitiesPage() {
           <div>
             <p className="homepage-feature-title">What exists here</p>
             <p className="homepage-feature-copy">
-              This isn’t a generic job board. It is a place for people seeking mentorship, apprenticeships, collaborations, grants, and work that comes from community access.
+              This isn't a generic job board. It is a place for people seeking mentorship, apprenticeships, collaborations, grants, and work that comes from community access.
             </p>
             <div className="homepage-grid-3" style={{ gap: "1rem", marginTop: "1.5rem" }}>
               {opportunitySections.map((section) => (
@@ -176,9 +159,7 @@ export default function OpportunitiesPage() {
           <div className="page-search-row">
             <select className="page-select" value={category} onChange={(e) => setCategory(e.target.value)}>
               {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat === "all" ? "All categories" : cat}
-                </option>
+                <option key={cat} value={cat}>{cat === "all" ? "All categories" : cat}</option>
               ))}
             </select>
           </div>
