@@ -1162,6 +1162,7 @@ select {
 }
 
 .homepage-hero-copy {
+  padding-left: clamp(1rem, 4vw, 1.75rem);
   max-width: 720px;
 }
 
