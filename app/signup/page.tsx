@@ -134,7 +134,7 @@ export default function SignupPage() {
     setStatus(error ? "Could not send magic link right now. Please verify your email and try again." : "Magic link sent. Check your inbox.");
   };
 
-  return <main className="premium-page"><section className="premium-card"><h1>Join Community Collective</h1><p className="muted">Create your profile, discover opportunities, and connect with trusted people in the network.</p>
+  return <main className="premium-page"><section className="premium-card"><h1>Join Culture Collective</h1><p className="muted">Create your profile, discover opportunities, and connect with trusted people in the network.</p>
   <div className="auth-feature-cards">
     <div className="auth-card"><h4>Access</h4><p className="muted">Find opportunities and members relevant to your work.</p></div>
     <div className="auth-card"><h4>Visibility</h4><p className="muted">Showcase your profile to trusted community members.</p></div>

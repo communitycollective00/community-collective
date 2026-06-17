@@ -104,7 +104,7 @@ export default function GetAccessPage() {
           <p className="homepage-kicker">Application submitted</p>
           <h1 className="homepage-section-title">Your access request is in review</h1>
           <p className="homepage-section-text">
-            Thanks for applying to Community Collective. We'll review your application and send next-step access details to your inbox.
+            Thanks for applying to Culture Collective. We'll review your application and send next-step access details to your inbox.
           </p>
           <div style={{ display: "grid", gap: "1rem", marginTop: "1.5rem" }}>
             <div className="homepage-feature-card">
@@ -129,7 +129,7 @@ export default function GetAccessPage() {
             <p className="homepage-kicker">Get access</p>
             <h1 className="homepage-section-title">Join a living access network built for real people, trusted professionals, and local opportunity.</h1>
             <p className="homepage-section-text">
-              Community Collective is for people who want direct entry to practical knowledge, verified services, and opportunity rooms that were never built for them. Apply now to unlock membership, trusted connections, and access to community infrastructure.
+              Culture Collective is for people who want direct entry to practical knowledge, verified services, and opportunity rooms that were never built for them. Apply now to unlock membership, trusted connections, and access to community infrastructure.
             </p>
 
             <div className="homepage-grid-3" style={{ gap: "1rem", marginTop: "1.5rem" }}>

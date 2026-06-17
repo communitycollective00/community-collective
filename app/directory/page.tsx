@@ -124,7 +124,7 @@ export default function DirectoryPage() {
             <p className="homepage-kicker">The Directory</p>
             <h1 className="homepage-section-title">Access is a relationship. The right introduction can change everything.</h1>
             <p className="homepage-section-text">
-              This directory is the engine behind Community Collective. Here you find trusted professionals, local experts, mentors, creators, organizers, educators, and leaders who make access meaningful.
+              This directory is the engine behind Culture Collective. Here you find trusted professionals, local experts, mentors, creators, organizers, educators, and leaders who make access meaningful.
             </p>
             <div className="homepage-grid-3" style={{ gap: "1rem", marginTop: "1.5rem" }}>
               {directoryHighlights.map((highlight) => (
@@ -140,7 +140,7 @@ export default function DirectoryPage() {
           <div className="homepage-section homepage-section--dark" style={{ padding: "1.75rem", borderRadius: "18px" }}>
             <p className="homepage-kicker">Why this directory matters</p>
             <p className="homepage-section-text">
-              Community Collective is not LinkedIn. It is a trusted access network where introductions are rooted in community impact, lived expertise, and verified relationships.
+              Culture Collective is not LinkedIn. It is a trusted access network where introductions are rooted in community impact, lived expertise, and verified relationships.
             </p>
             <div style={{ display: "grid", gap: "0.85rem", marginTop: "1rem" }}>
               {accessStatements.map((statement) => (

@@ -103,7 +103,7 @@ export default function OpportunitiesPage() {
           <p className="homepage-kicker">Opportunities</p>
           <h1 className="homepage-section-title">Access creates opportunity. Opportunity changes trajectories.</h1>
           <p className="homepage-section-text">
-            The action layer of Community Collective is where trust meets movement: mentorship, work, creative projects, and local openings that connect people to the opportunity network.
+            The action layer of Culture Collective is where trust meets movement: mentorship, work, creative projects, and local openings that connect people to the opportunity network.
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export default function OpportunitiesPage() {
           <div className="homepage-section homepage-section--dark" style={{ padding: "1.75rem", borderRadius: "18px" }}>
             <p className="homepage-kicker">Why this matters</p>
             <p className="homepage-section-text">
-              Community Collective surfaces opportunities that come from trusted relationships, verified voices, and real local momentum — not anonymous listings and algorithm-driven noise.
+              Culture Collective surfaces opportunities that come from trusted relationships, verified voices, and real local momentum — not anonymous listings and algorithm-driven noise.
             </p>
             <div style={{ display: "grid", gap: "0.85rem", marginTop: "1rem" }}>
               <p className="homepage-feature-copy">• Opportunity is created when access is real, visible, and shared intentionally.</p>
