@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "./components/auth-provider";
 import RootNavBar from "./components/root-navbar";
+import Link from "next/link";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://community-collective-xi.vercel.app";
@@ -84,6 +85,13 @@ export default function RootLayout({
           <RootNavBar />
         <div className="cc-ticker-outer" aria-hidden="true"><div className="cc-ticker-track"><span className="cc-ticker-item">Interviews</span><span className="cc-ticker-item">Opportunities</span><span className="cc-ticker-item">Chicago</span><span className="cc-ticker-item">Indianapolis</span><span className="cc-ticker-item">Culture</span><span className="cc-ticker-item">Community</span><span className="cc-ticker-item">Press</span><span className="cc-ticker-item">Access</span><span className="cc-ticker-item">Network</span><span className="cc-ticker-item">Stories</span><span className="cc-ticker-item">Events</span><span className="cc-ticker-item">Directory</span><span className="cc-ticker-item">Interviews</span><span className="cc-ticker-item">Opportunities</span><span className="cc-ticker-item">Chicago</span><span className="cc-ticker-item">Indianapolis</span><span className="cc-ticker-item">Culture</span><span className="cc-ticker-item">Community</span><span className="cc-ticker-item">Press</span><span className="cc-ticker-item">Access</span><span className="cc-ticker-item">Network</span><span className="cc-ticker-item">Stories</span><span className="cc-ticker-item">Events</span><span className="cc-ticker-item">Directory</span></div></div>
           {children}
+          <footer style={{ borderTop: "1px solid rgba(201,168,76,0.08)", padding: "2rem 1.5rem 5.5rem", display: "flex", justifyContent: "center", gap: "2.5rem", flexWrap: "wrap", alignItems: "center" }}>
+            <Link href="/press" style={{ fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(201,168,76,0.6)", textDecoration: "none" }}>Press</Link>
+            <Link href="/get-access" style={{ fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", textDecoration: "none" }}>Join</Link>
+            <Link href="/opportunities" style={{ fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", textDecoration: "none" }}>Opportunities</Link>
+            <Link href="/voices" style={{ fontSize: "0.6rem", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", textDecoration: "none" }}>Voices</Link>
+            <span style={{ fontSize: "0.6rem", color: "rgba(255,255,255,0.1)", letterSpacing: "0.1em" }}>&#169; 2026 Culture Collective</span>
+          </footer>
         </AuthProvider>
         <script
           dangerouslySetInnerHTML={{
