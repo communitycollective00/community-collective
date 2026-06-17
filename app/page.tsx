@@ -59,6 +59,14 @@ function getSlots(allSlots: Slot[], section: string): Slot[] {
   return live.length > 0 ? live : (FALLBACKS[section] || []);
 }
 
+function CCPlaceholder() {
+  return (
+    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #15130d 0%, #0d0c08 60%, #1a1509 100%)", overflow: "hidden" }}>
+      <span style={{ fontFamily: "Georgia, serif", fontWeight: 700, fontSize: "3.5rem", letterSpacing: "0.05em", color: "transparent", background: "linear-gradient(135deg, rgba(245,217,122,0.22), rgba(201,168,76,0.10))", WebkitBackgroundClip: "text", backgroundClip: "text", userSelect: "none" }}>CC</span>
+      <div style={{ position: "absolute", inset: 0, boxShadow: "inset 0 0 60px rgba(0,0,0,0.5)", border: "1px solid rgba(201,168,76,0.08)", pointerEvents: "none" }} />
+    </div>
+  );
+}
 function StoryCard({ slot }: { slot: Slot }) {
   const inner = (
     <div className="hp-card">
@@ -66,7 +74,7 @@ function StoryCard({ slot }: { slot: Slot }) {
         backgroundImage: `url(${slot.image_url})`,
         backgroundSize: "cover", backgroundPosition: "center",
       } : {}}>
-        {!slot.image_url && <span>Image Placeholder</span>}
+        {!slot.image_url && <CCPlaceholder />}
       </div>
       <div className="hp-card-body">
         <p className="hp-card-tag">{slot.section.toUpperCase()}</p>
@@ -86,7 +94,7 @@ function WideCard({ slot }: { slot: Slot }) {
         backgroundImage: `url(${slot.image_url})`,
         backgroundSize: "cover", backgroundPosition: "center",
       } : {}}>
-        {!slot.image_url && <span>Image Placeholder</span>}
+        {!slot.image_url && <CCPlaceholder />}
       </div>
       <div className="hp-wide-card-body">
         <p className="hp-card-tag">{slot.section.toUpperCase()}</p>
