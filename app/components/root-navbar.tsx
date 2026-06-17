@@ -17,14 +17,12 @@ function CCMark({ size = 36 }: { size?: number }) {
       </defs>
       <rect width="680" height="280" fill="url(#ccmark)" />
       <text x="-10" y="240" fontFamily="Georgia,serif" fontSize="290" fontWeight="700" fill="#0d0c08" opacity="0.06" letterSpacing="-10">CC</text>
-      {/* 3D C1 depth */}
       <rect x="30" y="32" width="66" height="13" rx="1" fill="#7A5C1E" />
       <rect x="26" y="28" width="66" height="13" rx="1" fill="#8B6914" />
       <rect x="30" y="32" width="13" height="138" rx="1" fill="#6A4E10" />
       <rect x="26" y="28" width="13" height="138" rx="1" fill="#7A5C1E" />
       <rect x="30" y="156" width="66" height="13" rx="1" fill="#7A5C1E" />
       <rect x="26" y="152" width="66" height="13" rx="1" fill="#8B6914" />
-      {/* 3D C1 front */}
       <rect x="18" y="20" width="66" height="13" rx="1" fill="#0d0c08" />
       <rect x="18" y="20" width="13" height="148" rx="1" fill="#0d0c08" />
       <rect x="18" y="154" width="66" height="13" rx="1" fill="#0d0c08" />
@@ -32,19 +30,75 @@ function CCMark({ size = 36 }: { size?: number }) {
       <polygon points="84,20 92,28 92,41 84,33" fill="#3a2a0a" />
       <polygon points="84,154 92,152 92,167 84,167" fill="#3a2a0a" />
       <polygon points="18,20 26,28 26,165 18,165" fill="#2a1f08" />
-      {/* 3D C2 depth */}
       <rect x="62" y="52" width="56" height="11" rx="1" fill="#7A5C1E" />
       <rect x="58" y="48" width="56" height="11" rx="1" fill="#8B6914" />
       <rect x="62" y="52" width="11" height="104" rx="1" fill="#6A4E10" />
       <rect x="58" y="48" width="11" height="104" rx="1" fill="#7A5C1E" />
       <rect x="62" y="144" width="56" height="11" rx="1" fill="#7A5C1E" />
       <rect x="58" y="140" width="56" height="11" rx="1" fill="#8B6914" />
-      {/* 3D C2 front */}
       <rect x="50" y="40" width="56" height="11" rx="1" fill="#1a1408" opacity="0.82" />
       <rect x="50" y="40" width="11" height="114" rx="1" fill="#1a1408" opacity="0.82" />
       <rect x="50" y="140" width="56" height="11" rx="1" fill="#1a1408" opacity="0.82" />
       <polygon points="50,40 58,48 114,48 106,40" fill="#2a1f08" opacity="0.7" />
       <polygon points="106,40 114,48 114,59 106,51" fill="#3a2a0a" opacity="0.7" />
+    </svg>
+  );
+}
+
+function IconHome() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z" />
+      <path d="M9 21V12h6v9" />
+    </svg>
+  );
+}
+
+function IconMic() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="9" y="2" width="6" height="11" rx="3" />
+      <path d="M5 10a7 7 0 0 0 14 0" />
+      <line x1="12" y1="19" x2="12" y2="22" />
+      <line x1="8" y1="22" x2="16" y2="22" />
+    </svg>
+  );
+}
+
+function IconPlus() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" />
+      <line x1="12" y1="8" x2="12" y2="16" />
+      <line x1="8" y1="12" x2="16" y2="12" />
+    </svg>
+  );
+}
+
+function IconDirectory() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="9" cy="7" r="3" />
+      <circle cx="9" cy="17" r="3" />
+      <line x1="13" y1="7" x2="21" y2="7" />
+      <line x1="13" y1="17" x2="21" y2="17" />
+    </svg>
+  );
+}
+
+function IconSpotlight() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+function IconProfile() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
     </svg>
   );
 }
@@ -95,12 +149,7 @@ export default function RootNavBar() {
               {isAdminRole(role) && <Link href="/admin">Admin</Link>}
               <Link href="/dashboard">Dashboard</Link>
               <Link href={user ? `/u/${user.user_metadata?.username || user.email?.split('@')[0]}` : '/profile'}>Profile</Link>
-              <button
-                onClick={handleLogout}
-                className="gold-btn"
-                style={{ cursor: "pointer" }}
-                aria-label="Logout"
-              >
+              <button onClick={handleLogout} className="gold-btn" style={{ cursor: "pointer" }} aria-label="Logout">
                 Logout
               </button>
             </>
@@ -148,33 +197,33 @@ export default function RootNavBar() {
         )}
       </div>
 
-      {/* Mobile bottom nav */}
+      {/* Mobile bottom nav — clean SVG icons */}
       {!(pathname?.startsWith("/login") || pathname?.startsWith("/signup")) && (
         <nav className="mobile-bottom-nav" role="navigation" aria-label="Mobile navigation">
           <Link href="/">
-            <span className="mb-icon">🏠</span>
+            <IconHome />
             <span className="mb-label">Home</span>
           </Link>
           <Link href="/voices">
-            <span className="mb-icon">🗣️</span>
+            <IconMic />
             <span className="mb-label">Voices</span>
           </Link>
           {isAuthed && (
             <Link href="/create">
-              <span className="mb-icon">➕</span>
+              <IconPlus />
               <span className="mb-label">Create</span>
             </Link>
           )}
           <Link href="/directory">
-            <span className="mb-icon">📇</span>
+            <IconDirectory />
             <span className="mb-label">Directory</span>
           </Link>
           <Link href="/recommend">
-            <span className="mb-icon">✨</span>
+            <IconSpotlight />
             <span className="mb-label">Spotlight</span>
           </Link>
           <Link href={user ? `/u/${user.user_metadata?.username || user.email?.split('@')[0]}` : '/login'}>
-            <span className="mb-icon">👤</span>
+            <IconProfile />
             <span className="mb-label">Profile</span>
           </Link>
         </nav>

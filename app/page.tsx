@@ -104,6 +104,7 @@ export default function HomePage() {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [heroBg, setHeroBg] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const [featuredPost, setFeaturedPost] = useState<Post | null>(null);
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -158,6 +159,8 @@ export default function HomePage() {
         }])
       );
 
+      const fp = postsData.find((p: any) => p.post_type === "interview") || postsData[0] || null;
+      setFeaturedPost(fp);
       setPosts(postsData.map((post: any) => {
         const authorId = post.author_id || post.user_id || "";
         const profile: any = profileMap.get(authorId) || { name: "Creator", username: null, avatar: null };
@@ -201,7 +204,33 @@ export default function HomePage() {
 
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px", ...(heroBg ? { backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundAttachment: "fixed", backgroundRepeat: "no-repeat" } : {}) }}>
-
+{featuredPost && (
+  <section style={{ position: "relative", width: "100%", minHeight: 420, overflow: "hidden", display: "flex", alignItems: "flex-end" }}>
+    {(featuredPost.interview_cover_url || featuredPost.image_url) && (
+      <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${featuredPost.interview_cover_url || featuredPost.image_url})`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.45)" }} />
+    )}
+    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)" }} />
+    <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1100, margin: "0 auto", padding: "2.5rem 1.5rem" }}>
+      <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--gold)", marginBottom: "0.75rem", fontWeight: 700 }}>◆ FEATURED STORY</p>
+      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", lineHeight: 1.1, marginBottom: "0.75rem", maxWidth: 700 }}>
+        {featuredPost.interview_guest_name || featuredPost.title}
+      </h2>
+      {(featuredPost.interview_guest_title || featuredPost.interview_guest_organization) && (
+        <p style={{ fontSize: "0.9rem", color: "var(--gold)", marginBottom: "0.75rem", letterSpacing: "0.04em" }}>
+          {[featuredPost.interview_guest_title, featuredPost.interview_guest_organization].filter(Boolean).join(" · ")}
+        </p>
+      )}
+      {featuredPost.interview_summary && (
+        <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "1.25rem", maxWidth: 560 }}>
+          {featuredPost.interview_summary.slice(0, 140)}{featuredPost.interview_summary.length > 140 ? "..." : ""}
+        </p>
+      )}
+      <Link href={`/posts/${featuredPost.id}`} className="gold-btn" style={{ display: "inline-block" }}>
+        Watch Interview →
+      </Link>
+    </div>
+  </section>
+)}
       <section className="homepage-hero">
         <div className="homepage-hero-grid" />
         <div className="homepage-hero-glow" />
