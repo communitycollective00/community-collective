@@ -200,7 +200,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="premium-page homepage-main" style={{ paddingTop: "92px", ...(heroBg ? { backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" } : {}) }}>
+    <main className="premium-page homepage-main" style={{ paddingTop: "92px", ...(heroBg ? { backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundAttachment: "fixed", backgroundRepeat: "no-repeat" } : {}) }}>
 
       <section className="homepage-hero">
         <div className="homepage-hero-grid" />
