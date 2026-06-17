@@ -203,7 +203,8 @@ export default function HomePage() {
   };
 
   return (
-    <main className="premium-page homepage-main" style={{ paddingTop: "92px", ...(heroBg ? { backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundAttachment: "fixed", backgroundRepeat: "no-repeat" } : {}) }}>
+    <main className="premium-page homepage-main" style={{ paddingTop: "92px" }}>
+      {heroBg && <div style={{ position: "fixed", inset: 0, zIndex: 0, backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center center", backgroundRepeat: "no-repeat", pointerEvents: "none" }} />}
 {featuredPost && (
   <section style={{ position: "relative", width: "100%", minHeight: 420, overflow: "hidden", display: "flex", alignItems: "flex-end" }}>
     {(featuredPost.interview_cover_url || featuredPost.image_url) && (
