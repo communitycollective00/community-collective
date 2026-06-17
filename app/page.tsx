@@ -297,7 +297,13 @@ export default function HomePage() {
         </section>
       )}
 
-      <section className="hp-section">
+            <div className="cc-stats-strip fade-up">
+        <div className="cc-stat"><span className="cc-stat-num">2026</span><span className="cc-stat-lbl">Founded</span></div>
+        <div className="cc-stat"><span className="cc-stat-num">2</span><span className="cc-stat-lbl">Cities</span></div>
+        <div className="cc-stat"><span className="cc-stat-num">Open</span><span className="cc-stat-lbl">Network</span></div>
+        <div className="cc-stat"><span className="cc-stat-num">Free</span><span className="cc-stat-lbl">Access</span></div>
+      </div>
+      <section className="hp-section fade-up">
         <div className="hp-section-head">
           <p className="hp-eyebrow">COMMUNITY STORIES</p>
           <h2 className="hp-section-title">ON THE RADAR</h2>
@@ -310,7 +316,7 @@ export default function HomePage() {
 
       <div className="hp-divider" />
 
-      <section className="hp-section">
+      <section className="hp-section fade-up">
         <div className="hp-section-split">
           <div className="hp-section-split-left">
             <p className="hp-eyebrow">REAL GAME</p>
@@ -325,7 +331,7 @@ export default function HomePage() {
 
       <div className="hp-divider" />
 
-      <section className="hp-section">
+      <section className="hp-section fade-up">
         <div className="hp-section-head">
           <p className="hp-eyebrow">OPPORTUNITIES</p>
           <h2 className="hp-section-title">YOUR NEXT MOVE IS RIGHT HERE.</h2>
@@ -338,7 +344,7 @@ export default function HomePage() {
 
       <div className="hp-divider" />
 
-      <section className="hp-section">
+      <section className="hp-section fade-up">
         <div className="hp-section-head">
           <p className="hp-eyebrow">PEOPLE BUILDING THINGS</p>
           <h2 className="hp-section-title">THE COMMUNITIES MAKING PROGRESS RIGHT NOW.</h2>
@@ -350,7 +356,7 @@ export default function HomePage() {
 
       <div className="hp-divider" />
 
-      <section className="hp-section">
+      <section className="hp-section fade-up">
         <div className="hp-section-split">
           <div className="hp-section-split-left">
             <p className="hp-eyebrow">FROM THE INSIDE</p>
@@ -365,7 +371,7 @@ export default function HomePage() {
 
       <div className="hp-divider" />
 
-      <section className="hp-section">
+      <section className="hp-section fade-up">
         <div className="hp-grid-2">
           {getSlots(slots, "Community Access").map((s, i) => <WideCard key={i} slot={s} />)}
         </div>
