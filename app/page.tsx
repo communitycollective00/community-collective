@@ -192,7 +192,7 @@ export default function HomePage() {
     if (!post) return;
     const url = `${window.location.origin}/posts/${postId}`;
     if (navigator.share) {
-      navigator.share({ title: "Community Collective", text: post.title, url });
+      navigator.share({ title: "Culture Collective", text: post.title, url });
     } else {
       navigator.clipboard.writeText(url);
       alert("Link copied!");
@@ -343,7 +343,7 @@ export default function HomePage() {
             <span style={{ color: "var(--accent)" }}>Real</span> knowledge.<br />
             <span style={{ color: "var(--gold)" }}>Real</span> access.
           </h2>
-          <p className="hp-join-body">Community Collective is a living archive of people doing meaningful work — storytelling, organizing, mentoring, and trusted access from communities on the move.</p>
+          <p className="hp-join-body">Culture Collective is a living archive of people doing meaningful work — storytelling, organizing, mentoring, and trusted access from communities on the move.</p>
           <div className="hp-join-actions">
             <Link href="/directory" className="gold-btn">Explore Directory</Link>
             <Link href="/apply" className="gold-btn hp-join-btn-outline">Tap In</Link>

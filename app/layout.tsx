@@ -3,7 +3,7 @@ import { AuthProvider } from "./components/auth-provider";
 import RootNavBar from "./components/root-navbar";
 
 export const metadata = {
-  title: "Community Collective",
+  title: "Culture Collective",
   description: "Media + Opportunity + Access Platform",
 };
 
