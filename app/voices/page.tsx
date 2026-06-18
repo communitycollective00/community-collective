@@ -1,4 +1,5 @@
 "use client";
+import { getCachedBg } from "../../lib/background-cache";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { getSupabaseClient } from "../../lib/supabase";
@@ -43,7 +44,7 @@ interface Interview {
 export default function VoicesPage() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [pageBg, setPageBg] = useState<string>("");
+  const [pageBg, setPageBg] = useState<string>(() => getCachedBg("voices"));
 
   useEffect(() => {
     async function load() {

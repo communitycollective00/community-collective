@@ -1,4 +1,5 @@
 "use client";
+import { getCachedBg } from "../../lib/background-cache";
 
 import { useEffect, useState, useMemo } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
@@ -35,7 +36,7 @@ export default function OpportunitiesPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [pageBg, setPageBg] = useState<string>("");
+  const [pageBg, setPageBg] = useState<string>(() => getCachedBg("opportunities"));
 
   useEffect(() => {
     const loadAll = async () => {

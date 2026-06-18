@@ -1,4 +1,5 @@
 "use client";
+import { getCachedBg } from "../../lib/background-cache";
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 
@@ -21,7 +22,7 @@ export default function ApplyPage() {
   const [status, setStatus] = useState("");
   const [userId, setUserId] = useState("");
   const [userEmail, setUserEmail] = useState("");
-  const [pageBg, setPageBg] = useState<string>("");
+  const [pageBg, setPageBg] = useState<string>(() => getCachedBg("apply"));
 
   useEffect(() => {
     async function loadAll() {

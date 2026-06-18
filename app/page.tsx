@@ -1,4 +1,5 @@
 "use client";
+import { getCachedBg } from "../lib/background-cache";
 import PostCard from "./components/post-card";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
@@ -110,7 +111,7 @@ function WideCard({ slot }: { slot: Slot }) {
 export default function HomePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [slots, setSlots] = useState<Slot[]>([]);
-  const [heroBg, setHeroBg] = useState<string>("");
+  const [heroBg, setHeroBg] = useState<string>(() => getCachedBg("home"));
   const [loading, setLoading] = useState(true);
   const [featuredPost, setFeaturedPost] = useState<Post | null>(null);
   const hasFetched = useRef(false);

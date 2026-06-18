@@ -1,4 +1,5 @@
 "use client";
+import { getCachedBg } from "../../lib/background-cache";
 
 import { FormEvent, useEffect, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
@@ -44,7 +45,7 @@ export default function GetAccessPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [pageBg, setPageBg] = useState<string>("");
+  const [pageBg, setPageBg] = useState<string>(() => getCachedBg("get-access"));
 
   useEffect(() => {
     async function loadBg() {

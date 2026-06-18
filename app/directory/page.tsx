@@ -1,4 +1,5 @@
 "use client";
+import { getCachedBg } from "../../lib/background-cache";
 
 import { useEffect, useMemo, useState } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
@@ -42,7 +43,7 @@ export default function DirectoryPage() {
   const [industry, setIndustry] = useState("all");
   const [location, setLocation] = useState("all");
   const [loading, setLoading] = useState(true);
-  const [pageBg, setPageBg] = useState<string>("");
+  const [pageBg, setPageBg] = useState<string>(() => getCachedBg("directory"));
 
   useEffect(() => {
     const loadAll = async () => {

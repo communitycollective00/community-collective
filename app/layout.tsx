@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { AuthProvider } from "./components/auth-provider";
 import RootNavBar from "./components/root-navbar";
 import Link from "next/link";
+import { BgPrefetch } from "./components/bg-prefetch";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://community-collective-xi.vercel.app";
@@ -82,6 +83,7 @@ export default function RootLayout({
       <body>
         <script dangerouslySetInnerHTML={{ __html: `(function(){if(typeof IntersectionObserver==="undefined")return;var o=new IntersectionObserver(function(e){e.forEach(function(n){if(n.isIntersecting)n.target.classList.add("cc-visible")})},{threshold:0.08,rootMargin:"0px 0px -40px 0px"});function i(){document.querySelectorAll(".fade-up:not([data-ob])").forEach(function(el){el.setAttribute("data-ob","1");o.observe(el)})}document.addEventListener("DOMContentLoaded",i);setTimeout(i,600);setTimeout(i,1800)})();` }} />
         <AuthProvider>
+          <BgPrefetch />
           <RootNavBar />
         <div className="cc-ticker-outer" aria-hidden="true"><div className="cc-ticker-track"><span className="cc-ticker-item">Interviews</span><span className="cc-ticker-item">Opportunities</span><span className="cc-ticker-item">Chicago</span><span className="cc-ticker-item">Indianapolis</span><span className="cc-ticker-item">Culture</span><span className="cc-ticker-item">Community</span><span className="cc-ticker-item">Press</span><span className="cc-ticker-item">Access</span><span className="cc-ticker-item">Network</span><span className="cc-ticker-item">Stories</span><span className="cc-ticker-item">Events</span><span className="cc-ticker-item">Directory</span><span className="cc-ticker-item">Interviews</span><span className="cc-ticker-item">Opportunities</span><span className="cc-ticker-item">Chicago</span><span className="cc-ticker-item">Indianapolis</span><span className="cc-ticker-item">Culture</span><span className="cc-ticker-item">Community</span><span className="cc-ticker-item">Press</span><span className="cc-ticker-item">Access</span><span className="cc-ticker-item">Network</span><span className="cc-ticker-item">Stories</span><span className="cc-ticker-item">Events</span><span className="cc-ticker-item">Directory</span></div></div>
           {children}
