@@ -38,56 +38,24 @@ export default function ProfileCard({
 
   return (
     <Link href={`/directory/${username || id}`}>
-      <article className="directory-item">
-        {is_featured && (
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: "3px",
-              background: "linear-gradient(90deg, var(--gold), var(--gold2))",
-              zIndex: 1,
-            }}
-          />
-        )}
-        <div className="directory-item-content">
-          <div style={{ display: "flex", gap: "1rem", alignItems: "flex-start" }}>
-            <img
-              src={avatar_url || fallbackAvatar}
-              alt={displayName}
-              className="profile-avatar"
-              style={{ width: "80px", height: "80px" }}
-            />
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                <h3 style={{ margin: 0, marginBottom: "0.25rem" }}>{displayName}</h3>
-                {is_approved && isProfessional && (
-                  <span title="Verified Professional" style={{ fontSize: "1.2rem" }}>
-                    ✓
-                  </span>
-                )}
-              </div>
-              {industry && (
-                <p className="muted" style={{ margin: "0.25rem 0" }}>
-                  {industry}
-                  {location && ` • ${location}`}
-                </p>
-              )}
-              {bio && (
-                <p className="muted" style={{ margin: "0.5rem 0 0", lineHeight: "1.5" }}>
-                  {bio.slice(0, 100)}
-                  {bio.length > 100 ? "..." : ""}
-                </p>
-              )}
-              {is_featured && (
-                <p className="muted" style={{ margin: "0.75rem 0 0", fontSize: "0.85rem", color: "var(--gold)", fontWeight: 600 }}>
-                  ⭐ Featured
-                </p>
-              )}
-            </div>
-          </div>
+      <article className="dir-tile">
+        <div className="dir-tile-img">
+          {avatar_url ? (
+            <img src={avatar_url} alt={displayName} className="dir-tile-photo" />
+          ) : (
+            <span className="dir-tile-monogram">{(displayName || "CC").split(" ")[0]?.[0] || "C"}</span>
+          )}
+          {industry && <span className="dir-tile-badge">{industry}</span>}
+          {is_featured && <span className="dir-tile-star">★ Featured</span>}
+        </div>
+        <div className="dir-tile-body">
+          <h3 className="dir-tile-name">
+            {displayName}
+            {is_approved && isProfessional && <span title="Verified" style={{ color: "var(--gold)", marginLeft: 4 }}>✓</span>}
+          </h3>
+          {location && (
+            <p className="dir-tile-loc">📍 {location}</p>
+          )}
         </div>
       </article>
     </Link>
