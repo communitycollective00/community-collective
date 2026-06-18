@@ -127,6 +127,9 @@ export default function DirectoryPage() {
     });
   }, [profiles, search, industry, location]);
 
+  const isSearching = Boolean(search) || industry !== "all" || location !== "all";
+  const visibleProfiles = isSearching ? filteredProfiles : filteredProfiles.slice(0, 12);
+
   const bgStyle = pageBg
     ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
     : {};
@@ -144,6 +147,29 @@ export default function DirectoryPage() {
   return (
     <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
       <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
+        <div className="dir-search-top">
+          <div className="dir-search-field">
+            <svg className="dir-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input
+              className="dir-search-input"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search businesses, people, expertise, or location..."
+            />
+          </div>
+          <div className="dir-search-filters">
+            <select className="page-select" value={industry} onChange={(e) => setIndustry(e.target.value)}>
+              {industryOptions.map((opt) => (
+                <option key={opt} value={opt}>{opt === "all" ? "All industries" : opt}</option>
+              ))}
+            </select>
+            <select className="page-select" value={location} onChange={(e) => setLocation(e.target.value)}>
+              {locationOptions.map((opt) => (
+                <option key={opt} value={opt}>{opt === "all" ? "All locations" : opt}</option>
+              ))}
+            </select>
+          </div>
+        </div>
         <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "2.5rem", marginBottom: "2rem" }}>
           <div>
             <p className="homepage-kicker">The Directory</p>
@@ -175,29 +201,9 @@ export default function DirectoryPage() {
           </div>
         </div>
 
-        <div className="page-search" style={{ marginBottom: "2rem" }}>
-          <div className="page-search-row">
-            <input
-              className="page-input"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name, expertise, or location..."
-            />
-          </div>
-          <div className="page-search-row">
-            <select className="page-select" value={industry} onChange={(e) => setIndustry(e.target.value)}>
-              {industryOptions.map((opt) => (
-                <option key={opt} value={opt}>{opt === "all" ? "All industries" : opt}</option>
-              ))}
-            </select>
-            <select className="page-select" value={location} onChange={(e) => setLocation(e.target.value)}>
-              {locationOptions.map((opt) => (
-                <option key={opt} value={opt}>{opt === "all" ? "All locations" : opt}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-
+        {filteredProfiles.length > 0 && (
+          <p className="dir-count">Showing {visibleProfiles.length} of {filteredProfiles.length}{!isSearching && filteredProfiles.length > 12 ? " · keep typing to find more" : ""}</p>
+        )}
         {filteredProfiles.length === 0 ? (
           <EmptyState
             title="No professionals found"
@@ -207,7 +213,7 @@ export default function DirectoryPage() {
           />
         ) : (
           <div className="directory-grid">
-            {filteredProfiles.map((profile) => (
+            {visibleProfiles.map((profile) => (
               <ProfileCard
                 key={profile.id}
                 id={profile.id}
