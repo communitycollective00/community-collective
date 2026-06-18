@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "./auth-provider";
 import { isAdminRole } from "../../lib/roles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function CCMark({ size = 36 }: { size?: number }) {
   return (
@@ -108,6 +108,7 @@ export default function RootNavBar() {
   const router = useRouter();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  useEffect(() => { setMenuOpen(false); }, [pathname]);
   const isAuthed = Boolean(user);
 
   const handleLogout = async () => {

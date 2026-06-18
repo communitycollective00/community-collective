@@ -119,7 +119,7 @@ export default async function PublicProfilePage({ params }: { params: { username
     <main className="premium-page" style={{ paddingTop: "72px", ...bgStyle }}>
 
       {/* ── HERO BANNER ── */}
-      <div style={{ position: "relative", width: "100%", height: 220, background: profileRow.banner_url ? "transparent" : "var(--surface)", overflow: "hidden" }}>
+      <div style={{ position: "relative", width: "100%", height: 160, background: profileRow.banner_url ? "transparent" : "linear-gradient(135deg, #1a1408 0%, #0d0c08 100%)", overflow: "hidden" }}>
         {profileRow.banner_url && (
           <img
             src={profileRow.banner_url}
@@ -127,7 +127,7 @@ export default async function PublicProfilePage({ params }: { params: { username
             style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         )}
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.7) 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 55%, rgba(13,12,8,0.85) 100%)" }} />
       </div>
 
       {/* ── MAIN LAYOUT: two-column on desktop ── */}
@@ -137,11 +137,11 @@ export default async function PublicProfilePage({ params }: { params: { username
         <aside style={{ position: "sticky", top: "100px" }}>
 
           {/* Avatar — overlaps banner */}
-          <div style={{ marginTop: -72, marginBottom: "1.25rem" }}>
+          <div className="profile-avatar-wrap" style={{ marginTop: -88, marginBottom: "1.25rem" }}>
             <img
               src={profileRow.avatar_url || `https://placehold.co/160x160/1a1408/f4cf70?text=${encodeURIComponent(displayName[0] || "C")}`}
               alt={displayName}
-              style={{ width: 120, height: 120, borderRadius: "50%", objectFit: "cover", border: "3px solid var(--gold)", display: "block" }}
+              style={{ width: 140, height: 140, borderRadius: "50%", objectFit: "cover", border: "4px solid var(--gold)", display: "block", background: "#0d0c08", boxShadow: "0 8px 28px rgba(0,0,0,0.55), 0 0 0 2px rgba(201,168,76,0.25)" }}
             />
           </div>
 
