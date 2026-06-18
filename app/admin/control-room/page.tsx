@@ -298,7 +298,7 @@ export default function ControlRoom() {
                   SLOT {i + 1}
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-                  {([["Title", "title"], ["Role", "role"], ["City", "city"], ["Link URL", "link_url"]] as [string, string][]).map(([label, field]) => (
+                  {([["Title", "title"], ["Role", "role"], ["City", "city"]] as [string, string][]).map(([label, field]) => (
                     <div key={field}>
                       <label style={{ fontSize: "0.8rem", color: "var(--muted)", display: "block", marginBottom: 4 }}>{label}</label>
                       <input
@@ -312,6 +312,38 @@ export default function ControlRoom() {
                       />
                     </div>
                   ))}
+                  <div style={{ gridColumn: "1 / -1" }}>
+                    <label style={{ fontSize: "0.8rem", color: "var(--muted)", display: "block", marginBottom: 4 }}>Links To</label>
+                    <select
+                      value={["/voices","/opportunities","/directory","/get-access","/apply","/press","/posts"].includes(slot.link_url) ? slot.link_url : (slot.link_url ? "__custom__" : "")}
+                      onChange={(e) => { const v = e.target.value; if (v !== "__custom__") updateSlot(activeSection, i, "link_url", v === "" ? "" : v); }}
+                      style={{
+                        width: "100%", padding: "0.55rem 0.75rem", borderRadius: 8,
+                        border: "1px solid var(--border)", background: "var(--surface-soft)",
+                        color: "var(--text)", fontSize: "0.9rem", boxSizing: "border-box" as const,
+                      }}
+                    >
+                      <option value="">— No link —</option>
+                      <option value="/voices">The Voices</option>
+                      <option value="/opportunities">Opportunities</option>
+                      <option value="/directory">The Network (Directory)</option>
+                      <option value="/get-access">Get Access</option>
+                      <option value="/apply">Apply</option>
+                      <option value="/press">Press Room</option>
+                      <option value="/posts">All Posts</option>
+                      <option value="__custom__">Custom URL\u2026</option>
+                    </select>
+                    <input
+                      value={slot.link_url || ""}
+                      onChange={(e) => updateSlot(activeSection, i, "link_url", e.target.value)}
+                      placeholder="Or paste a custom link (e.g. /posts/abc123 or https://\u2026)"
+                      style={{
+                        width: "100%", padding: "0.5rem 0.75rem", borderRadius: 8, marginTop: "0.5rem",
+                        border: "1px solid var(--border)", background: "var(--surface-soft)",
+                        color: "var(--text)", fontSize: "0.85rem", boxSizing: "border-box" as const,
+                      }}
+                    />
+                  </div>
                   <div style={{ gridColumn: "1 / -1" }}>
                     <label style={{ fontSize: "0.8rem", color: "var(--muted)", display: "block", marginBottom: 4 }}>Description</label>
                     <textarea
