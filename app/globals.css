@@ -4962,3 +4962,46 @@ select {
   .cc-stat:nth-child(odd) { border-right: 1px solid rgba(201,168,76,0.1); }
   .cc-stat:last-child { border-bottom: none; }
 }
+
+
+/* =============================================
+   HOMEPAGE FEATURED SLOT + HERO GRID
+   ============================================= */
+.homepage-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+.homepage-hero-grid,
+.homepage-hero-glow,
+.homepage-hero-glow2 { position: absolute !important; pointer-events: none; }
+.homepage-featured-slot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: stretch;
+  min-height: 300px;
+}
+.homepage-featured-card {
+  position: relative;
+  width: 100%;
+  border: 1px solid rgba(201,168,76,0.18);
+  background: rgba(10,9,8,0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 2px;
+  transition: border-color 0.25s ease, transform 0.22s ease;
+}
+.homepage-featured-card:hover { border-color: rgba(201,168,76,0.45); transform: translateY(-3px); }
+.homepage-featured-empty { align-items: center !important; justify-content: center !important; }
+.homepage-featured-body { position: relative; z-index: 2; padding: 1.5rem; width: 100%; }
+.hp-section-cta { align-self: flex-start; width: auto !important; display: inline-block !important; }
+@media (max-width: 900px) {
+  .homepage-hero { grid-template-columns: 1fr !important; gap: 1.5rem; }
+  .homepage-featured-slot { order: -1; min-height: 200px; }
+}

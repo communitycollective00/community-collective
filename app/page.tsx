@@ -213,33 +213,6 @@ export default function HomePage() {
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px", position: "relative" }}>
       {heroBg && <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", minHeight: "100vh", zIndex: 0, backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundRepeat: "no-repeat", backgroundAttachment: "local", pointerEvents: "none" }} />}
-{featuredPost && (
-  <section style={{ position: "relative", width: "100%", minHeight: 420, overflow: "hidden", display: "flex", alignItems: "flex-end" }}>
-    {(featuredPost.interview_cover_url || featuredPost.image_url) && (
-      <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${featuredPost.interview_cover_url || featuredPost.image_url})`, backgroundSize: "cover", backgroundPosition: "center", filter: "brightness(0.45)" }} />
-    )}
-    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)" }} />
-    <div style={{ position: "relative", zIndex: 2, width: "100%", maxWidth: 1100, margin: "0 auto", padding: "2.5rem 1.5rem" }}>
-      <p style={{ fontSize: "0.7rem", textTransform: "uppercase", letterSpacing: "0.18em", color: "var(--gold)", marginBottom: "0.75rem", fontWeight: 700 }}>◆ FEATURED STORY</p>
-      <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(1.6rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", lineHeight: 1.1, marginBottom: "0.75rem", maxWidth: 700 }}>
-        {featuredPost.interview_guest_name || featuredPost.title}
-      </h2>
-      {(featuredPost.interview_guest_title || featuredPost.interview_guest_organization) && (
-        <p style={{ fontSize: "0.9rem", color: "var(--gold)", marginBottom: "0.75rem", letterSpacing: "0.04em" }}>
-          {[featuredPost.interview_guest_title, featuredPost.interview_guest_organization].filter(Boolean).join(" · ")}
-        </p>
-      )}
-      {featuredPost.interview_summary && (
-        <p style={{ color: "rgba(255,255,255,0.75)", fontSize: "0.95rem", lineHeight: 1.7, marginBottom: "1.25rem", maxWidth: 560 }}>
-          {featuredPost.interview_summary.slice(0, 140)}{featuredPost.interview_summary.length > 140 ? "..." : ""}
-        </p>
-      )}
-      <Link href={`/posts/${featuredPost.id}`} className="gold-btn" style={{ display: "inline-block" }}>
-        Watch Interview →
-      </Link>
-    </div>
-  </section>
-)}
       <section className="homepage-hero">
         <div className="homepage-hero-grid" />
         <div className="homepage-hero-glow" />
@@ -260,15 +233,36 @@ export default function HomePage() {
             <Link href="/apply" className="gold-link">Tap In</Link>
           </div>
         </div>
-      </section>
-
-      <div className="ticker-wrap homepage-ticker">
-        <div className="ticker-track">
-          {["Game Daily","HUD Programs","Casting Calls","Verified Professionals","From The Inside","Opportunities","Stories","Community","Game Daily","HUD Programs","Casting Calls","Verified Professionals","From The Inside","Opportunities","Stories","Community"].map((item, i) => (
-            <span key={i}><span className="ticker-item">{item}</span><span className="tdot">◆</span></span>
-          ))}
+        <div className="homepage-featured-slot">
+          {featuredPost ? (
+            <Link href={`/posts/${featuredPost.id}`} className="homepage-featured-card" style={{ textDecoration: "none" }}>
+              {(featuredPost.interview_cover_url || featuredPost.image_url) && (
+                <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${featuredPost.interview_cover_url || featuredPost.image_url})`, backgroundSize: "cover", backgroundPosition: "center", borderRadius: "2px" }} />
+              )}
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.1) 100%)", borderRadius: "2px" }} />
+              <div className="homepage-featured-body">
+                <p style={{ fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#C9A84C", marginBottom: "0.6rem", fontWeight: 700 }}>◆ Featured Interview</p>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#fff", lineHeight: 1.2, marginBottom: "0.5rem" }}>{featuredPost.interview_guest_name || featuredPost.title}</h3>
+                {(featuredPost.interview_guest_title || featuredPost.interview_guest_organization) && (
+                  <p style={{ fontSize: "0.75rem", color: "#C9A84C", marginBottom: "0.8rem" }}>{[featuredPost.interview_guest_title, featuredPost.interview_guest_organization].filter(Boolean).join(" · ")}</p>
+                )}
+                <span style={{ fontSize: "0.68rem", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(201,168,76,0.4)", padding: "0.35rem 0.8rem", display: "inline-block" }}>Watch Now →</span>
+              </div>
+            </Link>
+          ) : (
+            <div className="homepage-featured-card homepage-featured-empty">
+              <div className="homepage-featured-body" style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", height: "100%" }}>
+                <div style={{ width: 52, height: 52, border: "1px solid rgba(201,168,76,0.28)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.2rem" }}>
+                  <span style={{ color: "#C9A84C", fontSize: "1.3rem" }}>▶</span>
+                </div>
+                <p style={{ fontSize: "0.6rem", letterSpacing: "0.18em", textTransform: "uppercase", color: "#C9A84C", marginBottom: "0.75rem" }}>◆ Featured Interview</p>
+                <p style={{ fontSize: "1.05rem", fontWeight: 800, color: "#fff", lineHeight: 1.25, marginBottom: "0.5rem" }}>First Interview<br />Dropping Tonight</p>
+                <p style={{ fontSize: "0.75rem", color: "rgba(255,255,255,0.35)", lineHeight: 1.6, marginTop: "0.5rem" }}>Culture Collective · Vol. 1</p>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      </section>
 
       {!loading && posts.length > 0 && (
         <section className="media-feed-section">
@@ -297,7 +291,7 @@ export default function HomePage() {
         </section>
       )}
 
-            <div className="cc-stats-strip fade-up">
+            <div className="cc-stats-strip">
         <div className="cc-stat"><span className="cc-stat-num">2026</span><span className="cc-stat-lbl">Founded</span></div>
         <div className="cc-stat"><span className="cc-stat-num">2</span><span className="cc-stat-lbl">Cities</span></div>
         <div className="cc-stat"><span className="cc-stat-num">Open</span><span className="cc-stat-lbl">Network</span></div>
