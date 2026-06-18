@@ -70,6 +70,9 @@ export function ProfileHeader({
     description?: string | null;
     industry?: string | null;
     location?: string | null;
+    city?: string | null;
+    state?: string | null;
+    phone?: string | null;
     avatar_url?: string | null;
     banner_url?: string | null;
     is_approved?: boolean;
@@ -89,6 +92,9 @@ export function ProfileHeader({
 
   const fallbackAvatar = `https://placehold.co/160x160/1a1408/f4cf70?text=${encodeURIComponent(displayName.split(" ")[0]?.[0] || "C")}`;
 
+  const mapsQuery = [displayName, profile.city, profile.state, profile.location].filter(Boolean).join(" ");
+  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapsQuery)}`;
+
   return (
     <div className="page-panel" style={{ overflow: "hidden", marginBottom: "2rem", borderRadius: "24px" }}>
       {profile.banner_url && (
@@ -102,58 +108,61 @@ export function ProfileHeader({
         />
       )}
       <div style={{ padding: "2rem 1.5rem" }}>
-        <div className="profile-header">
-          <div style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start", flexWrap: "wrap" }}>
-            <img
-              src={profile.avatar_url || fallbackAvatar}
-              alt={displayName}
-              className="profile-avatar"
-            />
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
-                <h1 style={{ margin: 0, fontSize: "2rem" }}>{displayName}</h1>
-                {isProfessional && profile.is_approved && <span title="Verified Professional">✓</span>}
-                {profile.is_featured && <span title="Featured">⭐</span>}
-              </div>
-              {profile.industry && (
-                <p className="muted" style={{ margin: "0.5rem 0 0" }}>
-                  {profile.industry}
-                  {profile.location && ` • ${profile.location}`}
-                </p>
+        <div className="ph-lockup">
+          <img
+            src={profile.avatar_url || fallbackAvatar}
+            alt={displayName}
+            className="ph-emblem"
+          />
+          <div className="ph-identity">
+            <div className="ph-name-row">
+              {profile.website ? (
+                <a href={profile.website} target="_blank" rel="noopener noreferrer" className="ph-name-link">
+                  <h1 className="ph-name">{displayName}</h1>
+                  <span className="ph-ext" aria-hidden="true">↗</span>
+                </a>
+              ) : (
+                <h1 className="ph-name">{displayName}</h1>
               )}
-              {profile.bio && (
-                <p style={{ margin: "1rem 0 0", lineHeight: 1.6, maxWidth: "720px" }}>{profile.bio}</p>
+              {isProfessional && profile.is_approved && <span title="Verified">✓</span>}
+              {profile.is_featured && <span title="Featured">⭐</span>}
+            </div>
+            {profile.industry && (
+              <p className="ph-meta">
+                {profile.industry}
+                {profile.location && ` • ${profile.location}`}
+              </p>
+            )}
+            <div className="ph-actions">
+              {profile.website && (
+                <a className="ph-btn" href={profile.website} target="_blank" rel="noopener noreferrer">🌐 Website</a>
               )}
-              {profile.description && (
-                <p style={{ margin: "1rem 0 0", lineHeight: 1.6, maxWidth: "720px", opacity: 0.9 }}>
-                  {profile.description}
-                </p>
+              {profile.phone && (
+                <a className="ph-btn" href={`tel:${profile.phone.replace(/[^0-9+]/g, "")}`}>📞 Call</a>
               )}
-              {(profile.website || profile.instagram || profile.twitter || profile.linkedin) && (
-                <div className="profile-meta">
-                  {profile.website && (
-                    <a href={profile.website} target="_blank" rel="noopener noreferrer" className="profile-link">
-                      🌐 Website
-                    </a>
-                  )}
-                  {profile.instagram && (
-                    <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="profile-link">
-                      📸 Instagram
-                    </a>
-                  )}
-                  {profile.twitter && (
-                    <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer" className="profile-link">
-                      𝕏 Twitter
-                    </a>
-                  )}
-                  {profile.linkedin && (
-                    <a href={`https://linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noopener noreferrer" className="profile-link">
-                      💼 LinkedIn
-                    </a>
-                  )}
-                </div>
+              {(profile.city || profile.location) && (
+                <a className="ph-btn" href={directionsUrl} target="_blank" rel="noopener noreferrer">📍 Directions</a>
               )}
             </div>
+            {profile.bio && (
+              <p className="ph-bio">{profile.bio}</p>
+            )}
+            {profile.description && (
+              <p className="ph-bio" style={{ opacity: 0.9 }}>{profile.description}</p>
+            )}
+            {(profile.instagram || profile.twitter || profile.linkedin) && (
+              <div className="profile-meta">
+                {profile.instagram && (
+                  <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="profile-link">📸 Instagram</a>
+                )}
+                {profile.twitter && (
+                  <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer" className="profile-link">𝕏 Twitter</a>
+                )}
+                {profile.linkedin && (
+                  <a href={`https://linkedin.com/in/${profile.linkedin}`} target="_blank" rel="noopener noreferrer" className="profile-link">💼 LinkedIn</a>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>

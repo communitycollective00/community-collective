@@ -21,6 +21,7 @@ type PublicProfile = {
   city: string | null;
   state: string | null;
   website: string | null;
+  phone: string | null;
   instagram: string | null;
   tiktok: string | null;
   youtube: string | null;
@@ -68,7 +69,7 @@ export default function PublicProfilePage() {
       if (!data) {
         // Fallback: check curated directory_listings by slug
         const { data: listing } = await (getSupabaseClient().from("directory_listings") as any)
-          .select("id,slug,name,category,city,state,bio,website,image_url,is_featured,is_verified")
+          .select("id,slug,name,category,city,state,bio,website,phone,image_url,is_featured,is_verified")
           .eq("slug", username)
           .maybeSingle();
 
@@ -92,6 +93,7 @@ export default function PublicProfilePage() {
           city: listing.city,
           state: listing.state,
           website: listing.website,
+          phone: listing.phone,
           instagram: null,
           tiktok: null,
           youtube: null,
