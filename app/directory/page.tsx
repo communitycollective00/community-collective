@@ -50,19 +50,43 @@ export default function DirectoryPage() {
       try {
         const supabase = getSupabaseClient();
 
-        const [bgRes, profilesRes] = await Promise.all([
+        const [bgRes, profilesRes, listingsRes] = await Promise.all([
           (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "directory").limit(1),
           (supabase.from("profiles") as any)
             .select("id,full_name,username,bio,city,state,industry,location,avatar_url,role,is_approved,is_featured")
             .neq("role", null)
             .order("is_featured", { ascending: false })
             .order("full_name", { ascending: true }),
+          (supabase.from("directory_listings") as any)
+            .select("id,slug,name,category,city,state,bio,website,image_url,is_featured,is_verified")
+            .order("is_featured", { ascending: false })
+            .order("name", { ascending: true }),
         ]);
 
         const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
         if (bgRow?.image_url) setPageBg(bgRow.image_url);
 
-        if (!profilesRes.error) setProfiles(profilesRes.data ?? []);
+        const realProfiles = (!profilesRes.error && profilesRes.data) ? profilesRes.data : [];
+
+        // Map seeded listings into the same shape as profiles
+        const seeded = (!listingsRes.error && listingsRes.data)
+          ? listingsRes.data.map((l: any) => ({
+              id: l.id,
+              full_name: l.name,
+              username: l.slug,
+              bio: l.bio,
+              city: l.city,
+              state: l.state,
+              industry: l.category,
+              location: [l.city, l.state].filter(Boolean).join(", "),
+              avatar_url: l.image_url,
+              role: "business",
+              is_approved: l.is_verified,
+              is_featured: l.is_featured,
+            }))
+          : [];
+
+        setProfiles([...realProfiles, ...seeded]);
       } catch (e) {
         console.error("Error loading directory", e);
       } finally {
