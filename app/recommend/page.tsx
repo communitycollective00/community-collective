@@ -1,4 +1,5 @@
 "use client";
+import { getCachedBg } from "../../lib/background-cache";
 
 import Link from "next/link";
 import { FormEvent, useState } from "react";
@@ -74,7 +75,7 @@ export default function RecommendPage() {
   };
 
   return (
-    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh" }}>
+    <main className="premium-page" style={{ paddingTop: "72px", minHeight: "100vh", backgroundImage: getCachedBg("home") ? `url(${getCachedBg("home")})` : undefined, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }}>
       <section className="premium-card" style={{ maxWidth: 700, margin: "2rem auto" }}>
         <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem" }}>Spotlight Someone</h1>
         <p className="muted" style={{ marginBottom: "2rem" }}>

@@ -131,7 +131,7 @@ export default async function PublicProfilePage({ params }: { params: { username
       </div>
 
       {/* ── MAIN LAYOUT: two-column on desktop ── */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 1.5rem 4rem", display: "grid", gridTemplateColumns: "280px 1fr", gap: "2rem", alignItems: "start" }}>
+      <div className="profile-two-col" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 1.5rem 4rem", gap: "2rem", alignItems: "start" }}>
 
         {/* ── LEFT COLUMN: identity card ── */}
         <aside style={{ position: "sticky", top: "100px" }}>
