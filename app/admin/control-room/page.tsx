@@ -333,7 +333,7 @@ export default function ControlRoom() {
                       <option value="/apply">Apply</option>
                       <option value="/press">Press Room</option>
                       <option value="/posts">All Posts</option>
-                      <option value="__custom__">Custom URL\u2026</option>
+                      <option value="__custom__">Custom URL…</option>
                     </select>
                     <input
                       value={slot.link_url || ""}
