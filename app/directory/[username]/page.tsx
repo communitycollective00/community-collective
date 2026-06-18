@@ -66,8 +66,44 @@ export default function PublicProfilePage() {
         .maybeSingle();
 
       if (!data) {
-        setError("Profile not found");
-        setProfile(null);
+        // Fallback: check curated directory_listings by slug
+        const { data: listing } = await (getSupabaseClient().from("directory_listings") as any)
+          .select("id,slug,name,category,city,state,bio,website,image_url,is_featured,is_verified")
+          .eq("slug", username)
+          .maybeSingle();
+
+        if (!listing) {
+          setError("Profile not found");
+          setProfile(null);
+          return;
+        }
+
+        // Map listing into the PublicProfile shape
+        setProfile({
+          id: listing.id,
+          full_name: listing.name,
+          username: listing.slug,
+          email: null,
+          bio: listing.bio,
+          description: null,
+          category: listing.category,
+          industry: listing.category,
+          location: [listing.city, listing.state].filter(Boolean).join(", "),
+          city: listing.city,
+          state: listing.state,
+          website: listing.website,
+          instagram: null,
+          tiktok: null,
+          youtube: null,
+          twitter: null,
+          linkedin: null,
+          avatar_url: listing.image_url,
+          banner_url: null,
+          role: "business",
+          is_featured: listing.is_featured,
+          is_approved: listing.is_verified,
+        });
+        setPosts([]);
         return;
       }
 
