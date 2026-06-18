@@ -112,7 +112,7 @@ function ImageUploader({
             ) : (
               <>
                 <p style={{ fontSize: "1.4rem", marginBottom: 4 }}>📷</p>
-                <p style={{ color: "var(--muted)", fontSize: "0.8rem" }}>Tap to upload or take photo</p>
+                <p style={{ color: "var(--muted)", fontSize: "0.8rem" }}>Tap to add a photo</p>
               </>
             )}
           </div>
@@ -218,17 +218,19 @@ export default function ControlRoom() {
     try {
       for (const slot of sectionSlots) {
         if (!slot.title && !slot.image_url) continue;
-        await (supabase.from("homepage_slots") as any).upsert({
+        const { error } = await (supabase.from("homepage_slots") as any).upsert({
           section: slot.section, slot_index: slot.slot_index, title: slot.title,
           role: slot.role, city: slot.city, description: slot.description,
           image_url: slot.image_url, link_url: slot.link_url, is_active: slot.is_active,
           updated_at: new Date().toISOString(),
         }, { onConflict: "section,slot_index" });
+        if (error) throw error;
       }
-      setStatus("✓ Saved.");
+      setStatus("\u2713 Saved & live on homepage.");
       loadSlots();
-    } catch (e) {
-      setStatus("Save failed.");
+    } catch (e: any) {
+      setStatus("Save failed: " + (e?.message || e?.hint || JSON.stringify(e)));
+      console.error("Slot save error:", e);
     } finally {
       setSaving(false);
     }
@@ -237,12 +239,12 @@ export default function ControlRoom() {
   async function saveBackground(pageKey: string, url: string) {
     setSaving(true);
     const supabase = getSupabaseClient();
-    await (supabase.from("page_backgrounds") as any).upsert({
+    const { error } = await (supabase.from("page_backgrounds") as any).upsert({
       page_key: pageKey, image_url: url, updated_at: new Date().toISOString(),
     }, { onConflict: "page_key" });
     setBackgrounds((prev) => ({ ...prev, [pageKey]: url }));
     setSaving(false);
-    setStatus("✓ Background saved.");
+    setStatus(error ? ("Background save failed: " + (error.message || "")) : "\u2713 Background saved.");
   }
 
   if (loading) return <main className="premium-page" style={{ paddingTop: 92 }}><p style={{ padding: "2rem" }}>Loading...</p></main>;
@@ -298,7 +300,7 @@ export default function ControlRoom() {
                   SLOT {i + 1}
                 </p>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-                  {([["Title", "title"], ["Role", "role"], ["City", "city"]] as [string, string][]).map(([label, field]) => (
+                  {([["Headline", "title"], ["Role / Title", "role"], ["Location", "city"]] as [string, string][]).map(([label, field]) => (
                     <div key={field}>
                       <label style={{ fontSize: "0.8rem", color: "var(--muted)", display: "block", marginBottom: 4 }}>{label}</label>
                       <input
