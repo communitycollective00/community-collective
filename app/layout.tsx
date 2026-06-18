@@ -81,7 +81,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <script dangerouslySetInnerHTML={{ __html: `(function(){if(typeof IntersectionObserver==="undefined")return;var o=new IntersectionObserver(function(e){e.forEach(function(n){if(n.isIntersecting)n.target.classList.add("cc-visible")})},{threshold:0.08,rootMargin:"0px 0px -40px 0px"});function i(){document.querySelectorAll(".fade-up:not([data-ob])").forEach(function(el){el.setAttribute("data-ob","1");o.observe(el)})}document.addEventListener("DOMContentLoaded",i);setTimeout(i,600);setTimeout(i,1800)})();` }} />
+        <script dangerouslySetInnerHTML={{ __html: `(function(){if(typeof IntersectionObserver==="undefined")return;var o=new IntersectionObserver(function(e){e.forEach(function(n){if(n.isIntersecting)n.target.classList.add("cc-visible")})},{threshold:0.08,rootMargin:"0px 0px -40px 0px"});function i(){document.querySelectorAll(".fade-up:not([data-ob])").forEach(function(el){el.setAttribute("data-ob","1");o.observe(el)})}document.addEventListener("DOMContentLoaded",i);setTimeout(i,600);setTimeout(i,1800);window.addEventListener("popstate",function(){setTimeout(i,100);setTimeout(i,500)});window.addEventListener("click",function(e){if(!e.target||!e.target.closest)return;var a=e.target.closest("a[href]");if(a&&a.href&&a.href.indexOf(location.origin)===0){setTimeout(i,300);setTimeout(i,700)}})})();` }} />
         <AuthProvider>
           <BgPrefetch />
           <RootNavBar />
