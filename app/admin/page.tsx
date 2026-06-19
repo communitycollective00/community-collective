@@ -20,6 +20,12 @@ const adminSections = [
     highlight: true,
   },
   {
+    title: "🏢 Business Directory",
+    description: "Add, edit, and verify curated business listings. Fill in logos, phone, website.",
+    href: "/admin/directory-listings",
+    highlight: true,
+  },
+  {
     title: "Applications",
     description: "Review member access requests and approval status.",
     href: "/admin/applications",
