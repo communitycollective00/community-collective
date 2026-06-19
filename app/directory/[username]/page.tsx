@@ -164,6 +164,18 @@ export default function PublicProfilePage() {
     <main className="premium-page" style={{ paddingTop: "92px" }}>
       <section className="premium-card" style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <ProfileHeader profile={profile} />
+        {profile.role === "business" && (profile.city || profile.state || profile.location) && (
+          <div className="biz-map">
+            <p className="biz-map-label">📍 Find us</p>
+            <iframe
+              title="Location map"
+              className="biz-map-frame"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              src={`https://www.google.com/maps?q=${encodeURIComponent([profile.full_name, profile.city, profile.state].filter(Boolean).join(" "))}&output=embed`}
+            />
+          </div>
+        )}
 
         <div style={{ marginTop: "3rem" }}>
           <div className="page-search-row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>

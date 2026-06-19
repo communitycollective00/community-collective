@@ -5343,3 +5343,23 @@ a, button {
 .ph-emblem {
   background: linear-gradient(135deg, #1a1408 0%, #0d0c08 100%);
 }
+
+
+/* =============================================
+   BUSINESS MAP EMBED
+   ============================================= */
+.biz-map { margin: 1.5rem 0; }
+.biz-map-label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c9a84c;
+  margin-bottom: 0.6rem;
+}
+.biz-map-frame {
+  width: 100%;
+  height: 300px;
+  border: 1px solid rgba(200,157,53,0.25);
+  border-radius: 16px;
+  display: block;
+}
