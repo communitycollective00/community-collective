@@ -38,7 +38,7 @@ export default function ProfileCard({
 
   return (
     <Link href={`/directory/${username || id}`}>
-      <article className="dir-tile">
+      <article className={`dir-tile${is_featured ? " dir-tile--featured" : ""}`}>
         <div className="dir-tile-img">
           {avatar_url ? (
             <img src={avatar_url} alt={displayName} className="dir-tile-photo" />
@@ -46,12 +46,12 @@ export default function ProfileCard({
             <span className="dir-tile-monogram">{(displayName || "CC").split(" ")[0]?.[0] || "C"}</span>
           )}
           {industry && <span className="dir-tile-badge">{industry}</span>}
-          {is_featured && <span className="dir-tile-star">★ Featured</span>}
+          {is_featured && <span className="dir-tile-ribbon">★ FEATURED</span>}
         </div>
         <div className="dir-tile-body">
           <h3 className="dir-tile-name">
             {displayName}
-            {is_approved && isProfessional && <span title="Verified" style={{ color: "var(--gold)", marginLeft: 4 }}>✓</span>}
+            {is_approved && <span className="dir-tile-verified" title="Verified">✓</span>}
           </h3>
           {location && (
             <p className="dir-tile-loc">📍 {location}</p>
