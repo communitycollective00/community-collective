@@ -18,11 +18,12 @@ type Listing = {
   image_url: string | null;
   is_featured: boolean | null;
   is_verified: boolean | null;
+  hours: string | null;
 };
 
 const BLANK: Partial<Listing> = {
   slug: "", name: "", category: "", city: "", state: "",
-  bio: "", website: "", phone: "", image_url: "",
+  bio: "", website: "", phone: "", hours: "", image_url: "",
   is_featured: false, is_verified: false,
 };
 
@@ -87,7 +88,7 @@ export default function AdminDirectoryListingsPage() {
     try {
       const supabase = getSupabaseClient();
       const { data, error: e } = await (supabase.from("directory_listings") as any)
-        .select("id,slug,name,category,city,state,bio,website,phone,image_url,is_featured,is_verified")
+        .select("id,slug,name,category,city,state,bio,website,phone,hours,image_url,is_featured,is_verified")
         .order("name", { ascending: true });
       if (e) throw e;
       setListings(data || []);
@@ -112,6 +113,7 @@ export default function AdminDirectoryListingsPage() {
         bio: editing.bio || null,
         website: editing.website || null,
         phone: editing.phone || null,
+        hours: editing.hours || null,
         image_url: editing.image_url || null,
         is_featured: !!editing.is_featured,
         is_verified: !!editing.is_verified,
@@ -228,6 +230,9 @@ export default function AdminDirectoryListingsPage() {
 
             <label style={labelStyle}>Bio</label>
             <textarea style={{ ...inputStyle, minHeight: 90, resize: "vertical" }} value={editing.bio || ""} onChange={(e) => setEditing({ ...editing, bio: e.target.value })} />
+
+            <label style={labelStyle}>Hours</label>
+            <input style={inputStyle} value={editing.hours || ""} onChange={(e) => setEditing({ ...editing, hours: e.target.value })} placeholder="Tue–Thu 11am–7pm · Fri 12–8pm · Closed Sun/Mon" />
 
             <div style={{ display: "flex", gap: 20, marginTop: "1.25rem", flexWrap: "wrap" }}>
               <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>

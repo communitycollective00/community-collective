@@ -22,6 +22,7 @@ type PublicProfile = {
   state: string | null;
   website: string | null;
   phone: string | null;
+  hours: string | null;
   instagram: string | null;
   tiktok: string | null;
   youtube: string | null;
@@ -69,7 +70,7 @@ export default function PublicProfilePage() {
       if (!data) {
         // Fallback: check curated directory_listings by slug
         const { data: listing } = await (getSupabaseClient().from("directory_listings") as any)
-          .select("id,slug,name,category,city,state,bio,website,phone,image_url,is_featured,is_verified")
+          .select("id,slug,name,category,city,state,bio,website,phone,hours,image_url,is_featured,is_verified")
           .eq("slug", username)
           .maybeSingle();
 
@@ -94,6 +95,7 @@ export default function PublicProfilePage() {
           state: listing.state,
           website: listing.website,
           phone: listing.phone,
+          hours: listing.hours,
           instagram: null,
           tiktok: null,
           youtube: null,
@@ -164,6 +166,12 @@ export default function PublicProfilePage() {
     <main className="premium-page" style={{ paddingTop: "92px" }}>
       <section className="premium-card" style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <ProfileHeader profile={profile} />
+        {profile.role === "business" && profile.hours && (
+          <div className="biz-hours">
+            <p className="biz-hours-label">🕐 Hours</p>
+            <p className="biz-hours-text">{profile.hours}</p>
+          </div>
+        )}
         {profile.role === "business" && (profile.city || profile.state || profile.location) && (
           <div className="biz-map">
             <p className="biz-map-label">📍 Find us</p>
