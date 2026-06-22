@@ -20,11 +20,13 @@ type Listing = {
   is_verified: boolean | null;
   hours: string | null;
   gallery: string | null;
+  lane: string | null;
+  rail: string | null;
 };
 
 const BLANK: Partial<Listing> = {
   slug: "", name: "", category: "", city: "", state: "",
-  bio: "", website: "", phone: "", hours: "", gallery: "", image_url: "",
+  bio: "", website: "", phone: "", hours: "", gallery: "", lane: "", rail: "", image_url: "",
   is_featured: false, is_verified: false,
 };
 
@@ -138,7 +140,7 @@ export default function AdminDirectoryListingsPage() {
     try {
       const supabase = getSupabaseClient();
       const { data, error: e } = await (supabase.from("directory_listings") as any)
-        .select("id,slug,name,category,city,state,bio,website,phone,hours,gallery,image_url,is_featured,is_verified")
+        .select("id,slug,name,category,city,state,bio,website,phone,hours,gallery,lane,rail,image_url,is_featured,is_verified")
         .order("name", { ascending: true });
       if (e) throw e;
       setListings(data || []);
@@ -165,6 +167,8 @@ export default function AdminDirectoryListingsPage() {
         phone: editing.phone || null,
         hours: editing.hours || null,
         gallery: editing.gallery || null,
+        lane: editing.lane || null,
+        rail: editing.rail || null,
         image_url: editing.image_url || null,
         is_featured: !!editing.is_featured,
         is_verified: !!editing.is_verified,
@@ -284,6 +288,42 @@ export default function AdminDirectoryListingsPage() {
 
             <label style={labelStyle}>Hours</label>
             <input style={inputStyle} value={editing.hours || ""} onChange={(e) => setEditing({ ...editing, hours: e.target.value })} placeholder="Tue–Thu 11am–7pm · Fri 12–8pm · Closed Sun/Mon" />
+
+            <label style={labelStyle}>Lane</label>
+            <select style={inputStyle} value={editing.lane || ""} onChange={(e) => setEditing({ ...editing, lane: e.target.value, rail: "" })}>
+              <option value="">None (directory only)</option>
+              <option value="sports">Sports</option>
+              <option value="sound-visuals">Sound &amp; Visuals</option>
+            </select>
+
+            {editing.lane === "sports" && (
+              <>
+                <label style={labelStyle}>Rail</label>
+                <select style={inputStyle} value={editing.rail || ""} onChange={(e) => setEditing({ ...editing, rail: e.target.value })}>
+                  <option value="">Choose a rail…</option>
+                  <option value="player">Players</option>
+                  <option value="coach">Coaches</option>
+                  <option value="agent">Agents</option>
+                  <option value="gm">GMs / front office</option>
+                  <option value="trainer">Trainers / development</option>
+                </select>
+              </>
+            )}
+            {editing.lane === "sound-visuals" && (
+              <>
+                <label style={labelStyle}>Rail</label>
+                <select style={inputStyle} value={editing.rail || ""} onChange={(e) => setEditing({ ...editing, rail: e.target.value })}>
+                  <option value="">Choose a rail…</option>
+                  <option value="artist">Artists</option>
+                  <option value="label">Labels</option>
+                  <option value="studio">Studios</option>
+                  <option value="producer">Producers</option>
+                  <option value="engineer">Engineers</option>
+                  <option value="photographer">Photographers</option>
+                  <option value="rep">Reps / management</option>
+                </select>
+              </>
+            )}
 
             <label style={labelStyle}>Photo gallery</label>
             <div style={{ marginTop: 4 }}>
