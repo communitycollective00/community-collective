@@ -5410,3 +5410,35 @@ a, button {
   transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 .biz-gallery-item:hover img { transform: scale(1.08); }
+
+
+/* =============================================
+   LANE PAGES (Sports / Sound & Visuals)
+   ============================================= */
+.lane-page { max-width: 1100px; margin: 0 auto; padding: 92px 20px 5rem; }
+.lane-hero { padding: 2rem 0 2.5rem; border-bottom: 0.5px solid rgba(239,233,220,0.12); margin-bottom: 2.5rem; }
+.lane-kicker { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(239,233,220,0.32); margin-bottom: 0.9rem; }
+.lane-title { font-family: var(--font-display, Georgia, serif); font-weight: 400; font-size: clamp(2.6rem, 8vw, 4.4rem); line-height: 1.02; letter-spacing: -0.01em; margin: 0 0 1.1rem; }
+.lane-tagline { font-size: 1.05rem; line-height: 1.6; color: rgba(239,233,220,0.55); max-width: 46ch; }
+.lane-empty { color: rgba(239,233,220,0.5); padding: 2rem 0; }
+.lane-featured { margin-bottom: 3rem; }
+.lane-featured-grid { display: grid; grid-template-columns: minmax(0, 320px); }
+.lane-rail { margin-bottom: 2.75rem; }
+.lane-rail-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1rem; }
+.lane-rail-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(201,168,76,0.85); }
+.lane-rail-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(220px, 240px);
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+.lane-rail-track > * { scroll-snap-align: start; }
+.lane-rail-track::-webkit-scrollbar { height: 6px; }
+.lane-rail-track::-webkit-scrollbar-thumb { background: rgba(239,233,220,0.15); border-radius: 3px; }
+@media (max-width: 700px) {
+  .lane-rail-track { grid-auto-columns: minmax(170px, 78vw); }
+}
