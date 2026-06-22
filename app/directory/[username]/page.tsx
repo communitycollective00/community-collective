@@ -170,7 +170,7 @@ export default function PublicProfilePage() {
         <ProfileHeader profile={profile} />
         {profile.role === "business" && profile.hours && (
           <div className="biz-hours">
-            <p className="biz-hours-label">🕐 Hours</p>
+            <p className="biz-hours-label">Hours</p>
             <p className="biz-hours-text">{profile.hours}</p>
           </div>
         )}
@@ -180,7 +180,7 @@ export default function PublicProfilePage() {
           if (!imgs.length) return null;
           return (
             <div className="biz-gallery">
-              <p className="biz-gallery-label">📸 Gallery</p>
+              <p className="biz-gallery-label">Gallery</p>
               <div className="biz-gallery-grid">
                 {imgs.map((url, i) => (
                   <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="biz-gallery-item">
@@ -193,7 +193,7 @@ export default function PublicProfilePage() {
         })()}
         {profile.role === "business" && (profile.city || profile.state || profile.location) && (
           <div className="biz-map">
-            <p className="biz-map-label">📍 Find us</p>
+            <p className="biz-map-label">Find us</p>
             <iframe
               title="Location map"
               className="biz-map-frame"

@@ -135,13 +135,13 @@ export function ProfileHeader({
             )}
             <div className="ph-actions">
               {profile.website && (
-                <a className="ph-btn" href={profile.website} target="_blank" rel="noopener noreferrer">🌐 Website</a>
+                <a className="ph-btn" href={profile.website} target="_blank" rel="noopener noreferrer">Website</a>
               )}
               {profile.phone && (
-                <a className="ph-btn" href={`tel:${profile.phone.replace(/[^0-9+]/g, "")}`}>📞 Call</a>
+                <a className="ph-btn" href={`tel:${profile.phone.replace(/[^0-9+]/g, "")}`}>Call</a>
               )}
               {(profile.city || profile.location) && (
-                <a className="ph-btn" href={directionsUrl} target="_blank" rel="noopener noreferrer">📍 Directions</a>
+                <a className="ph-btn" href={directionsUrl} target="_blank" rel="noopener noreferrer">Directions</a>
               )}
             </div>
             {profile.bio && (
@@ -153,7 +153,7 @@ export function ProfileHeader({
             {(profile.instagram || profile.twitter || profile.linkedin) && (
               <div className="profile-meta">
                 {profile.instagram && (
-                  <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="profile-link">📸 Instagram</a>
+                  <a href={`https://instagram.com/${profile.instagram}`} target="_blank" rel="noopener noreferrer" className="profile-link">Instagram</a>
                 )}
                 {profile.twitter && (
                   <a href={`https://twitter.com/${profile.twitter}`} target="_blank" rel="noopener noreferrer" className="profile-link">𝕏 Twitter</a>
