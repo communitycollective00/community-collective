@@ -1997,24 +1997,23 @@ select {
 .gold-link {
   display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  border-radius: 999px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  transition: all 0.15s ease;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 6px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
 }
 
-.btn-gold,
-.gold-btn {
+.btn-gold {
   background: var(--gold);
   color: #080808;
   border: none;
   padding: 0.95rem 1.4rem;
 }
 
-.btn-gold:hover,
-.gold-btn:hover {
+.btn-gold:hover {
   background: var(--gold2);
 }
 
@@ -2448,15 +2447,16 @@ select:focus {
 }
 
 .gold-btn, .gold-link {
-  background: linear-gradient(180deg, #f4cf70 0%, #c89d35 100%);
-  color: #1c1508;
-  border: 0;
-  border-radius: 999px;
-  padding: 0.95rem 1.35rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
-  box-shadow: 0 16px 28px rgba(212, 160, 52, 0.18);
+  background: transparent;
+  color: var(--text);
+  border: 0.5px solid rgba(239,233,220,0.20);
+  border-radius: 6px;
+  padding: 0.7rem 1.15rem;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  transition: border-color 0.2s ease, color 0.2s ease;
+  box-shadow: none;
 }
 
 .verify-badge {
@@ -2474,8 +2474,8 @@ select:focus {
 
 .gold-btn:hover,
 .gold-link:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(212, 160, 52, 0.22);
+  border-color: rgba(201,168,76,0.55);
+  color: var(--text);
 }
 
 .gold-link {
@@ -5300,8 +5300,7 @@ a, button {
 .dir-tile:hover .dir-tile-monogram { transform: scale(1.1); }
 
 /* Gold button micro-interaction */
-.gold-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(200,157,53,0.3); }
-.gold-btn:active { transform: translateY(0); }
+.gold-btn:active { transform: translateY(0.5px); }
 
 /* Profile action buttons press feedback */
 .ph-btn:active { transform: translateY(1px); }
