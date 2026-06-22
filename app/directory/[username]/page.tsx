@@ -23,6 +23,7 @@ type PublicProfile = {
   website: string | null;
   phone: string | null;
   hours: string | null;
+  gallery: string | null;
   instagram: string | null;
   tiktok: string | null;
   youtube: string | null;
@@ -70,7 +71,7 @@ export default function PublicProfilePage() {
       if (!data) {
         // Fallback: check curated directory_listings by slug
         const { data: listing } = await (getSupabaseClient().from("directory_listings") as any)
-          .select("id,slug,name,category,city,state,bio,website,phone,hours,image_url,is_featured,is_verified")
+          .select("id,slug,name,category,city,state,bio,website,phone,hours,gallery,image_url,is_featured,is_verified")
           .eq("slug", username)
           .maybeSingle();
 
@@ -96,6 +97,7 @@ export default function PublicProfilePage() {
           website: listing.website,
           phone: listing.phone,
           hours: listing.hours,
+          gallery: listing.gallery,
           instagram: null,
           tiktok: null,
           youtube: null,
@@ -172,6 +174,23 @@ export default function PublicProfilePage() {
             <p className="biz-hours-text">{profile.hours}</p>
           </div>
         )}
+        {profile.role === "business" && (() => {
+          let imgs: string[] = [];
+          try { imgs = profile.gallery ? JSON.parse(profile.gallery) : []; } catch { imgs = []; }
+          if (!imgs.length) return null;
+          return (
+            <div className="biz-gallery">
+              <p className="biz-gallery-label">📸 Gallery</p>
+              <div className="biz-gallery-grid">
+                {imgs.map((url, i) => (
+                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="biz-gallery-item">
+                    <img src={url} alt="" loading="lazy" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
         {profile.role === "business" && (profile.city || profile.state || profile.location) && (
           <div className="biz-map">
             <p className="biz-map-label">📍 Find us</p>

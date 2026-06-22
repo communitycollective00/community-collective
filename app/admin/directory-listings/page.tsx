@@ -19,11 +19,12 @@ type Listing = {
   is_featured: boolean | null;
   is_verified: boolean | null;
   hours: string | null;
+  gallery: string | null;
 };
 
 const BLANK: Partial<Listing> = {
   slug: "", name: "", category: "", city: "", state: "",
-  bio: "", website: "", phone: "", hours: "", image_url: "",
+  bio: "", website: "", phone: "", hours: "", gallery: "", image_url: "",
   is_featured: false, is_verified: false,
 };
 
@@ -76,6 +77,55 @@ function EmblemUploader({ value, onChange }: { value: string; onChange: (url: st
   );
 }
 
+function GalleryUploader({ value, onChange }: { value: string[]; onChange: (urls: string[]) => void }) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState("");
+
+  async function handleFile(file: File) {
+    if (!file) return;
+    setUploading(true);
+    setErr("");
+    try {
+      const supabase = getSupabaseClient();
+      const ext = file.name.split(".").pop();
+      const filename = `directory/gallery-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await supabase.storage
+        .from("media")
+        .upload(filename, file, { upsert: true, contentType: file.type });
+      if (upErr) throw upErr;
+      const { data } = supabase.storage.from("media").getPublicUrl(filename);
+      onChange([...value, data.publicUrl]);
+    } catch (e: any) {
+      setErr("Upload failed. Try again.");
+      console.error(e);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginBottom: 10 }}>
+        {value.map((url, i) => (
+          <div key={i} style={{ position: "relative", width: 88, height: 88, borderRadius: 12, overflow: "hidden", border: "1px solid rgba(200,157,53,0.3)" }}>
+            <img src={url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <button type="button" onClick={() => onChange(value.filter((_, j) => j !== i))}
+              style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: "50%", border: "none", background: "rgba(0,0,0,0.7)", color: "#fff", cursor: "pointer", fontSize: 13, lineHeight: 1 }}>×</button>
+          </div>
+        ))}
+      </div>
+      <input ref={inputRef} type="file" accept="image/*" style={{ display: "none" }}
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); e.target.value = ""; }} />
+      <button type="button" className="gold-btn" onClick={() => inputRef.current?.click()} disabled={uploading}
+        style={{ padding: "0.5rem 1rem", borderRadius: 10, cursor: "pointer" }}>
+        {uploading ? "Uploading..." : "+ Add photo"}
+      </button>
+      {err && <p style={{ color: "#ff6b6b", fontSize: 12, margin: "6px 0 0" }}>{err}</p>}
+    </div>
+  );
+}
+
 export default function AdminDirectoryListingsPage() {
   const { loading, error, isAdmin, setError } = useAdminGuard("/admin/directory-listings");
   const [listings, setListings] = useState<Listing[]>([]);
@@ -88,7 +138,7 @@ export default function AdminDirectoryListingsPage() {
     try {
       const supabase = getSupabaseClient();
       const { data, error: e } = await (supabase.from("directory_listings") as any)
-        .select("id,slug,name,category,city,state,bio,website,phone,hours,image_url,is_featured,is_verified")
+        .select("id,slug,name,category,city,state,bio,website,phone,hours,gallery,image_url,is_featured,is_verified")
         .order("name", { ascending: true });
       if (e) throw e;
       setListings(data || []);
@@ -114,6 +164,7 @@ export default function AdminDirectoryListingsPage() {
         website: editing.website || null,
         phone: editing.phone || null,
         hours: editing.hours || null,
+        gallery: editing.gallery || null,
         image_url: editing.image_url || null,
         is_featured: !!editing.is_featured,
         is_verified: !!editing.is_verified,
@@ -233,6 +284,14 @@ export default function AdminDirectoryListingsPage() {
 
             <label style={labelStyle}>Hours</label>
             <input style={inputStyle} value={editing.hours || ""} onChange={(e) => setEditing({ ...editing, hours: e.target.value })} placeholder="Tue–Thu 11am–7pm · Fri 12–8pm · Closed Sun/Mon" />
+
+            <label style={labelStyle}>Photo gallery</label>
+            <div style={{ marginTop: 4 }}>
+              <GalleryUploader
+                value={(() => { try { return editing.gallery ? JSON.parse(editing.gallery) : []; } catch { return []; } })()}
+                onChange={(urls) => setEditing({ ...editing, gallery: JSON.stringify(urls) })}
+              />
+            </div>
 
             <div style={{ display: "flex", gap: 20, marginTop: "1.25rem", flexWrap: "wrap" }}>
               <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer" }}>
