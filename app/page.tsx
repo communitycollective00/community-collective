@@ -214,6 +214,7 @@ export default function HomePage() {
   return (
     <main className="premium-page homepage-main" style={{ paddingTop: "92px", position: "relative" }}>
       {heroBg && <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", minHeight: "100vh", zIndex: 0, backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundRepeat: "no-repeat", backgroundAttachment: "local", pointerEvents: "none" }} />}
+      {heroBg && <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", minHeight: "100vh", zIndex: 0, background: "linear-gradient(to bottom, rgba(12,11,8,0.45) 0%, rgba(12,11,8,0.65) 55%, rgba(12,11,8,0.92) 100%)", pointerEvents: "none" }} />}
       <section className="homepage-hero">
         <div className="homepage-hero-grid" />
         <div className="homepage-hero-glow" />
