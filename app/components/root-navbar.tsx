@@ -141,6 +141,8 @@ export default function RootNavBar() {
           <Link href="/voices">Voices</Link>
           <Link href="/opportunities">Opportunities</Link>
           <Link href="/directory">Directory</Link>
+          <Link href="/sports">Sports</Link>
+          <Link href="/sound-visuals">Sound &amp; Visuals</Link>
 
           {isAuthed ? (
             <>
@@ -174,6 +176,8 @@ export default function RootNavBar() {
         <Link href="/voices">Voices</Link>
         <Link href="/opportunities">Opportunities</Link>
         <Link href="/directory">Directory</Link>
+        <Link href="/sports">Sports</Link>
+        <Link href="/sound-visuals">Sound &amp; Visuals</Link>
         <Link href="/recommend">Spotlight</Link>
         {isAuthed ? (
           <>
