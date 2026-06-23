@@ -5192,7 +5192,9 @@ select {
   width: 120px;
   height: 120px;
   border-radius: 10px;
-  object-fit: cover;
+  object-fit: contain;
+  background: #0c0b08;
+  padding: 8px;
   border: 0.5px solid rgba(201,168,76,0.45);
   flex-shrink: 0;
 }
