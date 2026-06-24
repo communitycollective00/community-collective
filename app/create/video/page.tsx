@@ -171,12 +171,10 @@ export default function CreateVideoPage() {
             )}
 
             <div className="secondary-url">
-              <button type="button" className="link-btn" onClick={() => setShowUrlInput((s) => !s)}>
-                or paste a video link
-              </button>
+              <p className="form-hint" style={{ margin: "0.5rem 0 0.25rem", color: "rgba(201,168,76,0.85)", fontSize: "0.7rem", letterSpacing: "0.16em", textTransform: "uppercase" }}>or paste a video link</p>
             </div>
 
-            {showUrlInput && (
+            {true && (
               <div style={{ marginTop: 8 }}>
                 <input
                   id="video-url"
