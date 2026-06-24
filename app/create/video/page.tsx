@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import VideoEmbed from "../../components/video-embed";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseClient } from "../../../lib/supabase";
@@ -184,6 +185,11 @@ export default function CreateVideoPage() {
                   onChange={(e) => setMediaUrl(e.target.value)}
                   placeholder="https://example.com/video.mp4"
                 />
+                {mediaUrl.trim() && (
+                  <div style={{ marginTop: 12 }}>
+                    <VideoEmbed url={mediaUrl.trim()} />
+                  </div>
+                )}
               </div>
             )}
 
