@@ -1,7 +1,7 @@
 "use client";
 import { getCachedBg } from "../../lib/background-cache";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { getSupabaseClient } from "../../lib/supabase";
 import OpportunityCard from "../components/opportunity-card";
 import { LoadingState, EmptyState } from "../components/state-components";
@@ -18,18 +18,18 @@ type Opportunity = {
   featured: boolean;
 };
 
-const opportunitySections = [
-  { icon: "🎓", title: "Mentorship & Apprenticeships", copy: "Guided pathways that build skill, confidence, and real work experience with trusted people." },
-  { icon: "🤝", title: "Collaborations & Community Projects", copy: "Local teams, creative work, and projects that connect people with shared purpose." },
-  { icon: "💼", title: "Jobs, Grants & Support", copy: "Opportunities that move communities forward, not just listings that chase clicks." },
-];
-
-const opportunityTypes = [
-  { icon: "🛠️", title: "Local work", copy: "Service, trades, and community-focused work where access creates real movement." },
-  { icon: "📚", title: "Creative opportunity", copy: "Projects for storytellers, culture builders, and people making work with meaning." },
-  { icon: "🌐", title: "Community opportunity", copy: "Programs, events, and collaborations that strengthen neighborhood infrastructure." },
-  { icon: "🔗", title: "Pathway access", copy: "Access to networks, mentorship, and openings that change trajectories over time." },
-];
+// Display metadata for known categories. Unknown categories still render
+// with a sensible fallback, so new categories never break the grid.
+const CATEGORY_META: Record<string, { icon: string; blurb: string }> = {
+  "Rental Assistance": { icon: "\u{1F3E0}", blurb: "Help paying rent" },
+  "Utility Assistance": { icon: "\u{1F4A1}", blurb: "Energy & utility bills" },
+  "First-Time Homebuyer": { icon: "\u{1F511}", blurb: "Buy your first home" },
+  "Housing Counseling": { icon: "\u{1F9ED}", blurb: "Free expert guidance" },
+  "Unions & Building Trades": { icon: "\u{1F6E0}\uFE0F", blurb: "Join a trade" },
+  "Apprenticeships": { icon: "\u{1F4D0}", blurb: "Earn while you learn" },
+  "Land Banks": { icon: "\u{1F3DA}\uFE0F", blurb: "Affordable property" },
+  "Start a Business": { icon: "\u{1F4BC}", blurb: "Form your LLC" },
+};
 
 export default function OpportunitiesPage() {
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -37,6 +37,7 @@ export default function OpportunitiesPage() {
   const [category, setCategory] = useState("all");
   const [loading, setLoading] = useState(true);
   const [pageBg, setPageBg] = useState<string>(() => getCachedBg("opportunities"));
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const loadAll = async () => {
@@ -70,6 +71,14 @@ export default function OpportunitiesPage() {
     [opportunities]
   );
 
+  const counts = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const o of opportunities) {
+      if (o.category) m[o.category] = (m[o.category] ?? 0) + 1;
+    }
+    return m;
+  }, [opportunities]);
+
   const filtered = useMemo(() => {
     return opportunities.filter((opp) => {
       const text = search.toLowerCase();
@@ -82,6 +91,12 @@ export default function OpportunitiesPage() {
       return matchesSearch && matchesCategory;
     });
   }, [opportunities, search, category]);
+
+  const selectCategory = (cat: string) => {
+    setCategory(cat);
+    // Let state settle, then bring results into view.
+    setTimeout(() => resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  };
 
   const bgStyle = pageBg
     ? { backgroundImage: `url(${pageBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundAttachment: "fixed" }
@@ -99,62 +114,89 @@ export default function OpportunitiesPage() {
 
   return (
     <main className="premium-page" style={{ paddingTop: "92px", ...bgStyle }}>
+      {/* scoped styles for the category grid - self-contained, won't touch globals */}
+      <style>{`
+        .cc-cat-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+          gap: 0.85rem;
+          margin: 1.75rem 0 2.25rem;
+        }
+        .cc-cat-tile {
+          text-align: left;
+          cursor: pointer;
+          background: rgba(15,12,8,0.72);
+          border: 1px solid rgba(201,168,76,0.16);
+          border-radius: 14px;
+          padding: 1.05rem 1.1rem;
+          color: #ece9e2;
+          display: flex;
+          flex-direction: column;
+          gap: 0.35rem;
+          transition: border-color .2s ease, transform .2s ease, background .2s ease;
+        }
+        .cc-cat-tile:hover { border-color: rgba(201,168,76,0.5); transform: translateY(-3px); background: rgba(20,17,11,0.85); }
+        .cc-cat-tile:focus-visible { outline: 2px solid #e7c97a; outline-offset: 2px; }
+        .cc-cat-tile[data-active="true"] { border-color: #c9a84c; background: rgba(28,22,10,0.9); }
+        .cc-cat-icon { font-size: 1.4rem; }
+        .cc-cat-name { font-weight: 700; font-size: 1.02rem; color: #fff; line-height: 1.2; }
+        .cc-cat-blurb { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+        .cc-cat-count { font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: #c9a84c; margin-top: 0.15rem; }
+      `}</style>
+
       <section className="premium-card" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem" }}>
-        <div style={{ marginBottom: "2rem" }}>
+        <div style={{ marginBottom: "1.25rem" }}>
           <p className="homepage-kicker">Opportunities</p>
           <h1 className="homepage-section-title">Access creates opportunity. Opportunity changes trajectories.</h1>
           <p className="homepage-section-text">
-            The action layer of Culture Collective is where trust meets movement: mentorship, work, creative projects, and local openings that connect people to the opportunity network.
+            The action layer of Culture Collective: verified programs, applications, and entry points across housing,
+            utilities, homeownership, the trades, and starting your own thing. Pick a path to jump in.
           </p>
         </div>
 
-        <div className="homepage-section-grid homepage-section-grid--split" style={{ gap: "2rem", marginBottom: "2rem" }}>
-          <div>
-            <p className="homepage-feature-title">What exists here</p>
-            <p className="homepage-feature-copy">
-              This isn't a generic job board. It is a place for people seeking mentorship, apprenticeships, collaborations, grants, and work that comes from community access.
-            </p>
-            <div className="homepage-grid-3" style={{ gap: "1rem", marginTop: "1.5rem" }}>
-              {opportunitySections.map((section) => (
-                <div key={section.title} className="homepage-feature-card">
-                  <div style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>{section.icon}</div>
-                  <p className="homepage-feature-title">{section.title}</p>
-                  <p className="homepage-feature-copy">{section.copy}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Clickable category navigation - drives the filter below */}
+        <div className="cc-cat-grid" role="list" aria-label="Browse by category">
+          <button
+            className="cc-cat-tile"
+            data-active={category === "all"}
+            onClick={() => selectCategory("all")}
+            role="listitem"
+          >
+            <span className="cc-cat-icon">{"\u2726"}</span>
+            <span className="cc-cat-name">All paths</span>
+            <span className="cc-cat-blurb">Everything in one place</span>
+            <span className="cc-cat-count">{opportunities.length} listed</span>
+          </button>
 
-          <div className="homepage-section homepage-section--dark" style={{ padding: "1.75rem", borderRadius: "18px" }}>
-            <p className="homepage-kicker">Why this matters</p>
-            <p className="homepage-section-text">
-              Culture Collective surfaces opportunities that come from trusted relationships, verified voices, and real local momentum — not anonymous listings and algorithm-driven noise.
-            </p>
-            <div style={{ display: "grid", gap: "0.85rem", marginTop: "1rem" }}>
-              <p className="homepage-feature-copy">• Opportunity is created when access is real, visible, and shared intentionally.</p>
-              <p className="homepage-feature-copy">• Every opening here is part of a network built around people, mentorship, and community trajectory.</p>
-              <p className="homepage-feature-copy">• You can connect to jobs, creative work, funding pathways, and community-led projects in one trusted place.</p>
-            </div>
-          </div>
+          {categories
+            .filter((c) => c !== "all")
+            .map((cat) => {
+              const meta = CATEGORY_META[cat] ?? { icon: "\u2022", blurb: "" };
+              return (
+                <button
+                  key={cat}
+                  className="cc-cat-tile"
+                  data-active={category === cat}
+                  onClick={() => selectCategory(cat)}
+                  role="listitem"
+                >
+                  <span className="cc-cat-icon">{meta.icon}</span>
+                  <span className="cc-cat-name">{cat}</span>
+                  {meta.blurb && <span className="cc-cat-blurb">{meta.blurb}</span>}
+                  <span className="cc-cat-count">{counts[cat] ?? 0} {(counts[cat] ?? 0) === 1 ? "listing" : "listings"}</span>
+                </button>
+              );
+            })}
         </div>
 
-        <div className="homepage-grid-3" style={{ gap: "1rem", marginBottom: "2rem" }}>
-          {opportunityTypes.map((type) => (
-            <div key={type.title} className="homepage-feature-card">
-              <div style={{ fontSize: "1.5rem", marginBottom: "0.75rem" }}>{type.icon}</div>
-              <p className="homepage-feature-title">{type.title}</p>
-              <p className="homepage-feature-copy">{type.copy}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="page-search" style={{ marginBottom: "2rem" }}>
+        {/* Search + redundant select (keyboard / accessibility) */}
+        <div className="page-search" style={{ marginBottom: "1.5rem" }} ref={resultsRef}>
           <div className="page-search-row">
             <input
               className="page-input"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search opportunities by title, location, category..."
+              placeholder="Search by title, organization, location, category..."
             />
           </div>
           <div className="page-search-row">
@@ -168,9 +210,9 @@ export default function OpportunitiesPage() {
 
         {filtered.length === 0 ? (
           <EmptyState
-            title="No opportunities found"
-            message="Try adjusting your filters or check back soon for new openings that match your path."
-            icon="🚀"
+            title="Nothing here yet"
+            message="Try another category or clear your search - new paths are added regularly."
+            icon={"\u{1F680}"}
           />
         ) : (
           <div className="page-grid">

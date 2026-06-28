@@ -12,6 +12,10 @@ type OpportunityCardProps = {
   featured?: boolean;
 };
 
+// Categories that are informational ("open this") rather than something you
+// formally apply to. Adjust this list as you add real job/mentorship posts.
+const OPEN_CATEGORIES = ["Housing Counseling", "Start a Business", "Unions & Building Trades"];
+
 export default function OpportunityCard({
   id,
   title,
@@ -25,6 +29,7 @@ export default function OpportunityCard({
 }: OpportunityCardProps) {
   const displayTitle = title || "Untitled Opportunity";
   const displayOrg = organization || "Organization";
+  const actionLabel = category && OPEN_CATEGORIES.includes(category) ? "Open" : "Apply";
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "";
@@ -69,34 +74,50 @@ export default function OpportunityCard({
       )}
       <div style={{ paddingTop: featured ? "0.5rem" : 0 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: "1rem" }}>
-          <div style={{ flex: 1 }}>
-            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.1rem" }}>{displayTitle}</h3>
-            <p className="muted" style={{ margin: "0 0 0.75rem 0", fontSize: "0.95rem" }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {category && (
+              <span
+                style={{
+                  display: "inline-block",
+                  fontSize: "0.68rem",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  color: "#c9a84c",
+                  border: "0.5px solid rgba(201,168,76,0.45)",
+                  borderRadius: "999px",
+                  padding: "0.18rem 0.6rem",
+                  marginBottom: "0.55rem",
+                }}
+              >
+                {category}
+              </span>
+            )}
+            <h3 style={{ margin: "0 0 0.25rem 0", fontSize: "1.12rem", lineHeight: 1.25 }}>{displayTitle}</h3>
+            <p className="muted" style={{ margin: "0 0 0.7rem 0", fontSize: "0.9rem" }}>
               {displayOrg}
-              {category && ` • ${category}`}
             </p>
             {description && (
-              <p className="muted" style={{ margin: "0 0 0.75rem 0", lineHeight: "1.45" }}>
-                {description.slice(0, 120)}
-                {description.length > 120 ? "..." : ""}
+              <p className="muted" style={{ margin: "0 0 0.75rem 0", lineHeight: "1.5" }}>
+                {description.slice(0, 150)}
+                {description.length > 150 ? "..." : ""}
               </p>
             )}
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
               {location && (
                 <p className="muted" style={{ margin: 0, fontSize: "0.9rem" }}>
-                  📍 {location}
+                  {"\u{1F4CD}"} {location}
                 </p>
               )}
               {deadline && (
                 <p className="muted" style={{ margin: 0, fontSize: "0.9rem", color: isExpired ? "var(--red)" : "inherit" }}>
-                  {isExpired ? "❌ Expired" : `📅 ${formatDate(deadline)}`}
+                  {isExpired ? "\u274C Expired" : `\u{1F4C5} ${formatDate(deadline)}`}
                 </p>
               )}
             </div>
           </div>
           {apply_link && !isExpired && (
             <button onClick={handleApply} className="gold-btn" style={{ fontSize: "0.9rem", padding: "0.6rem 1rem", whiteSpace: "nowrap" }}>
-              Apply
+              {actionLabel}
             </button>
           )}
         </div>
