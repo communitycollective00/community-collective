@@ -14,6 +14,12 @@ type AdminStats = {
 
 const adminSections = [
   {
+    title: "🎬 Homepage Featured",
+    description: "Set the video/photos in the top-right homepage feature box. Add, reorder, toggle on/off.",
+    href: "/admin/featured",
+    highlight: true,
+  },
+  {
     title: "🔑 Control Room",
     description: "Fill homepage card slots, set page backgrounds, manage featured content.",
     href: "/admin/control-room",
