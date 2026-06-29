@@ -16,9 +16,10 @@ type Opportunity = {
   featured: boolean;
 };
 
-// Homepage section that pulls live rows from the `opportunities` table.
+// Homepage spotlight. Shows ONLY rows you've flagged featured = true,
+// so the homepage spots are hand-curated. Flag/unflag in Supabase to
+// pick what appears here. Hides itself if nothing is featured.
 // Drop <OpportunitiesHomeSection /> anywhere in app/page.tsx.
-// Shows featured first, then newest; hides itself if there's nothing to show.
 export default function OpportunitiesHomeSection() {
   const [items, setItems] = useState<Opportunity[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +30,7 @@ export default function OpportunitiesHomeSection() {
         const supabase = getSupabaseClient();
         const res = await (supabase.from("opportunities") as any)
           .select("id,title,organization,description,location,category,apply_link,deadline,featured")
-          .order("featured", { ascending: false })
+          .eq("featured", true)
           .order("created_at", { ascending: false })
           .limit(6);
         if (!res.error) setItems(res.data ?? []);
