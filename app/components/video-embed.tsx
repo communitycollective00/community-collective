@@ -116,7 +116,7 @@ export default function VideoEmbed({ url, height = 320, rounded = true }: Props)
   if (mp4) {
     return (
       <div style={{ ...wrapStyle, height }}>
-        <video controls preload="metadata" style={{ width: "100%", height, objectFit: "cover", display: "block", backgroundColor: "#000" }}>
+        <video controls preload="metadata" style={{ width: "100%", height, objectFit: "contain", display: "block", backgroundColor: "#000" }}>
           <source src={url} />
         </video>
       </div>

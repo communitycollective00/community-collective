@@ -4981,20 +4981,23 @@ select {
   position: relative;
   z-index: 2;
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
   min-height: 480px;
 }
 .homepage-featured-card {
   position: relative;
   width: 100%;
+  max-width: 340px;
+  margin: 0 auto;
   border: 1px solid rgba(201,168,76,0.18);
-  background: rgba(10,9,8,0.75);
+  background: rgba(10,9,8,0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
   display: flex;
   align-items: flex-end;
-  border-radius: 2px;
+  border-radius: 10px;
   transition: border-color 0.25s ease, transform 0.22s ease;
 }
 .homepage-featured-card:hover { border-color: rgba(201,168,76,0.45); transform: translateY(-3px); }

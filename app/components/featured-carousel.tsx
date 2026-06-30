@@ -10,6 +10,8 @@ type Item = {
   caption: string | null;
 };
 
+const REEL_H = 380;
+
 export default function FeaturedCarousel({ items, title }: { items: Item[]; title?: string | null }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
@@ -30,7 +32,7 @@ export default function FeaturedCarousel({ items, title }: { items: Item[]; titl
   }
 
   return (
-    <div className="homepage-featured-card" style={{ display: "flex", flexDirection: "column", padding: 0, overflow: "hidden" }}>
+    <div className="homepage-featured-card" style={{ display: "flex", flexDirection: "column", padding: 0, overflow: "hidden", alignItems: "stretch" }}>
       <div
         ref={trackRef}
         onScroll={onScroll}
@@ -43,12 +45,16 @@ export default function FeaturedCarousel({ items, title }: { items: Item[]; titl
         }}
       >
         {items.map((it) => (
-          <div key={it.id} style={{ flex: "0 0 100%", minWidth: "100%", scrollSnapAlign: "start" }}>
-            {it.media_type === "image" ? (
-              <img src={it.media_url} alt={it.caption || ""} style={{ width: "100%", height: 240, objectFit: "cover", display: "block", background: "#000" }} />
-            ) : (
-              <VideoEmbed url={it.media_url} height={240} rounded={false} />
-            )}
+          <div key={it.id} style={{ flex: "0 0 100%", minWidth: "100%", scrollSnapAlign: "start", display: "flex", flexDirection: "column" }}>
+            <div style={{ width: "100%", height: REEL_H, background: "#000", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+              {it.media_type === "image" ? (
+                <img src={it.media_url} alt={it.caption || ""} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+              ) : (
+                <div style={{ width: "100%" }}>
+                  <VideoEmbed url={it.media_url} height={REEL_H} rounded={false} />
+                </div>
+              )}
+            </div>
             {it.caption && (
               <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.75)", lineHeight: 1.5, padding: "0.6rem 0.9rem 0" }}>{it.caption}</p>
             )}
