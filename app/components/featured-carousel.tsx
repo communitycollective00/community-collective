@@ -46,12 +46,12 @@ export default function FeaturedCarousel({ items, title }: { items: Item[]; titl
       >
         {items.map((it) => (
           <div key={it.id} style={{ flex: "0 0 100%", minWidth: "100%", scrollSnapAlign: "start", display: "flex", flexDirection: "column" }}>
-            <div style={{ width: "100%", height: REEL_H, background: "#000", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+            <div style={{ width: "100%", aspectRatio: "16 / 9", background: "#000", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               {it.media_type === "image" ? (
                 <img src={it.media_url} alt={it.caption || ""} style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
               ) : (
                 <div style={{ width: "100%" }}>
-                  <VideoEmbed url={it.media_url} height={REEL_H} rounded={false} />
+                  <VideoEmbed url={it.media_url} height={394} rounded={false} />
                 </div>
               )}
             </div>
