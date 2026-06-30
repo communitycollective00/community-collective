@@ -10,7 +10,7 @@ type Item = {
   caption: string | null;
 };
 
-const REEL_H = 380;
+const REEL_H = 300;
 
 export default function FeaturedCarousel({ items, title }: { items: Item[]; title?: string | null }) {
   const trackRef = useRef<HTMLDivElement>(null);

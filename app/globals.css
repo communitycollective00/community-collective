@@ -4988,8 +4988,7 @@ select {
 .homepage-featured-card {
   position: relative;
   width: 100%;
-  max-width: 340px;
-  margin: 0 auto;
+  margin: 0;
   border: 1px solid rgba(201,168,76,0.18);
   background: rgba(10,9,8,0.85);
   backdrop-filter: blur(12px);
