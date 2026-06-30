@@ -1,6 +1,7 @@
 "use client";
 import { getCachedBg } from "../lib/background-cache";
 import VideoEmbed from "./components/video-embed";
+import FeaturedCarousel from "./components/featured-carousel";
 import PostCard from "./components/post-card";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
@@ -116,6 +117,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [featuredPost, setFeaturedPost] = useState<Post | null>(null);
   const [featuredSlot, setFeaturedSlot] = useState<any | null>(null);
+  const [featuredItems, setFeaturedItems] = useState<any[]>([]);
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -128,16 +130,21 @@ export default function HomePage() {
     const supabase = getSupabaseClient();
     try {
       // 1. Background + slots in parallel — isolated so they always render
-      const [slotsRes, bgRes, featRes] = await Promise.all([
+      const [slotsRes, bgRes, featRes, itemsRes] = await Promise.all([
         (supabase.from("homepage_slots") as any).select("*").order("slot_index"),
         (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "home").limit(1),
         (supabase.from("featured_slot") as any).select("*").eq("id", "home").limit(1),
+        (supabase.from("featured_items") as any).select("*").eq("slot_id", "home").order("sort_order"),
       ]);
 
       setSlots(slotsRes.data || []);
 
       const featRow = Array.isArray(featRes.data) ? featRes.data[0] : featRes.data;
       if (featRow?.is_active && featRow?.video_url) setFeaturedSlot(featRow);
+      if (featRow?.is_active) {
+        const its = (itemsRes.data || []);
+        if (its.length) { setFeaturedItems(its); setFeaturedSlot(featRow); }
+      }
 
       const bgRow = Array.isArray(bgRes.data) ? bgRes.data[0] : bgRes.data;
       if (bgRow?.image_url) setHeroBg(bgRow.image_url);
@@ -242,16 +249,8 @@ export default function HomePage() {
           </div>
         </div>
         <div className="homepage-featured-slot">
-          {featuredSlot ? (
-            <div className="homepage-featured-card" style={{ display: "flex", flexDirection: "column" }}>
-              <VideoEmbed url={featuredSlot.video_url} height={220} />
-              {featuredSlot.title && (
-                <p style={{ fontSize: "1.05rem", fontWeight: 800, color: "#fff", lineHeight: 1.25, margin: "0.25rem 0 0.4rem" }}>{featuredSlot.title}</p>
-              )}
-              {featuredSlot.caption && (
-                <p style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.7)", lineHeight: 1.5 }}>{featuredSlot.caption}</p>
-              )}
-            </div>
+          {featuredItems.length > 0 ? (
+            <FeaturedCarousel items={featuredItems} title={featuredSlot?.title} />
           ) : featuredPost ? (
             <Link href={`/posts/${featuredPost.id}`} className="homepage-featured-card" style={{ textDecoration: "none" }}>
               {(featuredPost.interview_cover_url || featuredPost.image_url) && (
