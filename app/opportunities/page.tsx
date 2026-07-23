@@ -52,6 +52,12 @@ export default function OpportunitiesPage() {
   const resultsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    const incoming = new URLSearchParams(window.location.search).get("cat");
+    if (incoming) setCategory(incoming);
+  }, []);
+
+  useEffect(() => {
     const loadAll = async () => {
       try {
         const supabase = getSupabaseClient();

@@ -3,7 +3,6 @@ import { getCachedBg } from "../lib/background-cache";
 import VideoEmbed from "./components/video-embed";
 import FeaturedCarousel from "./components/featured-carousel";
 
-const oppSlug = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 import PostCard from "./components/post-card";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
@@ -370,7 +369,7 @@ export default function HomePage() {
                     city: o.location || "",
                     description: o.description || "",
                     image_url: "",
-                    link_url: o.category ? `/opportunities#${oppSlug(o.category)}` : "/opportunities",
+                    link_url: o.category ? `/opportunities?cat=${encodeURIComponent(o.category)}` : "/opportunities",
                     is_active: true,
                   }}
                 />
