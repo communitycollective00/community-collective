@@ -2,6 +2,8 @@
 import { getCachedBg } from "../lib/background-cache";
 import VideoEmbed from "./components/video-embed";
 import FeaturedCarousel from "./components/featured-carousel";
+
+const oppSlug = (v: string) => v.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 import PostCard from "./components/post-card";
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
@@ -118,6 +120,7 @@ export default function HomePage() {
   const [featuredPost, setFeaturedPost] = useState<Post | null>(null);
   const [featuredSlot, setFeaturedSlot] = useState<any | null>(null);
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
+  const [oppRows, setOppRows] = useState<any[]>([]);
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -130,12 +133,17 @@ export default function HomePage() {
     const supabase = getSupabaseClient();
     try {
       // 1. Background + slots in parallel — isolated so they always render
-      const [slotsRes, bgRes, featRes, itemsRes] = await Promise.all([
+      const [slotsRes, bgRes, featRes, itemsRes, oppRes] = await Promise.all([
         (supabase.from("homepage_slots") as any).select("*").order("slot_index"),
         (supabase.from("page_backgrounds") as any).select("*").eq("page_key", "home").limit(1),
         (supabase.from("featured_slot") as any).select("*").eq("id", "home").limit(1),
         (supabase.from("featured_items") as any).select("*").eq("slot_id", "home").order("sort_order"),
+        (supabase.from("opportunities") as any)
+          .select("id,title,organization,description,location,category,apply_link,featured")
+          .order("featured", { ascending: false })
+          .limit(3),
       ]);
+      setOppRows(oppRes?.data || []);
 
       setSlots(slotsRes.data || []);
 
@@ -349,7 +357,25 @@ export default function HomePage() {
           <Link href="/opportunities" className="gold-btn hp-section-cta">SEE OPPORTUNITIES →</Link>
         </div>
         <div className="hp-grid-3">
-          {getSlots(slots, "Opportunities Today").map((s, i) => <StoryCard key={i} slot={s} />)}
+          {oppRows.length > 0
+            ? oppRows.map((o, i) => (
+                <StoryCard
+                  key={o.id || i}
+                  slot={{
+                    id: o.id,
+                    section: "Opportunities Today",
+                    slot_index: i,
+                    title: o.title,
+                    role: o.organization || "",
+                    city: o.location || "",
+                    description: o.description || "",
+                    image_url: "",
+                    link_url: o.category ? `/opportunities#${oppSlug(o.category)}` : "/opportunities",
+                    is_active: true,
+                  }}
+                />
+              ))
+            : getSlots(slots, "Opportunities Today").map((s, i) => <StoryCard key={i} slot={s} />)}
         </div>
       </section>
 
