@@ -238,12 +238,23 @@ main.homepage-main > .homepage-hero { min-height: min(760px, calc(100svh - 180px
 }
 @media (prefers-reduced-motion: reduce) { .cc-names-list li { animation: none; } }
 
-/* the homepage photo fills the first screen only (it used to stretch over the whole page and blur) */
+/* the homepage photo stays pinned behind the whole page while you scroll */
 main.homepage-main > div[style*="background-image"] {
-  height: calc(100svh + 140px) !important; min-height: 640px !important;
-  background-position: center center !important;
+  position: fixed !important; inset: 0 !important; width: 100% !important;
+  height: 100vh !important; min-height: 0 !important;
+  background-position: center center !important; background-attachment: scroll !important;
 }
 main.homepage-main > div[style*="0.45) 0%"] {
-  height: calc(100svh + 140px) !important; min-height: 640px !important;
-  background: linear-gradient(to bottom, rgba(12,11,8,.15) 0%, rgba(12,11,8,.25) 60%, rgba(10,9,7,1) 100%) !important;
+  position: fixed !important; inset: 0 !important; width: 100% !important;
+  height: 100vh !important; min-height: 0 !important;
+  background: linear-gradient(to bottom, rgba(12,11,8,.2) 0%, rgba(12,11,8,.38) 55%, rgba(10,9,7,.6) 100%) !important;
 }
+/* sections sit on smoked glass so the photo and grid show through all the way down */
+.cc-band { background: rgba(10,9,7,.74); }
+.cc-band-alt { background: rgba(16,13,10,.78); }
+.cc-names-band { background: rgba(5,4,4,.86); }
+.homepage-main .hp-section, .homepage-main .media-feed-section, .homepage-main .hp-join-section, .homepage-main .cc-onnow {
+  background: rgba(10,9,7,.66);
+}
+.homepage-main .hp-section { max-width: none !important; }
+.homepage-main .hp-section > * { max-width: 1200px; margin-left: auto; margin-right: auto; }

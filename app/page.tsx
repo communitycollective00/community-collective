@@ -184,7 +184,7 @@ const NEEDS = [
 ];
 
 function NeedSection({ counts }: { counts: { opps: number | null; stories: number | null } }) {
-  const fmt = (n: number | null) => (n === null ? "—" : n.toLocaleString());
+  const fmt = (n: number | null) => (n === null ? "—" : n === 0 ? "New" : n.toLocaleString());
   return (
     <section id="need" className="cc-band cc-band-alt" aria-labelledby="need-title">
       <div className="cc-wrap">
