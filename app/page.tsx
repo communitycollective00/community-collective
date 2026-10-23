@@ -2,7 +2,8 @@
 import { getCachedBg } from "../lib/background-cache";
 import VideoEmbed from "./components/video-embed";
 import FeaturedCarousel from "./components/featured-carousel";
-import LightGrid from "./components/light-grid";
+import LightGrid, { DEFAULT_EFFECTS, type GridEffects } from "./components/light-grid";
+import { LIGHT_GRID_NAMES } from "../lib/light-grid-content";
 import "./home-hero.css";
 
 import PostCard from "./components/post-card";
@@ -163,6 +164,197 @@ function OnNowRow({ slots, posts }: { slots: Slot[]; posts: Post[] }) {
   );
 }
 
+
+const ICONS: Record<string, JSX.Element> = {
+  work: <path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18" />,
+  legal: <path d="M12 3v18M5 21h14M6 7h12M4 14l2-7 2 7a2 2 0 0 1-4 0zM16 14l2-7 2 7a2 2 0 0 1-4 0z" />,
+  trade: <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z" />,
+  home: <path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
+  money: <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .8-3 2s1.3 1.7 3 2 3 .8 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5M12 6v12" />,
+  mic: <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM19 11a7 7 0 0 1-14 0M12 18v3" />,
+};
+
+const NEEDS = [
+  { icon: "work", title: "Find work", text: "Paid apprenticeships and openings near you", href: "/opportunities?cat=Apprenticeships" },
+  { icon: "legal", title: "Legal help", text: "Records, rights, housing and free clinics", href: "/directory" },
+  { icon: "trade", title: "Learn a trade", text: "Unions and building trades that are hiring", href: "/opportunities?cat=Unions%20%26%20Building%20Trades" },
+  { icon: "home", title: "Housing & bills", text: "Rent, utilities and first-home help", href: "/opportunities?cat=Rental%20Assistance" },
+  { icon: "money", title: "Start a business", text: "Form your LLC and find your first funding", href: "/opportunities?cat=Start%20a%20Business" },
+  { icon: "mic", title: "Get featured", text: "Tell your story. We'll document it.", href: "/apply", gold: true },
+];
+
+function NeedSection({ counts }: { counts: { opps: number | null; stories: number | null } }) {
+  const fmt = (n: number | null) => (n === null ? "—" : n.toLocaleString());
+  return (
+    <section id="need" className="cc-band cc-band-alt" aria-labelledby="need-title">
+      <div className="cc-wrap">
+        <div className="cc-sec-head">
+          <div>
+            <p className="cc-eyebrow">Start here</p>
+            <h2 id="need-title" className="cc-h2">What do you need today?</h2>
+          </div>
+          <p className="cc-sec-note">Every door here is run by or checked with people from the community. Free to use.</p>
+        </div>
+        <div className="cc-need-grid">
+          {NEEDS.map((n) => (
+            <Link key={n.title} href={n.href} className={"cc-need" + (n.gold ? " is-gold" : "")}>
+              <span className="cc-need-ico" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{ICONS[n.icon]}</svg>
+              </span>
+              <b>{n.title}</b>
+              <span>{n.text}</span>
+            </Link>
+          ))}
+        </div>
+        <div className="cc-counts">
+          <p><span className="cc-count-num">{fmt(counts.opps)}</span><span className="cc-count-lbl">Open opportunities</span></p>
+          <p><span className="cc-count-num">{fmt(counts.stories)}</span><span className="cc-count-lbl">Stories documented</span></p>
+          <p><span className="cc-count-num">2</span><span className="cc-count-lbl">Cities, more coming</span></p>
+          <p><span className="cc-count-num is-green">Free</span><span className="cc-count-lbl">Always, for the people</span></p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SlotLink({ slot, className, children }: { slot: { link_url: string }; className: string; children: React.ReactNode }) {
+  const href = slot.link_url || "";
+  if (!href) return <div className={className}>{children}</div>;
+  if (/^https?:\/\//i.test(href)) return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+  return <Link className={className} href={href}>{children}</Link>;
+}
+
+// "This Week": filled from Control Room > This Week. Hidden until you add something.
+function ThisWeek({ slots }: { slots: Slot[] }) {
+  const items = slots.filter((s) => s.section === "This Week" && s.is_active && s.title).sort((a, b) => a.slot_index - b.slot_index);
+  if (!items.length) return null;
+  return (
+    <section className="cc-band" aria-labelledby="week-title">
+      <div className="cc-wrap">
+        <div className="cc-sec-head">
+          <div><p className="cc-eyebrow">This week</p><h2 id="week-title" className="cc-h2">What's happening</h2></div>
+          <Link href="/opportunities" className="cc-sec-link">See everything →</Link>
+        </div>
+        <div className="cc-week-grid">
+          {items.map((s) => {
+            const [day, ...rest] = (s.description || "").trim().split(/\s+/);
+            return (
+              <SlotLink key={s.slot_index} slot={s} className="cc-evt">
+                <span className="cc-date"><small>{day || "SOON"}</small><strong>{rest.join(" ")}</strong></span>
+                <span className="cc-evt-body">
+                  {s.role && <span className="cc-evt-tag">{s.role}</span>}
+                  <b>{s.title}</b>
+                  {s.city && <span className="cc-evt-meta">{s.city}</span>}
+                </span>
+              </SlotLink>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// "Faces": Control Room > Faces, or your latest interviews until you set them.
+function Faces({ slots, posts }: { slots: Slot[]; posts: Post[] }) {
+  const set = slots.filter((s) => s.section === "Faces" && s.is_active && s.title).sort((a, b) => a.slot_index - b.slot_index);
+  const items = set.length
+    ? set.map((s) => ({ key: String(s.slot_index), href: s.link_url, img: s.image_url, quote: s.description, name: s.title, meta: [s.role, s.city].filter(Boolean).join(" · ") }))
+    : posts
+        .filter((p) => p.post_type === "interview" && (p.interview_cover_url || p.image_url))
+        .slice(0, 3)
+        .map((p) => ({ key: p.id, href: `/posts/${p.id}`, img: (p.interview_cover_url || p.image_url) as string, quote: p.interview_summary || "", name: p.interview_guest_name || p.title, meta: [p.interview_guest_title, p.interview_guest_organization].filter(Boolean).join(" · ") }));
+  if (!items.length) return null;
+  return (
+    <section className="cc-band cc-band-alt" aria-labelledby="faces-title">
+      <div className="cc-wrap">
+        <div className="cc-sec-head">
+          <div><p className="cc-eyebrow">Faces of the collective</p><h2 id="faces-title" className="cc-h2">They made it. Now they're reaching back.</h2></div>
+          <Link href="/voices" className="cc-sec-link">See every story →</Link>
+        </div>
+        <div className="cc-faces-grid">
+          {items.map((f) => (
+            <SlotLink key={f.key} slot={{ link_url: f.href }} className="cc-face">
+              <span className="cc-portrait" style={f.img ? { backgroundImage: `url(${f.img})` } : undefined}>
+                {f.quote && <span className="cc-quote">&ldquo;{f.quote}&rdquo;</span>}
+              </span>
+              <b>{f.name}</b>
+              {f.meta && <span className="cc-face-meta">{f.meta}</span>}
+            </SlotLink>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// "Culture Drop": Control Room > Culture Drop. Slot 1 = track of the week, slot 2 = photo of the week.
+function CultureDrop({ slots }: { slots: Slot[] }) {
+  const s = slots.filter((x) => x.section === "Culture Drop" && x.is_active);
+  const track = s.find((x) => x.slot_index === 0 && x.title);
+  const photo = s.find((x) => x.slot_index === 1 && x.image_url);
+  if (!track && !photo) return null;
+  return (
+    <section className="cc-band" aria-label="Culture drop">
+      <div className="cc-wrap cc-drop-grid">
+        {track && (
+          <div className="cc-drop-col">
+            <div><p className="cc-eyebrow">Culture drop</p><h2 className="cc-h2">Track of the week</h2></div>
+            <SlotLink slot={track} className="cc-track">
+              <span className="cc-track-art" style={track.image_url ? { backgroundImage: `url(${track.image_url})` } : undefined} />
+              <span className="cc-track-body">
+                <b>{track.title}</b>
+                <span>{[track.role, track.city].filter(Boolean).join(" · ")}</span>
+                <span className="cc-track-play">
+                  <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#0A0907" /></svg>
+                  Listen
+                </span>
+              </span>
+            </SlotLink>
+            {track.description && <p className="cc-sec-note">{track.description}</p>}
+          </div>
+        )}
+        {photo && (
+          <div className="cc-drop-col">
+            <div><p className="cc-eyebrow">From the lens</p><h2 className="cc-h2">Photo of the week</h2></div>
+            <SlotLink slot={photo} className="cc-photo">
+              <span className="cc-photo-img" style={{ backgroundImage: `url(${photo.image_url})` }} />
+              {(photo.title || photo.description) && <span className="cc-photo-cap"><b>{photo.title}</b>{photo.description && <span>{photo.description}</span>}</span>}
+            </SlotLink>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function SayTheirNames() {
+  const names = LIGHT_GRID_NAMES.slice(0, 6).map((n) => n.name);
+  return (
+    <section className="cc-names-band" aria-labelledby="names-title">
+      <div className="cc-wrap">
+        <div className="cc-names-copy">
+          <p className="cc-eyebrow">In memory</p>
+          <h2 id="names-title" className="cc-h2">Say their names.</h2>
+          <p className="cc-sec-note">We document the culture, including the lives it lost and the deaths that still have no answers.</p>
+        </div>
+        <ul className="cc-names-list">{names.map((n) => <li key={n}>{n}</li>)}</ul>
+        <Link href="/say-their-names" className="cc-names-btn">Enter →</Link>
+      </div>
+    </section>
+  );
+}
+
+function readEffects(slots: Slot[]): GridEffects {
+  const fx = slots.filter((s) => s.section === "Effects");
+  if (!fx.length) return DEFAULT_EFFECTS;
+  const on = (i: number) => { const r = fx.find((s) => s.slot_index === i); return r ? r.role !== "off" : true; };
+  const glitchRow = fx.find((s) => s.slot_index === 1);
+  const lines = (glitchRow?.description || "").split("\n").map((l) => l.trim().toUpperCase()).filter(Boolean);
+  const mode = fx.find((s) => s.slot_index === 4);
+  return { honeycomb: on(0), glitch: on(1), names: on(2), words: on(3), calm: mode ? mode.title !== "full" : true, lines };
+}
+
 function WideCard({ slot }: { slot: Slot }) {
   const inner = (
     <div className="hp-wide-card">
@@ -192,6 +384,7 @@ export default function HomePage() {
   const [featuredSlot, setFeaturedSlot] = useState<any | null>(null);
   const [featuredItems, setFeaturedItems] = useState<any[]>([]);
   const [oppRows, setOppRows] = useState<any[]>([]);
+  const [counts, setCounts] = useState<{ opps: number | null; stories: number | null }>({ opps: null, stories: null });
   const hasFetched = useRef(false);
 
   useEffect(() => {
@@ -215,6 +408,11 @@ export default function HomePage() {
           .limit(3),
       ]);
       setOppRows(oppRes?.data || []);
+      // live counts for the "Start here" band
+      Promise.all([
+        (supabase.from("opportunities") as any).select("id", { count: "exact", head: true }),
+        (supabase.from("posts") as any).select("id", { count: "exact", head: true }),
+      ]).then(([o, p]: any[]) => setCounts({ opps: o?.count ?? null, stories: p?.count ?? null })).catch(() => {});
 
       setSlots(slotsRes.data || []);
 
@@ -307,7 +505,8 @@ export default function HomePage() {
     <main className="premium-page homepage-main" style={{ paddingTop: "92px", position: "relative" }}>
       {heroBg && <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", minHeight: "100vh", zIndex: 0, backgroundImage: `url(${heroBg})`, backgroundSize: "cover", backgroundPosition: "center top", backgroundRepeat: "no-repeat", backgroundAttachment: "local", pointerEvents: "none" }} />}
       {heroBg && <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", minHeight: "100vh", zIndex: 0, background: "linear-gradient(to bottom, rgba(12,11,8,0.45) 0%, rgba(12,11,8,0.65) 55%, rgba(12,11,8,0.92) 100%)", pointerEvents: "none" }} />}
-      <LightGrid />
+      <div className="cc-golden" aria-hidden="true" />
+      <LightGrid effects={loading && !slots.length ? DEFAULT_EFFECTS : readEffects(slots)} />
       <section className="homepage-hero">
         <div className="homepage-hero-grid" />
         <div className="homepage-hero-glow" />
@@ -315,17 +514,17 @@ export default function HomePage() {
         <div className="homepage-hero-copy" style={{ position: "relative", zIndex: 2 }}>
           <div className="homepage-hero-ribbon">
             <span className="homepage-hero-ribbon-pulse" />
-            <p>Now Accepting Founding Members — National</p>
+            <p>Chicago · Indy · Founding members now open</p>
           </div>
           <h1 className="homepage-hero-title">
             <span className="homepage-highlight">Real</span> people.<br />
             <span className="homepage-highlight--green">Real</span> knowledge.<br />
             <span className="homepage-highlight">Real</span> access.
           </h1>
-          <p className="homepage-hero-text">A living archive of people doing meaningful work — storytelling, organizing, mentoring, and trusted access from communities on the move.</p>
+          <p className="homepage-hero-text">Jobs, help, stories and the people who made it out. From our blocks, for our blocks.</p>
           <div className="homepage-hero-actions">
-            <Link href="/directory" className="gold-btn">Explore Directory</Link>
-            <Link href="/apply" className="gold-link">Tap In</Link>
+            <a href="#need" className="gold-btn cc-hero-cta">Find what you need</a>
+            <Link href="/apply" className="gold-link cc-hero-ghost">Tap In, it&apos;s free</Link>
           </div>
         </div>
         <div className="homepage-featured-slot">
@@ -361,7 +560,11 @@ export default function HomePage() {
         </div>
       </section>
 
+      <NeedSection counts={counts} />
+      <ThisWeek slots={slots} />
+      <Faces slots={slots} posts={posts} />
       <OnNowRow slots={slots} posts={posts} />
+      <CultureDrop slots={slots} />
 
       {!loading && posts.length > 0 && (
         <section className="media-feed-section">
@@ -370,7 +573,7 @@ export default function HomePage() {
             <a href="/posts" className="gold-link">View All →</a>
           </div>
           <div style={{ padding: "1rem" }}>
-            {posts.map(p => (
+            {posts.slice(0, 6).map(p => (
               <PostCard
                 key={p.id}
                 id={p.id}
@@ -390,12 +593,6 @@ export default function HomePage() {
         </section>
       )}
 
-            <div className="cc-stats-strip">
-        <div className="cc-stat"><span className="cc-stat-num">2026</span><span className="cc-stat-lbl">Founded</span></div>
-        <div className="cc-stat"><span className="cc-stat-num">2</span><span className="cc-stat-lbl">Cities</span></div>
-        <div className="cc-stat"><span className="cc-stat-num">Open</span><span className="cc-stat-lbl">Network</span></div>
-        <div className="cc-stat"><span className="cc-stat-num">Free</span><span className="cc-stat-lbl">Access</span></div>
-      </div>
       <section className="hp-section fade-up">
         <div className="hp-section-head">
           <p className="hp-eyebrow">COMMUNITY STORIES</p>
@@ -489,6 +686,8 @@ export default function HomePage() {
       </section>
 
       <div className="hp-divider" />
+
+      <SayTheirNames />
 
       <section className="hp-join-section">
         <div className="hp-join-inner">

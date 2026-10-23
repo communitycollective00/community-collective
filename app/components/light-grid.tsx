@@ -4,8 +4,8 @@ import { startLightGrid } from "../../lib/light-grid-engine";
 import { LIGHT_GRID_WORDS, LIGHT_GRID_NAMES, LIGHT_GRID_INTROS, LIGHT_GRID_INTRO_MODE } from "../../lib/light-grid-content";
 
 // Picks tonight's opening line: the first one every time, or the next one in the list on each visit.
-function pickIntro(): string {
-  const lines = LIGHT_GRID_INTROS.filter(Boolean);
+function pickIntro(custom?: string[]): string {
+  const lines = (custom && custom.length ? custom : LIGHT_GRID_INTROS).filter(Boolean);
   if (!lines.length) return "";
   if (LIGHT_GRID_INTRO_MODE !== "rotate") return lines[0];
   try {
@@ -34,11 +34,18 @@ const AVOID = [
   ".hp-join-inner",
   ".cc-onnow-head",
   ".cc-onnow-row",
+  ".cc-sec-head",
+  ".cc-need-grid",
+  ".cc-counts",
+  ".cc-week-grid",
+  ".cc-faces-grid",
+  ".cc-drop-grid",
+  ".cc-names-band .cc-wrap",
 ].join(",");
 
 // Dims the hero copy during the opening shot and keeps text readable over the light. Hero layout lives in app/home-hero.css.
 const STYLES = `
-.cc-light-veil{position:fixed!important;inset:0;z-index:0!important;pointer-events:none;background:radial-gradient(ellipse 62% 55% at 50% 46%,rgba(7,6,5,.55) 0%,rgba(7,6,5,.3) 50%,rgba(7,6,5,.06) 100%)}
+.cc-light-veil{position:fixed!important;inset:0;z-index:0!important;pointer-events:none;background:linear-gradient(90deg,rgba(10,6,4,.62) 0%,rgba(10,6,4,.32) 42%,rgba(10,6,4,.04) 100%)}
 .cc-light-grid{position:fixed!important;inset:0;width:100%;height:100%;z-index:0!important;pointer-events:none;display:block;mix-blend-mode:screen}
 .cc-stats-strip{background:rgba(10,9,7,.82)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-color:rgba(201,168,76,.28)!important}
 .cc-stat-num{text-shadow:0 0 18px rgba(244,207,112,.35)}
@@ -49,19 +56,35 @@ const STYLES = `
 .homepage-hero-title,.homepage-hero-text,.hp-section-title,.hp-section-body,.hp-eyebrow,.hp-join-title,.hp-join-body{text-shadow:0 2px 18px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)}
 `;
 
-export default function LightGrid() {
+// Homepage effects, switched on and off from Control Room > Homepage Effects.
+export type GridEffects = {
+  honeycomb: boolean;
+  glitch: boolean;
+  names: boolean;
+  words: boolean;
+  calm: boolean;
+  lines: string[];
+};
+export const DEFAULT_EFFECTS: GridEffects = { honeycomb: true, glitch: true, names: true, words: true, calm: true, lines: [] };
+
+export default function LightGrid({ effects = DEFAULT_EFFECTS }: { effects?: GridEffects }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const key = JSON.stringify(effects);
 
   useEffect(() => {
     const canvas = ref.current;
     if (!canvas) return;
     let stop: (() => void) | null = null;
     let cancelled = false;
+    const fx = effects;
+    const anyLight = fx.honeycomb || fx.names || fx.words;
     const go = () => {
-      if (cancelled) return;
+      if (cancelled || !anyLight) return;
       stop = startLightGrid(canvas, {
-        words: LIGHT_GRID_WORDS,
-        names: LIGHT_GRID_NAMES,
+        words: fx.words ? LIGHT_GRID_WORDS : [],
+        names: fx.names ? LIGHT_GRID_NAMES : [],
+        grid: fx.honeycomb,
+        calm: fx.calm,
         intro: false,
         avoid: AVOID,
         introSelector: ".homepage-hero-copy",
@@ -72,12 +95,12 @@ export default function LightGrid() {
     const title = document.querySelector(".homepage-hero-title") as HTMLElement | null;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let sub: HTMLSpanElement | null = null;
-    if (title && !reduced) {
+    if (title && !reduced && fx.glitch) {
       sub = document.createElement("span");
       sub.className = "cc-sub";
       sub.setAttribute("aria-hidden", "true");
       title.appendChild(sub);
-      let line = pickIntro();
+      let line = pickIntro(fx.lines);
       const later = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
       const cycle = () => {
         if (cancelled || !sub) return;
@@ -85,7 +108,7 @@ export default function LightGrid() {
         title.classList.add("cc-glitch");
         later(420, () => { title.classList.remove("cc-glitch"); title.classList.add("cc-sub-on"); });
         later(2320, () => { title.classList.remove("cc-sub-on"); title.classList.add("cc-glitch"); });
-        later(2700, () => { title.classList.remove("cc-glitch"); line = pickIntro(); });
+        later(2700, () => { title.classList.remove("cc-glitch"); line = pickIntro(fx.lines); });
         later(2700 + 14000 + Math.random() * 8000, cycle);
       };
       later(1400, cycle);
@@ -102,7 +125,9 @@ export default function LightGrid() {
       if (sub) sub.remove();
       if (stop) stop();
     };
-  }, []);
+    // restart when the settings change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [key]);
 
   return (
     <>

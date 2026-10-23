@@ -5,6 +5,9 @@ import { getSupabaseClient } from "../../../lib/supabase";
 
 const SECTIONS = [
   "On Now",
+  "This Week",
+  "Faces",
+  "Culture Drop",
   "Featured This Week",
   "Real Game",
   "Opportunities Today",
@@ -152,9 +155,88 @@ function ImageUploader({
   );
 }
 
+
+// Homepage effects are stored as rows in homepage_slots under the "Effects" section.
+// slot 0 honeycomb · 1 glitch (description = glitch lines) · 2 names · 3 story words · 4 intensity (title "calm" or "full")
+// On/off lives in `role` ("on"/"off") and rows stay is_active, so the public homepage can always read them.
+const EFFECT_ROWS = [
+  { i: 0, key: "honeycomb", label: "Honeycomb light grid", help: "The gold LED honeycomb behind the whole homepage." },
+  { i: 1, key: "glitch", label: "TV glitch message", help: "The headline glitches and your message flashes in its place every 15 to 20 seconds." },
+  { i: 2, key: "names", label: "Say their names", help: "Names fire from the center and burst into the page." },
+  { i: 3, key: "words", label: "Story words", help: "FROM THE BLOCK, TO THE BOARDROOM and the rest ignite one at a time." },
+];
+const DEFAULT_GLITCH_LINES = "WE THE PEOPLE.\nIT'S OUR TIME.\nIT'S OUR TURN.\nIT'S OUR MOVE.";
+
+function EffectsPanel({ slots, onSaved }: { slots: Slot[]; onSaved: (msg: string) => void }) {
+  const row = (i: number) => slots.find((s) => s.section === "Effects" && s.slot_index === i);
+  const [on, setOn] = useState<Record<number, boolean>>({});
+  const [lines, setLines] = useState("");
+  const [calm, setCalm] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    const next: Record<number, boolean> = {};
+    EFFECT_ROWS.forEach((e) => { const r = row(e.i); next[e.i] = r ? r.role !== "off" : true; });
+    setOn(next);
+    setLines(row(1)?.description || DEFAULT_GLITCH_LINES);
+    const m = row(4);
+    setCalm(m ? m.title !== "full" : true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slots]);
+
+  async function save() {
+    setSaving(true);
+    const supabase = getSupabaseClient();
+    const base = { section: "Effects", city: "", image_url: "", link_url: "", is_active: true };
+    const rows = [
+      ...EFFECT_ROWS.map((e) => ({ ...base, slot_index: e.i, title: e.key, role: on[e.i] !== false ? "on" : "off", description: e.i === 1 ? lines : "" })),
+      { ...base, slot_index: 4, title: calm ? "calm" : "full", role: "on", description: "" },
+    ];
+    const { error } = await (supabase.from("homepage_slots") as any).upsert(rows, { onConflict: "section,slot_index" });
+    setSaving(false);
+    onSaved(error ? "Effects save failed: " + (error.message || "") : "✓ Effects saved. Refresh the homepage to see them.");
+  }
+
+  const box = { background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 12, padding: "1.1rem 1.25rem", marginBottom: "0.85rem" } as const;
+  return (
+    <div>
+      <h2 style={{ color: "var(--text)", marginBottom: "0.5rem", fontSize: "1.2rem" }}>Homepage Effects</h2>
+      <p style={{ color: "var(--muted)", fontSize: "0.9rem", marginBottom: "1.25rem" }}>Turn the homepage effects on or off. Everything starts on.</p>
+      {EFFECT_ROWS.map((e) => (
+        <label key={e.i} htmlFor={`fx-${e.key}`} style={{ ...box, display: "flex", alignItems: "center", gap: "1rem", cursor: "pointer" }}>
+          <input id={`fx-${e.key}`} type="checkbox" checked={on[e.i] !== false} onChange={(ev) => setOn((p) => ({ ...p, [e.i]: ev.target.checked }))} style={{ width: 22, height: 22, accentColor: "#F4CF70" }} />
+          <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <b style={{ color: "var(--text)" }}>{e.label}</b>
+            <span style={{ color: "var(--muted)", fontSize: "0.85rem" }}>{e.help}</span>
+          </span>
+        </label>
+      ))}
+      <div style={box}>
+        <label htmlFor="fx-lines" style={{ display: "block", color: "var(--text)", fontWeight: 700, marginBottom: 4 }}>Glitch messages</label>
+        <p style={{ color: "var(--muted)", fontSize: "0.85rem", margin: "0 0 0.6rem" }}>One per line. Each glitch shows the next one.</p>
+        <textarea id="fx-lines" value={lines} onChange={(e) => setLines(e.target.value)} rows={5} style={{ width: "100%", padding: "0.6rem 0.75rem", borderRadius: 8, border: "1px solid var(--border)", background: "var(--surface-soft)", color: "var(--text)", fontSize: "0.95rem", boxSizing: "border-box" }} />
+      </div>
+      <div style={{ ...box, display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+        <b style={{ color: "var(--text)", marginRight: "0.5rem" }}>Intensity</b>
+        {([["calm", "Calm (recommended)"], ["full", "Full"]] as const).map(([v, label]) => (
+          <button key={v} type="button" onClick={() => setCalm(v === "calm")} style={{ padding: "0.45rem 1rem", borderRadius: 999, border: "1px solid var(--gold2)", cursor: "pointer", fontWeight: 600, background: (v === "calm") === calm ? "var(--gold)" : "transparent", color: (v === "calm") === calm ? "#000" : "var(--gold)" }}>{label}</button>
+        ))}
+      </div>
+      <button onClick={save} disabled={saving} className="gold-btn" style={{ marginTop: "0.5rem" }}>{saving ? "Saving..." : "Save effects"}</button>
+    </div>
+  );
+}
+
+const SECTION_HELP: Record<string, string> = {
+  "On Now": "The three boxes under the homepage headline. In Role / Title type Video, Sponsored, Event or anything short; it shows as the gold label. Paste a YouTube, TikTok, Instagram or video link in Links To and the box gets a play button. Leave it empty and the homepage shows your three newest stories.",
+  "This Week": "Events and deadlines. Headline = event name. Role / Title = label (Music · Open Mic). Location = venue, neighborhood, time. Description = the date, like FRI 10/31. Leave empty and the section stays hidden.",
+  "Faces": "Portraits of the people you've documented. Headline = their name. Role / Title + Location = what they do and where. Description = one line in their own words. Image = a 4:5 portrait. Leave empty and the homepage uses your latest interviews.",
+  "Culture Drop": "Slot 1 = Track of the week: Headline = song, Role / Title = artist, Location = city, Links To = Spotify, Apple Music or YouTube, Image = cover art, Description = a short note. Slot 2 = Photo of the week: Image = your photo, Headline = caption, Description = credit or place.",
+};
+
 export default function ControlRoom() {
   const { loading, isAdmin } = useAdminGuard("/admin/control-room");
-  const [activeTab, setActiveTab] = useState<"cards" | "backgrounds">("cards");
+  const [activeTab, setActiveTab] = useState<"cards" | "backgrounds" | "effects">("cards");
   const [activeSection, setActiveSection] = useState(SECTIONS[0]);
   const [slots, setSlots] = useState<Slot[]>([]);
   const [backgrounds, setBackgrounds] = useState<Record<string, string>>({});
@@ -261,14 +343,14 @@ export default function ControlRoom() {
           Hidden admin panel — homepage content + page backgrounds
         </p>
 
-        <div style={{ display: "flex", gap: "1rem", marginBottom: "2rem" }}>
-          {(["cards", "backgrounds"] as const).map((tab) => (
+        <div style={{ display: "flex", gap: "0.75rem", marginBottom: "2rem", flexWrap: "wrap" }}>
+          {(["cards", "backgrounds", "effects"] as const).map((tab) => (
             <button key={tab} onClick={() => setActiveTab(tab)} style={{
               padding: "0.6rem 1.4rem", borderRadius: 999, border: "1px solid var(--gold2)",
               background: activeTab === tab ? "var(--gold)" : "transparent",
               color: activeTab === tab ? "#000" : "var(--gold)", cursor: "pointer", fontWeight: 600,
             }}>
-              {tab === "cards" ? "Homepage Cards" : "Page Backgrounds"}
+              {tab === "cards" ? "Homepage Cards" : tab === "backgrounds" ? "Page Backgrounds" : "Homepage Effects"}
             </button>
           ))}
         </div>
@@ -291,9 +373,9 @@ export default function ControlRoom() {
             <h2 style={{ color: "var(--text)", marginBottom: "1rem", fontSize: "1.2rem" }}>
               {activeSection} — 3 Card Slots
             </h2>
-            {activeSection === "On Now" && (
+            {SECTION_HELP[activeSection] && (
               <p style={{ color: "var(--muted)", fontSize: "0.85rem", margin: "-0.5rem 0 1rem", lineHeight: 1.6 }}>
-                The three boxes under the homepage headline. In Role / Title type <b>Video</b>, <b>Sponsored</b>, <b>Event</b> or anything short; it shows as the gold label. Paste a YouTube, TikTok, Instagram or video link in Links To and the box gets a play button. Leave a section empty and the homepage shows your three newest stories instead.
+                {SECTION_HELP[activeSection]}
               </p>
             )}
 
@@ -381,6 +463,10 @@ export default function ControlRoom() {
               {saving ? "Saving..." : `Save ${activeSection}`}
             </button>
           </div>
+        )}
+
+        {activeTab === "effects" && (
+          <EffectsPanel slots={slots} onSaved={(msg) => { setStatus(msg); loadSlots(); }} />
         )}
 
         {activeTab === "backgrounds" && (
