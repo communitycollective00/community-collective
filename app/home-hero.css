@@ -239,10 +239,12 @@ main.homepage-main > .homepage-hero { min-height: min(760px, calc(100svh - 180px
 @media (prefers-reduced-motion: reduce) { .cc-names-list li { animation: none; } }
 
 /* the homepage photo stays pinned behind the whole page while you scroll */
+/* the photo is taller than the screen and slides up as you scroll, so you travel down the building */
 main.homepage-main > div[style*="background-image"] {
-  position: fixed !important; inset: 0 !important; width: 100% !important;
-  height: 100vh !important; min-height: 0 !important;
-  background-position: center center !important; background-attachment: scroll !important;
+  position: fixed !important; top: 0 !important; left: 0 !important; width: 100% !important;
+  height: 175vh !important; min-height: 0 !important;
+  background-position: center top !important; background-size: cover !important;
+  will-change: transform; transform: translate3d(0, calc(var(--cc-photo-y, 0) * -75vh), 0);
 }
 main.homepage-main > div[style*="0.45) 0%"] {
   position: fixed !important; inset: 0 !important; width: 100% !important;

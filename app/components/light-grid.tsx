@@ -114,6 +114,22 @@ export default function LightGrid({ effects = DEFAULT_EFFECTS }: { effects?: Gri
       later(1400, cycle);
     }
 
+    // photo travel: 0 at the top of the page, 1 at the bottom
+    const root = document.documentElement;
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        ticking = false;
+        const max = Math.max(1, root.scrollHeight - window.innerHeight);
+        root.style.setProperty("--cc-photo-y", String(Math.min(1, Math.max(0, window.scrollY / max)).toFixed(4)));
+      });
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
     // wait for fonts so names are measured in the right typeface
     const fonts = (document as any).fonts;
     if (fonts && fonts.ready) fonts.ready.then(go, go);
@@ -121,6 +137,9 @@ export default function LightGrid({ effects = DEFAULT_EFFECTS }: { effects?: Gri
     return () => {
       cancelled = true;
       timers.forEach((t) => clearTimeout(t));
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      root.style.removeProperty("--cc-photo-y");
       if (title) title.classList.remove("cc-glitch", "cc-sub-on");
       if (sub) sub.remove();
       if (stop) stop();
