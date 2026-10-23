@@ -40,7 +40,6 @@ const AVOID = [
 const STYLES = `
 .cc-light-veil{position:fixed!important;inset:0;z-index:0!important;pointer-events:none;background:radial-gradient(ellipse 62% 55% at 50% 46%,rgba(7,6,5,.55) 0%,rgba(7,6,5,.3) 50%,rgba(7,6,5,.06) 100%)}
 .cc-light-grid{position:fixed!important;inset:0;width:100%;height:100%;z-index:0!important;pointer-events:none;display:block;mix-blend-mode:screen}
-body.cc-intro .homepage-hero-copy{opacity:.12}
 .cc-stats-strip{background:rgba(10,9,7,.82)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-color:rgba(201,168,76,.28)!important}
 .cc-stat-num{text-shadow:0 0 18px rgba(244,207,112,.35)}
 .cc-stat-lbl{color:rgba(255,255,255,.62)!important}
@@ -63,17 +62,44 @@ export default function LightGrid() {
       stop = startLightGrid(canvas, {
         words: LIGHT_GRID_WORDS,
         names: LIGHT_GRID_NAMES,
-        introText: pickIntro(),
+        intro: false,
         avoid: AVOID,
         introSelector: ".homepage-hero-copy",
       });
     };
+    // subliminal message: the headline glitches like a bad TV signal and the line flashes in its place
+    const timers: number[] = [];
+    const title = document.querySelector(".homepage-hero-title") as HTMLElement | null;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let sub: HTMLSpanElement | null = null;
+    if (title && !reduced) {
+      sub = document.createElement("span");
+      sub.className = "cc-sub";
+      sub.setAttribute("aria-hidden", "true");
+      title.appendChild(sub);
+      let line = pickIntro();
+      const later = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms));
+      const cycle = () => {
+        if (cancelled || !sub) return;
+        sub.textContent = line;
+        title.classList.add("cc-glitch");
+        later(420, () => { title.classList.remove("cc-glitch"); title.classList.add("cc-sub-on"); });
+        later(2320, () => { title.classList.remove("cc-sub-on"); title.classList.add("cc-glitch"); });
+        later(2700, () => { title.classList.remove("cc-glitch"); line = pickIntro(); });
+        later(2700 + 14000 + Math.random() * 8000, cycle);
+      };
+      later(1400, cycle);
+    }
+
     // wait for fonts so names are measured in the right typeface
     const fonts = (document as any).fonts;
     if (fonts && fonts.ready) fonts.ready.then(go, go);
     else go();
     return () => {
       cancelled = true;
+      timers.forEach((t) => clearTimeout(t));
+      if (title) title.classList.remove("cc-glitch", "cc-sub-on");
+      if (sub) sub.remove();
       if (stop) stop();
     };
   }, []);
