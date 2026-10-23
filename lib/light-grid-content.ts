@@ -11,8 +11,15 @@ export type MemorialName = {
   how?: string;
 };
 
-// The opening line that swells up from the center when the page loads.
-export const LIGHT_GRID_INTRO = "IT'S OUR MOVE.";
+// Opening lines that swell up from the center when the page loads.
+// "rotate" shows the next line on each visit. "first" always shows the first line.
+export const LIGHT_GRID_INTRO_MODE: "rotate" | "first" = "rotate";
+export const LIGHT_GRID_INTROS: string[] = [
+  "WE THE PEOPLE.",
+  "IT'S OUR TIME.",
+  "IT'S OUR TURN.",
+  "IT'S OUR MOVE.",
+];
 
 export const LIGHT_GRID_WORDS: string[] = [
   "FROM THE BLOCK",

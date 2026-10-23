@@ -3,6 +3,7 @@ import { getCachedBg } from "../lib/background-cache";
 import VideoEmbed from "./components/video-embed";
 import FeaturedCarousel from "./components/featured-carousel";
 import LightGrid from "./components/light-grid";
+import "./home-hero.css";
 
 import PostCard from "./components/post-card";
 import { useEffect, useState, useRef } from "react";
@@ -90,6 +91,76 @@ function StoryCard({ slot }: { slot: Slot }) {
     </div>
   );
   return slot.link_url ? <Link href={slot.link_url}>{inner}</Link> : inner;
+}
+
+function isVideoLink(u: string) {
+  return /youtu\.?be|vimeo\.com|tiktok\.com|instagram\.com\/(reel|p)\/|\.(mp4|mov|webm)($|\?)/i.test(u || "");
+}
+
+// "On Now": three cards under the hero. Filled from the "On Now" section in the Control Room;
+// until those are set, it shows the three newest stories that have a picture.
+function OnNowRow({ slots, posts }: { slots: Slot[]; posts: Post[] }) {
+  const live = slots
+    .filter((s) => s.section === "On Now" && s.is_active)
+    .sort((a, b) => a.slot_index - b.slot_index)
+    .slice(0, 3);
+  const items = live.length
+    ? live.map((s) => ({
+        key: s.id || String(s.slot_index),
+        href: s.link_url || "",
+        image: s.image_url || "",
+        kicker: s.role || "On Now",
+        title: s.title,
+        meta: s.city,
+        video: isVideoLink(s.link_url) || /video|watch|clip/i.test(s.role || ""),
+        sponsored: /sponsor|partner|presented|\bad\b/i.test(s.role || ""),
+      }))
+    : posts
+        .filter((p) => p.thumbnail_url || p.image_url || p.interview_cover_url)
+        .slice(0, 3)
+        .map((p) => ({
+          key: p.id,
+          href: `/posts/${p.id}`,
+          image: (p.thumbnail_url || p.image_url || p.interview_cover_url || "") as string,
+          kicker: p.post_type === "interview" ? "Interview" : "New Story",
+          title: p.title || p.caption || "",
+          meta: p.author_name,
+          video: p.media_type === "video" || !!p.video_url,
+          sponsored: false,
+        }));
+  if (!items.length) return null;
+  return (
+    <section className="cc-onnow" aria-label="On now">
+      <div className="cc-onnow-head">
+        <span className="cc-onnow-label">ON NOW</span>
+        <span className="cc-onnow-rule" aria-hidden="true" />
+      </div>
+      <div className="cc-onnow-row">
+        {items.map((it) => {
+          const cls = "cc-onnow-card" + (it.sponsored ? " is-sponsored" : "");
+          const style = it.image ? { backgroundImage: `url(${it.image})` } : undefined;
+          const inner = (
+            <>
+              {it.video && (
+                <span className="cc-onnow-play" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24"><path d="M7 4v16l13-8z" fill="#F4CF70" /></svg>
+                </span>
+              )}
+              <span className="cc-onnow-body">
+                <span className="cc-onnow-kicker">{it.kicker}</span>
+                {it.title && <span className="cc-onnow-title">{it.title}</span>}
+                {it.meta && <span className="cc-onnow-meta">{it.meta}</span>}
+              </span>
+            </>
+          );
+          if (!it.href) return <div key={it.key} className={cls} style={style}>{inner}</div>;
+          if (/^https?:\/\//i.test(it.href))
+            return <a key={it.key} className={cls} style={style} href={it.href} target="_blank" rel="noopener noreferrer">{inner}</a>;
+          return <Link key={it.key} className={cls} style={style} href={it.href}>{inner}</Link>;
+        })}
+      </div>
+    </section>
+  );
 }
 
 function WideCard({ slot }: { slot: Slot }) {
@@ -289,6 +360,8 @@ export default function HomePage() {
           )}
         </div>
       </section>
+
+      <OnNowRow slots={slots} posts={posts} />
 
       {!loading && posts.length > 0 && (
         <section className="media-feed-section">

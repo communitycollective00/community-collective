@@ -1,7 +1,21 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { startLightGrid } from "../../lib/light-grid-engine";
-import { LIGHT_GRID_WORDS, LIGHT_GRID_NAMES, LIGHT_GRID_INTRO } from "../../lib/light-grid-content";
+import { LIGHT_GRID_WORDS, LIGHT_GRID_NAMES, LIGHT_GRID_INTROS, LIGHT_GRID_INTRO_MODE } from "../../lib/light-grid-content";
+
+// Picks tonight's opening line: the first one every time, or the next one in the list on each visit.
+function pickIntro(): string {
+  const lines = LIGHT_GRID_INTROS.filter(Boolean);
+  if (!lines.length) return "";
+  if (LIGHT_GRID_INTRO_MODE !== "rotate") return lines[0];
+  try {
+    const next = (parseInt(localStorage.getItem("cc-intro-i") || "-1", 10) + 1) % lines.length;
+    localStorage.setItem("cc-intro-i", String(next));
+    return lines[next];
+  } catch {
+    return lines[Math.floor(Math.random() * lines.length)];
+  }
+}
 
 // Page content the names and words steer around, so they never cover text, cards or buttons.
 const AVOID = [
@@ -18,19 +32,14 @@ const AVOID = [
   ".hp-grid-2",
   ".hp-grid-wide",
   ".hp-join-inner",
+  ".cc-onnow-head",
+  ".cc-onnow-row",
 ].join(",");
 
-// Centers the hero, swaps the old hero grid for the light grid, and dims the hero copy during the opening shot.
+// Dims the hero copy during the opening shot and keeps text readable over the light. Hero layout lives in app/home-hero.css.
 const STYLES = `
 .cc-light-veil{position:fixed!important;inset:0;z-index:0!important;pointer-events:none;background:radial-gradient(ellipse 62% 55% at 50% 46%,rgba(7,6,5,.55) 0%,rgba(7,6,5,.3) 50%,rgba(7,6,5,.06) 100%)}
 .cc-light-grid{position:fixed!important;inset:0;width:100%;height:100%;z-index:0!important;pointer-events:none;display:block;mix-blend-mode:screen}
-.homepage-hero{grid-template-columns:1fr!important;justify-items:center;text-align:center}
-.homepage-hero-grid{display:none!important}
-.homepage-hero-copy{display:flex;flex-direction:column;align-items:center;max-width:860px;margin-inline:auto;transition:opacity .9s ease}
-.homepage-hero-ribbon{margin-inline:auto}
-.homepage-hero-actions{justify-content:center!important}
-.homepage-hero-text{padding-right:0!important;margin-inline:auto}
-.homepage-featured-slot{width:100%;max-width:960px;margin-inline:auto}
 body.cc-intro .homepage-hero-copy{opacity:.12}
 .cc-stats-strip{background:rgba(10,9,7,.82)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-color:rgba(201,168,76,.28)!important}
 .cc-stat-num{text-shadow:0 0 18px rgba(244,207,112,.35)}
@@ -54,7 +63,7 @@ export default function LightGrid() {
       stop = startLightGrid(canvas, {
         words: LIGHT_GRID_WORDS,
         names: LIGHT_GRID_NAMES,
-        introText: LIGHT_GRID_INTRO,
+        introText: pickIntro(),
         avoid: AVOID,
         introSelector: ".homepage-hero-copy",
       });

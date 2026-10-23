@@ -1,0 +1,91 @@
+/* Homepage hero (layout B + C).
+   The hero and the On Now row share one 12-column grid with the same outer edges and gaps,
+   so the headline and featured video split 50/50 and the middle On Now card sits on the center line. */
+.homepage-main { --cc-wrap: 1200px; --cc-gut: clamp(16px, 4vw, 64px); --cc-gap: 32px; }
+
+main.homepage-main > .homepage-hero {
+  display: grid !important;
+  grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+  column-gap: var(--cc-gap) !important;
+  row-gap: 28px !important;
+  align-items: center !important;
+  width: 100%;
+  max-width: calc(var(--cc-wrap) + 2 * var(--cc-gut));
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding: clamp(24px, 5vh, 56px) var(--cc-gut) 12px !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+  text-align: left;
+}
+.homepage-hero .homepage-hero-grid { display: none !important; }
+.homepage-hero .homepage-hero-copy {
+  grid-column: 1 / 7;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  padding-left: 0 !important;
+  max-width: none !important;
+  transition: opacity .9s ease;
+}
+.homepage-hero .homepage-hero-actions { justify-content: flex-start !important; }
+/* the headline fills its half of the grid without wrapping a line */
+.homepage-hero .homepage-hero-title {
+  font-size: clamp(52px, 6.2vw, 88px) !important;
+  line-height: 0.92 !important;
+  margin: 0 !important;
+}
+.homepage-hero .homepage-hero-text { max-width: 46ch; margin: 0 !important; }
+.homepage-hero .homepage-featured-slot {
+  grid-column: 7 / 13;
+  width: 100%;
+  min-height: 0 !important;
+  order: 0 !important;
+}
+.homepage-hero .homepage-featured-slot > * { width: 100%; }
+.homepage-hero .homepage-featured-card { aspect-ratio: 16 / 9; }
+
+/* On Now: three equal cards under the hero */
+.cc-onnow {
+  width: 100%;
+  max-width: calc(var(--cc-wrap) + 2 * var(--cc-gut));
+  margin: 8px auto 0;
+  padding: 0 var(--cc-gut) 24px;
+  box-sizing: border-box;
+}
+.cc-onnow-head { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.cc-onnow-label { font-size: 11px; letter-spacing: .2em; font-weight: 700; color: #F4CF70; }
+.cc-onnow-rule { flex: 1; height: 1px; background: linear-gradient(90deg, rgba(244,207,112,.5), rgba(244,207,112,0)); }
+.cc-onnow-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--cc-gap); }
+.cc-onnow-card {
+  position: relative; display: block; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden;
+  border: 1px solid rgba(246,239,227,.18); background: #0d0c09 center / cover no-repeat;
+  color: #F6EFE3; text-decoration: none; transition: transform .2s ease, border-color .2s ease;
+}
+.cc-onnow-card:hover { transform: translateY(-3px); border-color: rgba(244,207,112,.55); }
+.cc-onnow-card.is-sponsored { border-color: rgba(244,207,112,.55); box-shadow: 0 0 40px rgba(233,185,73,.14); }
+.cc-onnow-card::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.88), rgba(0,0,0,.25) 55%, rgba(0,0,0,.05)); }
+.cc-onnow-body { position: absolute; left: 0; right: 0; bottom: 0; z-index: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.cc-onnow-kicker { font-size: 10.5px; letter-spacing: .16em; font-weight: 700; color: #F4CF70; text-transform: uppercase; }
+.cc-onnow-title { font-size: 16px; font-weight: 700; line-height: 1.25; }
+.cc-onnow-meta { font-size: 12px; color: rgba(255,255,255,.7); }
+.cc-onnow-play {
+  position: absolute; z-index: 1; top: 50%; left: 50%; width: 48px; height: 48px; margin: -34px 0 0 -24px;
+  border-radius: 50%; border: 1px solid rgba(244,207,112,.6); background: rgba(10,9,7,.55);
+  display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);
+}
+
+@media (max-width: 900px) {
+  main.homepage-main > .homepage-hero { grid-template-columns: minmax(0, 1fr) !important; }
+  .homepage-hero .homepage-hero-copy,
+  .homepage-hero .homepage-featured-slot { grid-column: 1 / -1; }
+  .homepage-hero .homepage-hero-title { font-size: clamp(46px, 14vw, 64px) !important; }
+  /* On Now becomes a swipe row on phones */
+  .cc-onnow-row {
+    display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 12px;
+    margin-right: calc(-1 * var(--cc-gut)); padding-right: var(--cc-gut); scrollbar-width: none;
+  }
+  .cc-onnow-row::-webkit-scrollbar { display: none; }
+  .cc-onnow-card { flex: 0 0 78%; scroll-snap-align: start; }
+}

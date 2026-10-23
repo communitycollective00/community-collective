@@ -4,6 +4,7 @@ import { useAdminGuard } from "../../components/admin-guard";
 import { getSupabaseClient } from "../../../lib/supabase";
 
 const SECTIONS = [
+  "On Now",
   "Featured This Week",
   "Real Game",
   "Opportunities Today",
@@ -290,6 +291,11 @@ export default function ControlRoom() {
             <h2 style={{ color: "var(--text)", marginBottom: "1rem", fontSize: "1.2rem" }}>
               {activeSection} — 3 Card Slots
             </h2>
+            {activeSection === "On Now" && (
+              <p style={{ color: "var(--muted)", fontSize: "0.85rem", margin: "-0.5rem 0 1rem", lineHeight: 1.6 }}>
+                The three boxes under the homepage headline. In Role / Title type <b>Video</b>, <b>Sponsored</b>, <b>Event</b> or anything short; it shows as the gold label. Paste a YouTube, TikTok, Instagram or video link in Links To and the box gets a play button. Leave a section empty and the homepage shows your three newest stories instead.
+              </p>
+            )}
 
             {getSectionSlots(activeSection).map((slot, i) => (
               <div key={i} style={{
