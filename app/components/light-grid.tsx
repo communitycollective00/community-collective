@@ -31,6 +31,12 @@ const STYLES = `
 .homepage-hero-text{padding-right:0!important;margin-inline:auto}
 .homepage-featured-slot{width:100%;max-width:960px;margin-inline:auto}
 body.cc-intro .homepage-hero-copy{opacity:.12}
+.cc-stats-strip{background:rgba(10,9,7,.82)!important;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-color:rgba(201,168,76,.28)!important}
+.cc-stat-num{text-shadow:0 0 18px rgba(244,207,112,.35)}
+.cc-stat-lbl{color:rgba(255,255,255,.62)!important}
+.homepage-hero-ribbon{background:rgba(10,9,7,.7);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.homepage-hero-text{color:rgba(255,255,255,.86)!important}
+.hp-section-body{color:rgba(255,255,255,.72)!important}
 .homepage-hero-title,.homepage-hero-text,.hp-section-title,.hp-section-body,.hp-eyebrow,.hp-join-title,.hp-join-body{text-shadow:0 2px 18px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)}
 `;
 
