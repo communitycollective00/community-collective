@@ -11,6 +11,9 @@ export type MemorialName = {
   how?: string;
 };
 
+// The opening line that swells up from the center when the page loads.
+export const LIGHT_GRID_INTRO = "IT'S OUR MOVE.";
+
 export const LIGHT_GRID_WORDS: string[] = [
   "FROM THE BLOCK",
   "TO THE BOARDROOM",

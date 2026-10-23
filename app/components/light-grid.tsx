@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { startLightGrid } from "../../lib/light-grid-engine";
-import { LIGHT_GRID_WORDS, LIGHT_GRID_NAMES } from "../../lib/light-grid-content";
+import { LIGHT_GRID_WORDS, LIGHT_GRID_NAMES, LIGHT_GRID_INTRO } from "../../lib/light-grid-content";
 
 // Page content the names and words steer around, so they never cover text, cards or buttons.
 const AVOID = [
@@ -22,7 +22,8 @@ const AVOID = [
 
 // Centers the hero, swaps the old hero grid for the light grid, and dims the hero copy during the opening shot.
 const STYLES = `
-.cc-light-grid{position:fixed!important;inset:0;width:100%;height:100%;z-index:0!important;pointer-events:none;display:block}
+.cc-light-veil{position:fixed!important;inset:0;z-index:0!important;pointer-events:none;background:radial-gradient(ellipse 62% 55% at 50% 46%,rgba(7,6,5,.55) 0%,rgba(7,6,5,.3) 50%,rgba(7,6,5,.06) 100%)}
+.cc-light-grid{position:fixed!important;inset:0;width:100%;height:100%;z-index:0!important;pointer-events:none;display:block;mix-blend-mode:screen}
 .homepage-hero{grid-template-columns:1fr!important;justify-items:center;text-align:center}
 .homepage-hero-grid{display:none!important}
 .homepage-hero-copy{display:flex;flex-direction:column;align-items:center;max-width:860px;margin-inline:auto;transition:opacity .9s ease}
@@ -53,6 +54,7 @@ export default function LightGrid() {
       stop = startLightGrid(canvas, {
         words: LIGHT_GRID_WORDS,
         names: LIGHT_GRID_NAMES,
+        introText: LIGHT_GRID_INTRO,
         avoid: AVOID,
         introSelector: ".homepage-hero-copy",
       });
@@ -70,6 +72,7 @@ export default function LightGrid() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: STYLES }} />
+      <div className="cc-light-veil" aria-hidden="true" />
       <canvas ref={ref} className="cc-light-grid" aria-hidden="true" />
     </>
   );
